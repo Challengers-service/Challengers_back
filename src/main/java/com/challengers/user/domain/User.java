@@ -1,4 +1,4 @@
-package com.challengers.User;
+package com.challengers.user.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AccessLevel;
@@ -35,19 +35,28 @@ public class User {
 
     private String bio;
 
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
     @NotNull
     @Enumerated(EnumType.STRING)
     private AuthProvider provider;
 
     private String providerId;
 
+    public User update(String name) {
+        this.name = name;
+        return this;
+    }
+
     @Builder
-    public User(String name, String email, String image, String bio, String password, AuthProvider provider, String providerId) {
+    public User(String name, String email, String image, String bio, String password, Role role, AuthProvider provider, String providerId) {
         this.name = name;
         this.email = email;
         this.image = image;
         this.bio = bio;
         this.password = password;
+        this.role = role;
         this.provider = provider;
         this.providerId = providerId;
     }
