@@ -24,4 +24,20 @@ public class ChallengeTag {
     @JoinColumn(name = "tag_id")
     private Tag tag;
 
+    public static ChallengeTag associate(Challenge challenge, Tag tag) {
+        ChallengeTag cocktailTag = new ChallengeTag();
+        cocktailTag.setTag(tag);
+        cocktailTag.setChallenge(challenge);
+
+        return cocktailTag;
+    }
+
+    public void setChallenge(Challenge challenge) {
+        this.challenge = challenge;
+        challenge.getChallengeTags().addChallengeTag(this);
+    }
+
+    public void setTag(Tag tag) {
+        this.tag = tag;
+    }
 }

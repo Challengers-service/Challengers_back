@@ -22,4 +22,10 @@ public class ExamplePhoto {
     private String photo_url;
 
     private ExamplePhotoType examplePhotoType;
+
+    public ExamplePhoto(Challenge challenge, String photo_url, ExamplePhotoType examplePhotoType) {
+        this.challenge = challenge;
+        this.photo_url = photo_url;
+        this.examplePhotoType = examplePhotoType;
+    }
 }
