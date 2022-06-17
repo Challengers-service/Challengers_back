@@ -9,8 +9,12 @@ import com.challengers.examplephoto.domain.ExamplePhotoType;
 import com.challengers.examplephoto.repository.ExamplePhotoRepository;
 import com.challengers.tag.domain.Tag;
 import com.challengers.tag.repository.TagRepository;
+import com.challengers.user.domain.AuthProvider;
+import com.challengers.user.domain.Role;
 import com.challengers.user.domain.User;
 import com.challengers.user.repository.UserRepository;
+import com.challengers.userchallenge.domain.UserChallenge;
+import com.challengers.userchallenge.repository.UserChallengeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,10 +28,15 @@ public class ChallengeService {
     private final TagRepository tagRepository;
     private final UserRepository userRepository;
     private final ExamplePhotoRepository examplePhotoRepository;
+    private final UserChallengeRepository userChallengeRepository;
+
 
     @Transactional
     public Long create(ChallengeRequest challengeRequest, Long userId) {
-        User host = userRepository.findById(userId).orElseThrow(RuntimeException::new);
+        //User host = userRepository.findById(userId).orElseThrow(RuntimeException::new);
+        User host = new User("a","kjs@naver.com","asf",
+                "asdg",null, Role.USER,AuthProvider.local,"124");
+        userRepository.save(host);
         Challenge challenge = challengeRequest.toChallenge();
         challenge.setHost(host);
         challengeRepository.save(challenge);
@@ -42,6 +51,9 @@ public class ChallengeService {
             ChallengeTag.associate(challenge,findOrCreateTag(tag));
         }
 
+        userChallengeRepository.save(new UserChallenge(challenge,host,false));
+
+        //challenge_photo 추가 해주어야함
         return challenge.getId();
     }
 

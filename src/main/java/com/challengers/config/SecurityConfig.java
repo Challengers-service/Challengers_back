@@ -104,7 +104,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         .permitAll()
                     .antMatchers("/auth/**", "/oauth2/**")
                         .permitAll()
-                    .antMatchers("/login","/hello", "/h2-console/**", "/profile" //for dev
+                    .antMatchers("/login","/hello", "/h2-console/**", "/profile", "/images", "/image", "/challenge" //for dev
                         ,"/oauth2/**", "/signup/**", "/signin/**" // for Auth
                         ).permitAll()
                     .antMatchers( "/**", "/user/**").hasRole(Role.USER.name())
