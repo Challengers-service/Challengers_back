@@ -1,6 +1,7 @@
 package com.challengers.challenge.service;
 
 import com.challengers.challenge.domain.Challenge;
+import com.challengers.challenge.dto.ChallengeDetailResponse;
 import com.challengers.challenge.dto.ChallengeRequest;
 import com.challengers.challenge.repository.ChallengeRepository;
 import com.challengers.challengetag.domain.ChallengeTag;
@@ -9,8 +10,6 @@ import com.challengers.examplephoto.domain.ExamplePhotoType;
 import com.challengers.examplephoto.repository.ExamplePhotoRepository;
 import com.challengers.tag.domain.Tag;
 import com.challengers.tag.repository.TagRepository;
-import com.challengers.user.domain.AuthProvider;
-import com.challengers.user.domain.Role;
 import com.challengers.user.domain.User;
 import com.challengers.user.repository.UserRepository;
 import com.challengers.userchallenge.domain.UserChallenge;
@@ -20,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -33,8 +33,8 @@ public class ChallengeService {
 
     @Transactional
     public Long create(ChallengeRequest challengeRequest, Long userId) {
-        User host = userRepository.findById(userId).orElseThrow(RuntimeException::new);
-        userRepository.save(host);
+        User host = userRepository.findById(userId).orElseThrow(NoSuchElementException::new);
+
         Challenge challenge = challengeRequest.toChallenge();
         challenge.setHost(host);
         challengeRepository.save(challenge);
@@ -56,6 +56,32 @@ public class ChallengeService {
     }
 
     @Transactional
+    public void delete(Long challengeId, Long userId) {
+        Challenge challenge = challengeRepository.findById(challengeId).orElseThrow(NoSuchElementException::new);
+        if (!challenge.getHost().getId().equals(userId)) throw new RuntimeException("권한이 없는 요청");
+        if (!userChallengeRepository.countByChallengeId(challengeId).equals(1L)) throw new RuntimeException("삭제 조건에 부합하지 않음 - 챌린지 참여자가 2명 이상 있음");
+
+        //s3파일도 삭제 시켜야함
+        List<ExamplePhoto> examplePhotos = examplePhotoRepository.findByChallengeId(challengeId);
+        UserChallenge userChallenge = userChallengeRepository.findByUserIdAndChallengeId(challenge.getHost().getId(), challengeId).orElseThrow(NoSuchElementException::new);
+
+        for(ExamplePhoto examplePhoto : examplePhotos) {
+            examplePhotoRepository.delete(examplePhoto);
+        }
+        userChallengeRepository.delete(userChallenge);
+
+        //찜한 사람이 있는 경우 찜목록에서 삭제시키고 알림 보내야함
+
+        challengeRepository.delete(challenge);
+    }
+
+    @Transactional(readOnly = true)
+    public ChallengeDetailResponse findChallenge(Long id) {
+        Challenge challenge = challengeRepository.findById(id).orElseThrow(NoSuchElementException::new);
+
+        return ChallengeDetailResponse.of(challenge);
+    }
+
     private Tag findOrCreateTag(String tag) {
         Tag findTag = tagRepository.findTagByName(tag).orElse(null);
         if (findTag == null) {
@@ -63,6 +89,5 @@ public class ChallengeService {
             tagRepository.save(findTag);
         }
         return findTag;
-
     }
 }
