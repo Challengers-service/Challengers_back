@@ -5,8 +5,8 @@ import com.challengers.challenge.dto.ChallengeDetailResponse;
 import com.challengers.challenge.dto.ChallengeRequest;
 import com.challengers.challenge.repository.ChallengeRepository;
 import com.challengers.challengetag.domain.ChallengeTag;
+import com.challengers.common.AwsS3Uploader;
 import com.challengers.examplephoto.domain.ExamplePhoto;
-import com.challengers.examplephoto.domain.ExamplePhotoType;
 import com.challengers.examplephoto.repository.ExamplePhotoRepository;
 import com.challengers.tag.domain.Tag;
 import com.challengers.tag.repository.TagRepository;
@@ -29,6 +29,7 @@ public class ChallengeService {
     private final UserRepository userRepository;
     private final ExamplePhotoRepository examplePhotoRepository;
     private final UserChallengeRepository userChallengeRepository;
+    private final AwsS3Uploader awsS3Uploader;
 
 
     @Transactional
@@ -37,21 +38,18 @@ public class ChallengeService {
 
         Challenge challenge = challengeRequest.toChallenge();
         challenge.setHost(host);
+        String imageUrl = "default";
+        if (challengeRequest.getImage() != null)
+            imageUrl = awsS3Uploader.uploadImage(challengeRequest.getImage());
+        challenge.setImageUrl(imageUrl);
+        challenge.addExamplePhotos(awsS3Uploader.uploadImages(challengeRequest.getExamplePhotos()));
         challengeRepository.save(challenge);
 
-        for(String url : challengeRequest.getGoodExamplePhotoUrls())
-            examplePhotoRepository.save(new ExamplePhoto(challenge, url, ExamplePhotoType.GOOD));
-        for(String url : challengeRequest.getBadExamplePhotoUrls())
-            examplePhotoRepository.save(new ExamplePhoto(challenge, url, ExamplePhotoType.BAD));
-
-        List<String> tags = challengeRequest.getTags();
-        for (String tag : tags) {
-            ChallengeTag.associate(challenge,findOrCreateTag(tag));
-        }
+        challengeRequest.getTags()
+                .forEach(tag -> ChallengeTag.associate(challenge,findOrCreateTag(tag)));
 
         userChallengeRepository.save(new UserChallenge(challenge,host,false));
 
-        //challenge_photo 추가 해주어야함
         return challenge.getId();
     }
 
@@ -61,13 +59,10 @@ public class ChallengeService {
         if (!challenge.getHost().getId().equals(userId)) throw new RuntimeException("권한이 없는 요청");
         if (!userChallengeRepository.countByChallengeId(challengeId).equals(1L)) throw new RuntimeException("삭제 조건에 부합하지 않음 - 챌린지 참여자가 2명 이상 있음");
 
-        //s3파일도 삭제 시켜야함
-        List<ExamplePhoto> examplePhotos = examplePhotoRepository.findByChallengeId(challengeId);
+        awsS3Uploader.deleteImage(challenge.getImageUrl());
+        awsS3Uploader.deleteImages(challenge.getExamplePhotoUrls());
         UserChallenge userChallenge = userChallengeRepository.findByUserIdAndChallengeId(challenge.getHost().getId(), challengeId).orElseThrow(NoSuchElementException::new);
 
-        for(ExamplePhoto examplePhoto : examplePhotos) {
-            examplePhotoRepository.delete(examplePhoto);
-        }
         userChallengeRepository.delete(userChallenge);
 
         //찜한 사람이 있는 경우 찜목록에서 삭제시키고 알림 보내야함

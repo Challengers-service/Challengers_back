@@ -26,31 +26,38 @@ public class AwsS3Uploader {
 
     private final AmazonS3 amazonS3;
 
+    public String uploadImage(MultipartFile multipartFile) {
+        String fileName = createFileName(multipartFile.getOriginalFilename());
+        ObjectMetadata objectMetadata = new ObjectMetadata();
+        objectMetadata.setContentLength(multipartFile.getSize());
+        objectMetadata.setContentType(multipartFile.getContentType());
+
+        try(InputStream inputStream = multipartFile.getInputStream()) {
+            amazonS3.putObject(new PutObjectRequest(bucket, fileName, inputStream, objectMetadata)
+                    .withCannedAcl(CannedAccessControlList.PublicRead));
+        } catch(IOException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "파일 업로드에 실패했습니다.");
+        }
+
+        return amazonS3.getUrl(bucket, fileName).toString();
+    }
+
     public List<String> uploadImages(List<MultipartFile> multipartFile) {
         List<String> fileNameList = new ArrayList<>();
 
-        // forEach 구문을 통해 multipartFile로 넘어온 파일들 하나씩 fileNameList에 추가
-        multipartFile.forEach(file -> {
-            String fileName = createFileName(file.getOriginalFilename());
-            ObjectMetadata objectMetadata = new ObjectMetadata();
-            objectMetadata.setContentLength(file.getSize());
-            objectMetadata.setContentType(file.getContentType());
-
-            try(InputStream inputStream = file.getInputStream()) {
-                amazonS3.putObject(new PutObjectRequest(bucket, fileName, inputStream, objectMetadata)
-                        .withCannedAcl(CannedAccessControlList.PublicRead));
-            } catch(IOException e) {
-                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "파일 업로드에 실패했습니다.");
-            }
-
-            fileNameList.add(amazonS3.getUrl(bucket,fileName).toString());
-        });
+        multipartFile.forEach(file -> fileNameList.add(uploadImage(file)));
 
         return fileNameList;
     }
 
-    public void deleteImage(String storeFileUrl) {
-        amazonS3.deleteObject(new DeleteObjectRequest(bucket, extractStoreFileName(storeFileUrl)));
+    public void deleteImage(String fileUrl) {
+        amazonS3.deleteObject(new DeleteObjectRequest(bucket, extractStoreFileName(fileUrl)));
+    }
+
+    public void deleteImages(List<String> fileUrls) {
+        for (String storedFileUrl : fileUrls) {
+            deleteImage(storedFileUrl);
+        }
     }
 
     public String extractStoreFileName(String storeFileUrl) {

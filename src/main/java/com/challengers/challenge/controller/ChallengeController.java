@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.net.URI;
 
 @RestController
@@ -23,7 +24,7 @@ public class ChallengeController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> createChallenge(@RequestBody ChallengeRequest challengeRequest,
+    public ResponseEntity<Void> createChallenge(@Valid @ModelAttribute ChallengeRequest challengeRequest,
                                           @CurrentUser UserPrincipal user) {
         Long challengeId = challengeService.create(challengeRequest, user.getId());
         return ResponseEntity.created(URI.create("/api/challenge/"+challengeId)).build();
