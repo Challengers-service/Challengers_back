@@ -6,64 +6,68 @@ import com.challengers.challenge.domain.CheckFrequency;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.validator.constraints.URL;
+import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
+@Setter
 @NoArgsConstructor
 public class ChallengeRequest {
+    @NotBlank
     private String challengeName;
-    private String imageUrl;
+    private MultipartFile image;
+    @NotBlank
     private String challengePhotoDescription;
+    @NotNull
     private String checkFrequency;
+    @NotNull
     private String category;
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    @NotNull
     private LocalDateTime startDate;
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    @NotNull
     private LocalDateTime endDate;
     private int depositPoint;
-    private boolean pointFix;
+    @NotBlank
     private String introduction;
-    private List<String> goodExamplePhotoUrls;
-    private List<String> badExamplePhotoUrls;
-    private List<String> tags;
+    @NotNull
+    private List<MultipartFile> examplePhotos;
+    private List<@NotBlank String> tags;
 
     @Builder
-    public ChallengeRequest(String challengeName, String imageUrl, String challengePhotoDescription,
+    public ChallengeRequest(String challengeName, MultipartFile image, String challengePhotoDescription,
                             String checkFrequency, String category, LocalDateTime startDate, LocalDateTime endDate,
-                            int depositPoint, boolean pointFix, String introduction, List<String> goodExamplePhotoUrls,
-                            List<String> badExamplePhotoUrls, List<String> tags) {
+                            int depositPoint, String introduction, List<MultipartFile> examplePhotos, List<String> tags) {
         this.challengeName = challengeName;
-        this.imageUrl = imageUrl;
+        this.image = image;
         this.challengePhotoDescription = challengePhotoDescription;
         this.checkFrequency = checkFrequency;
         this.category = category;
         this.startDate = startDate;
         this.endDate = endDate;
         this.depositPoint = depositPoint;
-        this.pointFix = pointFix;
         this.introduction = introduction;
-        this.goodExamplePhotoUrls = goodExamplePhotoUrls;
-        this.badExamplePhotoUrls = badExamplePhotoUrls;
+        this.examplePhotos = examplePhotos;
         this.tags = tags;
     }
 
     public Challenge toChallenge() {
         return Challenge.builder()
                 .name(challengeName)
-                .imageUrl(imageUrl)
                 .challengePhotoDescription(challengePhotoDescription)
                 .checkFrequency(CheckFrequency.of(checkFrequency))
                 .category(Category.of(category))
                 .startDate(startDate)
                 .endDate(endDate)
                 .depositPoint(depositPoint)
-                .pointFix(pointFix)
                 .introduction(introduction)
                 .build();
     }
-
 }

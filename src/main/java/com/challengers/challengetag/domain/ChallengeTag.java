@@ -25,11 +25,11 @@ public class ChallengeTag {
     private Tag tag;
 
     public static ChallengeTag associate(Challenge challenge, Tag tag) {
-        ChallengeTag cocktailTag = new ChallengeTag();
-        cocktailTag.setTag(tag);
-        cocktailTag.setChallenge(challenge);
+        ChallengeTag challengeTag = new ChallengeTag();
+        challengeTag.setTag(tag);
+        challengeTag.setChallenge(challenge);
 
-        return cocktailTag;
+        return challengeTag;
     }
 
     public void setChallenge(Challenge challenge) {

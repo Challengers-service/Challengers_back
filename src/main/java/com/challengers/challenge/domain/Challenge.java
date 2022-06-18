@@ -1,11 +1,15 @@
 package com.challengers.challenge.domain;
 
+import com.challengers.examplephoto.domain.ExamplePhoto;
 import com.challengers.tag.domain.ChallengeTags;
 import com.challengers.user.domain.User;
 import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Entity
@@ -27,7 +31,6 @@ public class Challenge {
     private LocalDateTime startDate;
     private LocalDateTime endDate;
     private int depositPoint;
-    private boolean pointFix;
     private String introduction;
     private Float starRating;
     private int userCount;
@@ -36,10 +39,28 @@ public class Challenge {
     @Embedded
     private ChallengeTags challengeTags = ChallengeTags.empty();
 
+    @OneToMany(mappedBy = "challenge", cascade = CascadeType.ALL)
+    private List<ExamplePhoto> examplePhotos = new ArrayList<>();
+
+
+    public void addExamplePhotos(List<String> examplePhotoUrls) {
+        for (String url : examplePhotoUrls) {
+            ExamplePhoto examplePhoto = new ExamplePhoto(this, url);
+            examplePhotos.add(examplePhoto);
+            examplePhoto.setChallenge(this);
+        }
+    }
+
+    public List<String> getExamplePhotoUrls() {
+        return examplePhotos.stream()
+                .map(ExamplePhoto::getPhoto_url)
+                .collect(Collectors.toList());
+    }
+
     @Builder
     public Challenge(Long id, User host, String name, String imageUrl,
                      String challengePhotoDescription, CheckFrequency checkFrequency, Category category,
-                     LocalDateTime startDate, LocalDateTime endDate, int depositPoint, boolean pointFix, String introduction,
+                     LocalDateTime startDate, LocalDateTime endDate, int depositPoint, String introduction,
                      Float starRating, int userCount, ChallengeStatus status) {
         this.id = id;
         this.host = host;
@@ -51,7 +72,6 @@ public class Challenge {
         this.startDate = startDate;
         this.endDate = endDate;
         this.depositPoint = depositPoint;
-        this.pointFix = pointFix;
         this.introduction = introduction;
         this.starRating = starRating;
         this.userCount = userCount;
@@ -60,5 +80,9 @@ public class Challenge {
 
     public void setHost(User host) {
         this.host = host;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }

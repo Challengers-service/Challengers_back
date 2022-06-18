@@ -12,7 +12,7 @@ import javax.persistence.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ExamplePhoto {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "example_picture_id")
+    @Column(name = "example_photo_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -21,11 +21,12 @@ public class ExamplePhoto {
 
     private String photo_url;
 
-    private ExamplePhotoType examplePhotoType;
-
-    public ExamplePhoto(Challenge challenge, String photo_url, ExamplePhotoType examplePhotoType) {
+    public ExamplePhoto(Challenge challenge, String photo_url) {
         this.challenge = challenge;
         this.photo_url = photo_url;
-        this.examplePhotoType = examplePhotoType;
+    }
+
+    public void setChallenge(Challenge challenge) {
+        this.challenge = challenge;
     }
 }
