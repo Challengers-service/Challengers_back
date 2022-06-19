@@ -33,9 +33,7 @@ public class ChallengeService {
 
     @Transactional
     public Long create(ChallengeRequest challengeRequest, Long userId) {
-        //User host = userRepository.findById(userId).orElseThrow(RuntimeException::new);
-        User host = new User("a","kjs@naver.com","asf",
-                "asdg",null, Role.USER,AuthProvider.local,"124");
+        User host = userRepository.findById(userId).orElseThrow(RuntimeException::new);
         userRepository.save(host);
         Challenge challenge = challengeRequest.toChallenge();
         challenge.setHost(host);
