@@ -1,0 +1,16 @@
+= User API
+user-api-docs
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 4
+:sectlinks:
+
+[[resources-user]]
+== User
+
+[[resources-user-signup]]
+=== User 내정보 조회
+
+operation::user/me[snippets='http-request,response-fields,http-response']

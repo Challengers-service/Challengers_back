@@ -1,0 +1,21 @@
+= Hello API
+hello-api-docs
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 4
+:sectlinks:
+
+[[resources-auth]]
+== Auth
+
+[[resources-auth-signup]]
+=== Auth 회원가입
+
+operation::auth/signup[snippets='request-fields,http-request,http-response']
+
+[[resources-auth-signin]]
+=== Auth 로그인
+
+operation::auth/signin[snippets='request-fields,http-request,response-fields,http-response']
