@@ -50,7 +50,8 @@ public class User {
     }
 
     @Builder
-    public User(String name, String email, String image, String bio, String password, Role role, AuthProvider provider, String providerId) {
+    public User(Long id, String name, String email, String image, String bio, String password, Role role, AuthProvider provider, String providerId) {
+        this.id = id;
         this.name = name;
         this.email = email;
         this.image = image;

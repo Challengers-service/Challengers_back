@@ -18,7 +18,7 @@ public class UserController {
 
     private final UserRepository userRepository;
 
-    @GetMapping("")
+    @GetMapping("/me")
     public User getCurrentUser(@CurrentUser UserPrincipal user) {
         return userRepository.findById(user.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", user.getId()));
