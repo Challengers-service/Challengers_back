@@ -1,7 +1,13 @@
 plugins {
+	//spring
 	id 'org.springframework.boot' version '2.7.0'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 	id 'java'
+	id "org.asciidoctor.jvm.convert" version "3.3.2"
+}
+
+ext {
+	snippetsDir = file('build/generated-snippets')
 }
 
 group = 'com'
@@ -12,6 +18,12 @@ configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
 	}
+	asciidoctorExt
+}
+
+jar{
+	enabled = false
+	archiveClassifier = ''
 }
 
 repositories {
@@ -30,6 +42,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	//h2
 	runtimeOnly group: 'com.h2database',name : 'h2', version: '1.3.176'
+	implementation 'org.mariadb.jdbc:mariadb-java-client'
 
 	//validate
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
@@ -51,8 +64,42 @@ dependencies {
 
 	//s3
 	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+
+	//rest docs
+	asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor'
+	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
+	outputs.dir snippetsDir
+}
+
+tasks.named('asciidoctor') { // asciidoctor task의 input은 snippetsDir(스니펫 저장 위치) 입니다.
+	inputs.dir snippetsDir
+	configurations 'asciidoctorExt'
+	dependsOn test
+}
+
+bootJar {
+	dependsOn asciidoctor
+	copy {
+		from "${asciidoctor.outputDir}"
+		into 'static/docs'
+	}
+	finalizedBy 'copyDocument'
+}
+
+task copyDocument(type: Copy) {
+	dependsOn bootJar
+	from file("build/docs/asciidoc")
+	into file("src/main/resources/static/docs")
+}
+
+asciidoctor.doFirst {
+	delete file('src/main/resources/static/docs')
+}
+
+build {
+	dependsOn copyDocument
 }
