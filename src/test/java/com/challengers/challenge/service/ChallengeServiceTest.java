@@ -85,13 +85,16 @@ public class ChallengeServiceTest {
     @Test
     @DisplayName("챌린지 개설 성공")
     void create() {
+        //given
         when(userRepository.findById(any())).thenReturn(Optional.of(user));
         when(awsS3Uploader.uploadImage(any()))
                 .thenReturn("https://challengers-bucket.s3.ap-northeast-2.amazonaws.com/1747f32c-e5083c5e2bce0.PNG");
         when(tagRepository.findTagByName(any())).thenReturn(Optional.of(new Tag("임시 태그")));
 
+        //when
         challengeService.create(challengeRequest, user.getId());
 
+        //then
         verify(challengeRepository).save(any());
     }
 

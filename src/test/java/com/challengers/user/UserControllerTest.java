@@ -1,64 +1,31 @@
 package com.challengers.user;
 
-import com.challengers.security.TokenProvider;
+import com.challengers.common.WithMockCustomUser;
+import com.challengers.common.documentation.DocumentationWithSecurity;
+import com.challengers.user.controller.UserController;
 import com.challengers.user.domain.Role;
 import com.challengers.user.domain.User;
-import com.challengers.user.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.restdocs.RestDocumentationContextProvider;
-import org.springframework.restdocs.RestDocumentationExtension;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.filter.CharacterEncodingFilter;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import java.util.Optional;
 
 import static com.challengers.user.domain.AuthProvider.local;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
-import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ExtendWith({RestDocumentationExtension.class})
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class UserControllerTest {
-    @LocalServerPort
-    private int port;
-
-    @Autowired
-    private TokenProvider tokenProvider;
-
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private WebApplicationContext webApplicationContext;
-
-    private MockMvc mvc;
+@WebMvcTest(controllers = UserController.class)
+public class UserControllerTest extends DocumentationWithSecurity {
+    private User user;
 
     @BeforeEach
-    public void setup(RestDocumentationContextProvider restDocumentation){
-        mvc = MockMvcBuilders
-                .webAppContextSetup(webApplicationContext)
-                .addFilter(new CharacterEncodingFilter("UTF-8", true))
-                .apply(springSecurity())
-                .apply(documentationConfiguration(restDocumentation))
-                .build();
-        userRepository.deleteAll();
-    }
-
-    @DisplayName("내정보 조회")
-    @Test
-    public void getCurrentUser() throws Exception {
-        //given
-        User userA = User.builder()
+    public void setup(){
+        user = User.builder()
+                .id(1L)
                 .name("a")
                 .email("a@a.com")
                 .bio("a입니다.")
@@ -67,14 +34,16 @@ public class UserControllerTest {
                 .provider(local)
                 .providerId("abc123")
                 .build();
+    }
 
-        userRepository.save(userA);
+    @DisplayName("내정보 조회")
+    @WithMockCustomUser
+    @Test
+    public void getCurrentUser() throws Exception {
 
-        //when
-        String url = "http://localhost:" + port + "/user/me";
-        String token = tokenProvider.createTokenByUserEntity(userA);
+        when(userRepository.findById(any())).thenReturn(Optional.of(user));
 
-        MvcResult res = mvc.perform(get(url).header("Authorization", "Bearer " + token))
+        mockMvc.perform(get("/user/me").header("Authorization", "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNjU1NzExODAyLCJleHAiOjE2NTY1NzU4MDJ9.pWHz8VTj21DA1fmfxPlrmoE_eKw_tYFTzVmVdRmof9mIe9y2OIJQ7ndThLQfwiiCbU0d0SDGgb6Oshs5R-R99A"))
                 .andExpect(status().isOk())
                 .andDo(UserDocumentation.getCurrentUser())
                 .andDo(print())
