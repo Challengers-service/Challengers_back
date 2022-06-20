@@ -525,7 +525,7 @@ Accept: application/json
 Content-Length: 73
 Host: localhost:8080
 
-{"password":"1234","passwordConfirm":"1234","name":"A","email":"a@a.com"}</code></pre>
+{"email":"a@a.com","name":"A","password":"1234","passwordConfirm":"1234"}</code></pre>
 </div>
 </div>
 </div>
@@ -592,7 +592,7 @@ Accept: application/json
 Content-Length: 37
 Host: localhost:8080
 
-{"password":"1234","email":"a@a.com"}</code></pre>
+{"email":"a@a.com","password":"1234"}</code></pre>
 </div>
 </div>
 </div>
@@ -628,7 +628,7 @@ Host: localhost:8080
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNjU1NjQ0MDU3LCJleHAiOjE2NTY1MDgwNTd9.fwTvHyNSGLenIbbYz8wBsQRARsE9wIsfdLhRo-N1PDbRUyfr-yTq8DM-gfks5MWpybqdVJoupf3EoPwZ7QSUfw
+Authorization: BearertempTokenString
 Content-Type: application/json;charset=UTF-8
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
@@ -636,9 +636,9 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: SAMEORIGIN
-Content-Length: 187
+Content-Length: 34
 
-{"token":"Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNjU1NjQ0MDU3LCJleHAiOjE2NTY1MDgwNTd9.fwTvHyNSGLenIbbYz8wBsQRARsE9wIsfdLhRo-N1PDbRUyfr-yTq8DM-gfks5MWpybqdVJoupf3EoPwZ7QSUfw"}</code></pre>
+{"token":"Bearer tempTokenString"}</code></pre>
 </div>
 </div>
 </div>
@@ -649,7 +649,7 @@ Content-Length: 187
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2022-06-19 22:06:37 +0900
+Last updated 2022-06-20 14:39:33 +0900
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">

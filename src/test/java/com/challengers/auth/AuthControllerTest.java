@@ -1,122 +1,82 @@
 package com.challengers.auth;
 
+import com.challengers.auth.controller.AuthController;
 import com.challengers.auth.dto.AuthDto;
+import com.challengers.auth.dto.LogInRequest;
+import com.challengers.auth.dto.TokenDto;
 import com.challengers.auth.service.AuthService;
-import com.challengers.user.repository.UserRepository;
+import com.challengers.common.documentation.DocumentationWithSecurity;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.ApplicationContext;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.restdocs.RestDocumentationContextProvider;
-import org.springframework.restdocs.RestDocumentationExtension;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.filter.CharacterEncodingFilter;
-import java.util.HashMap;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
-import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ExtendWith({RestDocumentationExtension.class})
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class AuthControllerTest {
-    @LocalServerPort
-    private int port;
+@WebMvcTest(controllers = AuthController.class)
+public class AuthControllerTest extends DocumentationWithSecurity {
 
-    @Autowired
+    @MockBean
     private AuthService authService;
 
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private WebApplicationContext webApplicationContext;
-
-    private MockMvc mvc;
-
-    @BeforeEach
-    public void setup(RestDocumentationContextProvider restDocumentation){
-        mvc = MockMvcBuilders
-                .webAppContextSetup(webApplicationContext)
-                    .addFilter(new CharacterEncodingFilter("UTF-8", true))
-                    .apply(springSecurity())
-                    .apply(documentationConfiguration(restDocumentation))
-                .build();
-        userRepository.deleteAll();
-    }
+    private ObjectMapper mapper = new ObjectMapper();
 
     @DisplayName("회원 가입")
     @Test
     public void signUp() throws Exception {
-        //given
-        String email = "a@a.com";
-        String name = "A";
-        String password = "1234";
-        String passwordConfirm = "1234";
+        AuthDto authDto = AuthDto.builder()
+                .email("a@a.com")
+                .name("A")
+                .password("1234")
+                .passwordConfirm("1234")
+                .build();
 
-        ObjectMapper mapper = new ObjectMapper();
+        when(authService.signUp(any()))
+                .thenReturn(new ResponseEntity<String>("회원 가입이 성공적으로 완료되었습니다!", HttpStatus.CREATED));
 
-        HashMap<String, String> map = new HashMap<String, String>();
-        map.put("email", email);
-        map.put("name", name);
-        map.put("password", password);
-        map.put("passwordConfirm", passwordConfirm);
-
-        String url = "http://localhost:" + port + "/signup";
-
-        //when
-        MvcResult res = mvc.perform(post(url)
+        mockMvc.perform(post("/signup")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(map)))
+                        .content(mapper.writeValueAsString(authDto)))
                 .andExpect(status().isCreated())
                 .andDo(print())
                 .andDo(AuthDocumentation.signUp())
                 .andReturn();
-
-        String result = res.getResponse().getContentAsString();
-
-        //then
-        assertThat(result).isEqualTo("회원 가입이 성공적으로 완료되었습니다!");
     }
 
     @DisplayName("로그인") //이메일 형식에 따라야 합니다.
     @Test
     public void signIn() throws Exception {
-        //given
-        String email = "a@a.com";
-        String name = "A";
-        String password = "1234";
-        String passwordConfirm = "1234";
+        LogInRequest logInRequest = LogInRequest.builder()
+                .email("a@a.com")
+                .password("1234")
+                .build();
 
-        AuthDto authDto = AuthDto.builder().email(email).name(name).password(password).passwordConfirm(passwordConfirm).build();
-        authService.signUp(authDto);
+        String jwt = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNjU1NzExODAyLCJleHAiOjE2NTY1NzU4MDJ9.pWHz8VTj21DA1fmfxPlrmoE_eKw_tYFTzVmVdRmof9mIe9y2OIJQ7ndThLQfwiiCbU0d0SDGgb6Oshs5R-R99A";
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("Authorization","Bearer" + jwt);
 
-        ObjectMapper mapper = new ObjectMapper();
+        when(authService.signIn(any()))
+                .thenReturn(new ResponseEntity<>(new TokenDto("Bearer " + jwt), httpHeaders, HttpStatus.OK));
 
-        HashMap<String, String> map = new HashMap<String, String>();
-        map.put("email", email);
-        map.put("password", password);
-
-        //when
-        String url = "http://localhost:" + port + "/signin";
-
-        //then
-        mvc.perform(post(url)
+        mockMvc.perform(post("/signin")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(map)))
+                        .content(mapper.writeValueAsString(logInRequest)))
                 .andExpect(status().isOk())
                 .andDo(AuthDocumentation.signIn())
                 .andDo(print());
