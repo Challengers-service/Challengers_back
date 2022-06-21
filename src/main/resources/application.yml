@@ -14,8 +14,7 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL5InnoDBDialect
-      show-sql: true
-      format-sql : true
-    generate-ddl: true
+        show_sql: true
+        format_sql : true
   profiles:
     include: oauth,jwt,aws
