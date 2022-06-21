@@ -11,7 +11,7 @@ ext {
 }
 
 group = 'com'
-version = '0.0.1-SNAPSHOT'
+version = '1.0_' + new Date().format("yyyy-MM-dd_HH-mm-ss")
 sourceCompatibility = '11'
 
 configurations {
