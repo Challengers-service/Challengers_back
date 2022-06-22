@@ -40,3 +40,6 @@ out/
 application-jwt.yml
 application-oauth.yml
 application-aws.yml
+
+##html
+static/docs
