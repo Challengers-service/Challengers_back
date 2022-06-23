@@ -1,6 +1,9 @@
 package com.challengers.challenge.service;
 
+import com.challengers.challenge.domain.Category;
 import com.challengers.challenge.domain.Challenge;
+import com.challengers.challenge.domain.ChallengeStatus;
+import com.challengers.challenge.domain.CheckFrequency;
 import com.challengers.challenge.dto.ChallengeRequest;
 import com.challengers.challenge.repository.ChallengeRepository;
 import com.challengers.challenge.service.ChallengeService;
@@ -47,6 +50,7 @@ public class ChallengeServiceTest {
 
     ChallengeRequest challengeRequest;
     User user;
+    Challenge challenge;
 
     @BeforeEach
     void setUp() {
@@ -81,6 +85,22 @@ public class ChallengeServiceTest {
                 )))
                 .tags(new ArrayList<>(Arrays.asList("미라클모닝", "기상")))
                 .build();
+
+        challenge = Challenge.builder()
+                .id(1L)
+                .host(user)
+                .name("미라클 모닝 - 아침 7시 기상")
+                .imageUrl("https://imageUrl.png")
+                .challengeRule("7시를 가르키는 시계와 본인이 같이 나오게 사진을 찍으시면 됩니다.")
+                .checkFrequency(CheckFrequency.EVERY_DAY)
+                .category(Category.LIFE)
+                .starRating(3.5f)
+                .depositPoint(1000)
+                .startDate(LocalDate.now())
+                .endDate(LocalDate.now())
+                .introduction("매일 아침 7시에 일어나면 하루가 개운합니다.")
+                .status(ChallengeStatus.PROCEEDING)
+                .build();
     }
 
     @Test
@@ -102,7 +122,6 @@ public class ChallengeServiceTest {
     @Test
     @DisplayName("챌린지 삭제 성공")
     void delete() {
-        Challenge challenge = Challenge.builder().host(user).build();
         when(challengeRepository.findById(any())).thenReturn(Optional.of(challenge));
         when(userChallengeRepository.countByChallengeId(any())).thenReturn(1L);
         when(userChallengeRepository.findByUserIdAndChallengeId(any(),any())).thenReturn(Optional.of(new UserChallenge(challenge,user,false)));
@@ -116,11 +135,21 @@ public class ChallengeServiceTest {
     @Test
     @DisplayName("챌린지 삭제 실패 - 참가자가 2명 이상일 경우")
     void delete_fail_proceeding() {
-        Challenge challenge = Challenge.builder().host(user).build();
         when(challengeRepository.findById(any())).thenReturn(Optional.of(challenge));
         when(userChallengeRepository.countByChallengeId(any())).thenReturn(2L);
 
         assertThatThrownBy(() -> challengeService.delete(challenge.getId(),user.getId()))
                 .isInstanceOf(RuntimeException.class);
+    }
+
+    @Test
+    @DisplayName("챌린지 참여 성공")
+    void join() {
+        when(challengeRepository.findById(any())).thenReturn(Optional.of(challenge));
+        when(userRepository.findById(any())).thenReturn(Optional.of(user));
+
+        challengeService.join(1L,1L);
+
+        verify(userChallengeRepository).save(any());
     }
 }

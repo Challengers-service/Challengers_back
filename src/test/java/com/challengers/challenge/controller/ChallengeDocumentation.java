@@ -70,4 +70,11 @@ public class ChallengeDocumentation {
                 pathParameters(parameterWithName("id").description("조회할 챌린지 id"))
         );
     }
+
+    public static RestDocumentationResultHandler joinChallenge() {
+        return document("challenge/joinChallenge",
+                pathParameters(parameterWithName("id").description("참여할 챌린지 id"))
+        );
+    }
+
 }

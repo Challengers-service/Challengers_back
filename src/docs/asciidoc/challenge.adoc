@@ -24,3 +24,8 @@ operation::challenge/createChallenge[snippets='http-request,request-parameters,r
 === Challenge 삭제
 
 operation::challenge/deleteChallenge[snippets='http-request,path-parameters,http-response']
+
+[[resources-challenge-joinChallenge]]
+=== Challenge 조회
+
+operation::challenge/joinChallenge[snippets='http-request,path-parameters,http-response']
