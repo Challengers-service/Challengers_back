@@ -43,3 +43,4 @@ application-aws.yml
 
 ##html
 static/docs/
+src/main/resources/static/docs/
