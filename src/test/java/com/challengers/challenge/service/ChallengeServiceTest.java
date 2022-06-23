@@ -23,6 +23,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockMultipartFile;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -67,11 +68,11 @@ public class ChallengeServiceTest {
         challengeRequest = ChallengeRequest.builder()
                 .challengeName("미라클 모닝 - 아침 7시 기상")
                 .image(new MockMultipartFile("테스트사진.png","테스트사진.png","image/png","saf".getBytes()))
-                .challengePhotoDescription("7시를 가르키는 시계와 본인이 같이 나오게 사진을 찍으시면 됩니다.")
+                .challengeRule("7시를 가르키는 시계와 본인이 같이 나오게 사진을 찍으시면 됩니다.")
                 .checkFrequency("EVERY_DAY")
                 .category("LIFE")
-                .startDate(LocalDateTime.now())
-                .endDate(LocalDateTime.now())
+                .startDate(LocalDate.now())
+                .endDate(LocalDate.now())
                 .depositPoint(1000)
                 .introduction("매일 아침 7시에 일어나면 하루가 개운합니다.")
                 .examplePhotos(new ArrayList<>(Arrays.asList(
