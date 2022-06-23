@@ -1,0 +1,26 @@
+= Hello API
+hello-api-docs
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 4
+:sectlinks:
+
+[[resources-challenge]]
+== Challenge
+
+[[resources-challenge-findChallenge]]
+=== Challenge 조회
+
+operation::challenge/findChallenge[snippets='http-request,path-parameters,http-response,response-fields']
+
+[[resources-challenge-createChallenge]]
+=== Challenge 생성
+
+operation::challenge/createChallenge[snippets='http-request,request-parameters,request-parts,http-response']
+
+[[resources-challenge-deleteChallenge]]
+=== Challenge 삭제
+
+operation::challenge/deleteChallenge[snippets='http-request,path-parameters,http-response']

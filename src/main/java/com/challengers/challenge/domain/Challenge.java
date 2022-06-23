@@ -6,7 +6,7 @@ import com.challengers.user.domain.User;
 import lombok.*;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,11 +25,11 @@ public class Challenge {
 
     private String name;
     private String imageUrl;
-    private String challengePhotoDescription;
+    private String challengeRule;
     private CheckFrequency checkFrequency;
     private Category category;
-    private LocalDateTime startDate;
-    private LocalDateTime endDate;
+    private LocalDate startDate;
+    private LocalDate endDate;
     private int depositPoint;
     private String introduction;
     private Float starRating;
@@ -59,14 +59,14 @@ public class Challenge {
 
     @Builder
     public Challenge(Long id, User host, String name, String imageUrl,
-                     String challengePhotoDescription, CheckFrequency checkFrequency, Category category,
-                     LocalDateTime startDate, LocalDateTime endDate, int depositPoint, String introduction,
+                     String challengeRule, CheckFrequency checkFrequency, Category category,
+                     LocalDate startDate, LocalDate endDate, int depositPoint, String introduction,
                      Float starRating, int userCount, ChallengeStatus status) {
         this.id = id;
         this.host = host;
         this.name = name;
         this.imageUrl = imageUrl;
-        this.challengePhotoDescription = challengePhotoDescription;
+        this.challengeRule = challengeRule;
         this.checkFrequency = checkFrequency;
         this.category = category;
         this.startDate = startDate;
