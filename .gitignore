@@ -42,4 +42,4 @@ application-oauth.yml
 application-aws.yml
 
 ##html
-static/docs
+static/docs/

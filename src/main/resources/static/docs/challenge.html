@@ -443,7 +443,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <h1>Hello API</h1>
 <div class="details">
 <span id="author" class="author">hello-api-docs</span><br>
-<span id="revnumber">version 1.0_2022-06-23_03-27-54</span>
+<span id="revnumber">version 1.0_2022-06-23_13-17-53</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -471,6 +471,13 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#resources-challenge-deleteChallenge_http_request">HTTP request</a></li>
 <li><a href="#resources-challenge-deleteChallenge_path_parameters">Path parameters</a></li>
 <li><a href="#resources-challenge-deleteChallenge_http_response">HTTP response</a></li>
+</ul>
+</li>
+<li><a href="#resources-challenge-joinChallenge">Challenge 참여</a>
+<ul class="sectlevel3">
+<li><a href="#resources-challenge-joinChallenge_http_request">HTTP request</a></li>
+<li><a href="#resources-challenge-joinChallenge_path_parameters">Path parameters</a></li>
+<li><a href="#resources-challenge-joinChallenge_http_response">HTTP response</a></li>
 </ul>
 </li>
 </ul>
@@ -864,13 +871,65 @@ X-Frame-Options: SAMEORIGIN</code></pre>
 </div>
 </div>
 </div>
+<div class="sect2">
+<h3 id="resources-challenge-joinChallenge"><a class="link" href="#resources-challenge-joinChallenge">Challenge 참여</a></h3>
+<div class="sect3">
+<h4 id="resources-challenge-joinChallenge_http_request"><a class="link" href="#resources-challenge-joinChallenge_http_request">HTTP request</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/challenge/join/1 HTTP/1.1
+Authorization: Bearer JzdWIiOiIxIiwiaWF0IjoxNjU1NzExODAyLCJleHAiOjE2NTY1NzU4MDJ9.pWHz8VTj21DA1fmfxPlrmoE_eKw_tYFTzVmVdRmof9mIe9y2OIJQ7ndThLQfwiiCbU0d0SDGgb6Oshs5R-R99A
+Host: localhost:8080</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="resources-challenge-joinChallenge_path_parameters"><a class="link" href="#resources-challenge-joinChallenge_path_parameters">Path parameters</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. /api/challenge/join/{id}</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">참여할 챌린지 id</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="resources-challenge-joinChallenge_http_response"><a class="link" href="#resources-challenge-joinChallenge_http_response">HTTP response</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 1; mode=block
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: SAMEORIGIN</code></pre>
+</div>
+</div>
+</div>
+</div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 1.0_2022-06-23_03-27-54<br>
-Last updated 2022-06-23 03:19:07 +0900
+Version 1.0_2022-06-23_13-17-53<br>
+Last updated 2022-06-23 13:16:50 +0900
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">
