@@ -26,12 +26,12 @@ public class ChallengeDetailResponse {
     private String endDate;
     private int depositPoint;
     private Float starRating;
-    private int userCount;
+    private Long userCount;
     private String status;
     private List<TagResponse> tags;
     private List<String> examplePhotos;
 
-    public static ChallengeDetailResponse of(Challenge challenge) {
+    public static ChallengeDetailResponse of(Challenge challenge, Long userCount) {
         return new ChallengeDetailResponse(
                 challenge.getId(),
                 challenge.getId(),
@@ -46,7 +46,7 @@ public class ChallengeDetailResponse {
                 challenge.getEndDate().toString(),
                 challenge.getDepositPoint(),
                 challenge.getStarRating(),
-                challenge.getUserCount(),
+                userCount,
                 challenge.getStatus().toString(),
                 TagResponse.listOf(challenge.getChallengeTags().getTags()),
                 challenge.getExamplePhotoUrls()

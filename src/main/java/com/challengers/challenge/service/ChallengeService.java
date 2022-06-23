@@ -73,8 +73,17 @@ public class ChallengeService {
     @Transactional(readOnly = true)
     public ChallengeDetailResponse findChallenge(Long id) {
         Challenge challenge = challengeRepository.findById(id).orElseThrow(NoSuchElementException::new);
+        Long userCount = userChallengeRepository.countByChallengeId(id);
 
-        return ChallengeDetailResponse.of(challenge);
+        return ChallengeDetailResponse.of(challenge, userCount);
+    }
+
+    @Transactional
+    public void join(Long challengeId, Long userId) {
+        Challenge challenge = challengeRepository.findById(challengeId).orElseThrow(NoSuchElementException::new);
+        User user = userRepository.findById(userId).orElseThrow(NoSuchElementException::new);
+        UserChallenge userChallenge = new UserChallenge(challenge, user, false);
+        userChallengeRepository.save(userChallenge);
     }
 
     private Tag findOrCreateTag(String tag) {

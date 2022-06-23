@@ -36,4 +36,12 @@ public class ChallengeController {
         challengeService.delete(id,user.getId());
         return ResponseEntity.noContent().build();
     }
+
+    @PostMapping("/join/{id}")
+    public ResponseEntity<Void> joinChallenge(@PathVariable Long id,
+                                              @CurrentUser UserPrincipal user) {
+        challengeService.join(id, user.getId());
+
+        return ResponseEntity.ok().build();
+    }
 }

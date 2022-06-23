@@ -114,7 +114,7 @@ class ChallengeControllerTest extends DocumentationWithSecurity {
     void findChallenge() throws Exception{
         ChallengeDetailResponse challengeDetailResponse = new ChallengeDetailResponse(1L, 1L,"https://hostProfileImageUrl.png",
                 "챌린지 호스트 이름", "챌린지 이름", "https://challengeImageUrl.png", "챌린지 규칙","EVERY_DAY",
-                "EXERCISE","2022-06-21","2022-07-21",1000,3.5f,32,"PROCEEDING",
+                "EXERCISE","2022-06-21","2022-07-21",1000,3.5f,32L,"PROCEEDING",
                 new ArrayList<>(Arrays.asList(new TagResponse(1L,"미라클모닝"), new TagResponse(2L, "기상"))),
                 new ArrayList<>(Arrays.asList("https://examplePhotoUrl1.png","https://examplePhotoUrl2.png")));
         when(challengeService.findChallenge(any())).thenReturn(challengeDetailResponse);
@@ -123,6 +123,16 @@ class ChallengeControllerTest extends DocumentationWithSecurity {
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(ChallengeDocumentation.findChallenge());
+    }
+
+    @Test
+    @WithMockCustomUser
+    @DisplayName("챌린지 참여")
+    void joinChallenge() throws Exception{
+        mockMvc.perform(RestDocumentationRequestBuilders.post("/api/challenge/join/{id}",1)
+                .header("Authorization", "Bearer JzdWIiOiIxIiwiaWF0IjoxNjU1NzExODAyLCJleHAiOjE2NTY1NzU4MDJ9.pWHz8VTj21DA1fmfxPlrmoE_eKw_tYFTzVmVdRmof9mIe9y2OIJQ7ndThLQfwiiCbU0d0SDGgb6Oshs5R-R99A"))
+                .andExpect(status().isOk())
+                .andDo(ChallengeDocumentation.joinChallenge());
     }
 
 }

@@ -33,7 +33,6 @@ public class Challenge {
     private int depositPoint;
     private String introduction;
     private Float starRating;
-    private int userCount;
     private ChallengeStatus status;
 
     @Embedded
@@ -61,7 +60,7 @@ public class Challenge {
     public Challenge(Long id, User host, String name, String imageUrl,
                      String challengeRule, CheckFrequency checkFrequency, Category category,
                      LocalDate startDate, LocalDate endDate, int depositPoint, String introduction,
-                     Float starRating, int userCount, ChallengeStatus status) {
+                     Float starRating, ChallengeStatus status) {
         this.id = id;
         this.host = host;
         this.name = name;
@@ -74,7 +73,6 @@ public class Challenge {
         this.depositPoint = depositPoint;
         this.introduction = introduction;
         this.starRating = starRating;
-        this.userCount = userCount;
         this.status = status;
     }
 
