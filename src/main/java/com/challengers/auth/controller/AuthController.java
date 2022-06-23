@@ -15,12 +15,12 @@ import javax.validation.Valid;
 public class AuthController {
     private final AuthService authService;
 
-    @PostMapping("/signup")
+    @PostMapping("/api/signup")
     public ResponseEntity<String> signUp(@Valid @RequestBody AuthDto authDto){
         return authService.signUp(authDto);
     }
 
-    @PostMapping("/signin")
+    @PostMapping("/api/signin")
     public ResponseEntity<TokenDto> signIn(@Valid @RequestBody LogInRequest logInRequest){
         return authService.signIn(logInRequest);
     }
