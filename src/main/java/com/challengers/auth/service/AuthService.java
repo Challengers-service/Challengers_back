@@ -40,6 +40,7 @@ public class AuthService {
                 .email(authDto.getEmail())
                 .provider(AuthProvider.local)
                 .password(passwordEncoder.encode(authDto.getPassword()))
+                .image(User.DEFAULT_IMAGE_URL)
                 .role(Role.USER)
                 .build()
         );

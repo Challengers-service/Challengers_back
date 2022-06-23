@@ -10,7 +10,12 @@ user-api-docs
 [[resources-user]]
 == User
 
-[[resources-user-signup]]
+[[resources-user-getCurrentUser]]
 === User 내정보 조회
 
-operation::user/me[snippets='http-request,response-fields,http-response']
+operation::user/getCurrentUser[snippets='http-request,response-fields,http-response']
+
+[[resources-user-updateUser]]
+=== User 내정보 수정
+
+operation::user/updateUser[snippets='curl-request,request-parameters,request-parts,http-response']

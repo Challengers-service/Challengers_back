@@ -7,19 +7,14 @@ import com.challengers.auth.dto.TokenDto;
 import com.challengers.auth.service.AuthService;
 import com.challengers.common.documentation.DocumentationWithSecurity;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -48,7 +43,7 @@ public class AuthControllerTest extends DocumentationWithSecurity {
         when(authService.signUp(any()))
                 .thenReturn(new ResponseEntity<String>("회원 가입이 성공적으로 완료되었습니다!", HttpStatus.CREATED));
 
-        mockMvc.perform(post("/signup")
+        mockMvc.perform(post("/api/signup")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(authDto)))
@@ -73,7 +68,7 @@ public class AuthControllerTest extends DocumentationWithSecurity {
         when(authService.signIn(any()))
                 .thenReturn(new ResponseEntity<>(new TokenDto("Bearer " + jwt), httpHeaders, HttpStatus.OK));
 
-        mockMvc.perform(post("/signin")
+        mockMvc.perform(post("/api/signin")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(logInRequest)))

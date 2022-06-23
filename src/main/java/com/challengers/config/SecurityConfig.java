@@ -104,10 +104,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         .permitAll()
                     .antMatchers("/auth/**", "/oauth2/**")
                         .permitAll()
-                    .antMatchers("/login","/hello", "/h2-console/**", "/profile", "/images", "/image", "/challenge" //for dev
-                        ,"/oauth2/**", "/signup/**", "/signin/**" // for Auth
+                    .antMatchers("/login","/hello", "/h2-console/**", "/profile" //for dev
+                        ,"/oauth2/**", "/api/signup/**", "/api/signin/**" // for Auth
                         ).permitAll()
-                    .antMatchers( "/**", "/user/**").hasRole(Role.USER.name())
+                    .antMatchers( "/**").hasRole(Role.USER.name())
                         .anyRequest().authenticated()
                     .and()
                 .oauth2Login()
