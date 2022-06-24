@@ -14,11 +14,11 @@ public class ReviewResponse {
     private String title;
     private String content;
     private Float starRating;
-    private String createDate;
+    private String createdDate;
 
     private Long userId;
     private String userName;
-    private String ProfileImageUrl;
+    private String profileImageUrl;
 
     public static ReviewResponse of(Review review) {
         return new ReviewResponse(review.getId(), review.getTitle(), review.getContent(), review.getStarRating(),
