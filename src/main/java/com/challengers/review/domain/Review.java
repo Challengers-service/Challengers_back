@@ -2,6 +2,7 @@ package com.challengers.review.domain;
 
 import com.challengers.challenge.domain.Challenge;
 import com.challengers.common.BaseTimeEntity;
+import com.challengers.review.dto.ReviewUpdateRequest;
 import com.challengers.user.domain.User;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -38,5 +39,13 @@ public class Review extends BaseTimeEntity {
         this.title = title;
         this.content = content;
         this.starRating = starRating;
+    }
+
+    public void update(ReviewUpdateRequest reviewUpdateRequest) {
+        challenge.updateReviewRelation(starRating, reviewUpdateRequest.getStarRating());
+
+        title = reviewUpdateRequest.getTitle();
+        content = reviewUpdateRequest.getContent();
+        starRating = reviewUpdateRequest.getStarRating();
     }
 }

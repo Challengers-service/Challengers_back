@@ -94,9 +94,8 @@ public class ChallengeService {
     @Transactional(readOnly = true)
     public ChallengeDetailResponse findChallenge(Long id) {
         Challenge challenge = challengeRepository.findById(id).orElseThrow(NoSuchElementException::new);
-        Long userCount = userChallengeRepository.countByChallengeId(id);
 
-        return ChallengeDetailResponse.of(challenge, userCount);
+        return ChallengeDetailResponse.of(challenge);
     }
 
     @Transactional

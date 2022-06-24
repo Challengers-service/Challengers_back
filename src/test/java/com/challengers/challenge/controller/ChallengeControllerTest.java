@@ -41,13 +41,16 @@ class ChallengeControllerTest extends DocumentationWithSecurity {
         challengeRequest = ChallengeRequest.builder()
                 .challengeName("미라클 모닝 - 아침 7시 기상")
                 .image(new MockMultipartFile("테스트사진.png","테스트사진.png","image/png","saf".getBytes()))
-                .challengeRule("7시를 가르키는 시계와 본인이 같이 나오게 사진을 찍으시면 됩니다.")
-                .checkFrequency("EVERY_DAY")
+                .photoDescription("7시를 가르키는 시계와 본인이 같이 나오게 사진을 찍으시면 됩니다.")
+                .challengeRule("중복된 사진을 올리면 안됩니다.")
+                .checkFrequencyDays(1)
+                .checkFrequencyTimes(1)
                 .category("LIFE")
                 .startDate(LocalDate.now())
                 .endDate(LocalDate.now())
                 .depositPoint(1000)
                 .introduction("매일 아침 7시에 일어나면 하루가 개운합니다.")
+                .userCountLimit(2000)
                 .examplePhotos(new ArrayList<>(Arrays.asList(
                         new MockMultipartFile("예시사진1.png","예시사진1.png","image/png","asgas".getBytes()),
                         new MockMultipartFile("예시사진2.png","예시사진2.png","image/png","asgasagagas".getBytes())
@@ -113,10 +116,10 @@ class ChallengeControllerTest extends DocumentationWithSecurity {
     @DisplayName("챌린지 상세 정보 조회")
     void findChallenge() throws Exception{
         ChallengeDetailResponse challengeDetailResponse = new ChallengeDetailResponse(1L, 1L,"https://hostProfileImageUrl.png",
-                "챌린지 호스트 이름", "챌린지 이름", "https://challengeImageUrl.png", "챌린지 규칙","EVERY_DAY",
-                "EXERCISE","2022-06-21","2022-07-21",1000,3.5f,32L,"PROCEEDING",
+                "챌린지 호스트 이름", "챌린지 이름", "https://challengeImageUrl.png", "예시 사진 설명","챌린지 규칙",1, 1,
+                "EXERCISE","2022-06-21","2022-07-21",1000,"챌린지 소개글",3.5f,0,32,2000,"PROCEEDING",
                 new ArrayList<>(Arrays.asList(new TagResponse(1L,"미라클모닝"), new TagResponse(2L, "기상"))),
-                new ArrayList<>(Arrays.asList("https://examplePhotoUrl1.png","https://examplePhotoUrl2.png")));
+                new ArrayList<>(Arrays.asList("https://examplePhotoUrl1.png","https://examplePhotoUrl2.png")), "2022-01-01");
         when(challengeService.findChallenge(any())).thenReturn(challengeDetailResponse);
 
         mockMvc.perform(RestDocumentationRequestBuilders.get("/api/challenge/{id}",1)

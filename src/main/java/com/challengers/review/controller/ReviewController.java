@@ -2,6 +2,7 @@ package com.challengers.review.controller;
 
 import com.challengers.review.dto.ReviewRequest;
 import com.challengers.review.dto.ReviewResponse;
+import com.challengers.review.dto.ReviewUpdateRequest;
 import com.challengers.review.service.ReviewService;
 import com.challengers.security.CurrentUser;
 import com.challengers.security.UserPrincipal;
@@ -35,6 +36,15 @@ public class ReviewController {
     public ResponseEntity<Void> deleteReview(@PathVariable(name = "reviewId") Long reviewId,
                                              @CurrentUser UserPrincipal user) {
         reviewService.delete(reviewId, user.getId());
+
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/{reviewId}")
+    public ResponseEntity<Void> putReview(@PathVariable(name = "reviewId") Long reviewId,
+                                          @RequestBody ReviewUpdateRequest reviewUpdateRequest,
+                                          @CurrentUser UserPrincipal user) {
+        reviewService.update(reviewId, reviewUpdateRequest, user.getId());
 
         return ResponseEntity.ok().build();
     }

@@ -1,7 +1,6 @@
 package com.challengers.challenge.dto;
 
 import com.challengers.challenge.domain.Challenge;
-import com.challengers.challenge.domain.ChallengeStatus;
 import com.challengers.tag.dto.TagResponse;
 import lombok.*;
 
@@ -19,37 +18,50 @@ public class ChallengeDetailResponse {
 
     private String name;
     private String imageUrl;
+    private String photoDescription;
     private String challengeRule;
-    private String checkFrequency;
+    private int checkFrequencyDays;
+    private int checkFrequencyTimes;
     private String category;
     private String startDate;
     private String endDate;
     private int depositPoint;
+    private String introduction;
     private Float starRating;
-    private Long userCount;
+    private int reviewCount;
+    private int userCount;
+    private int userCountLimit;
     private String status;
     private List<TagResponse> tags;
     private List<String> examplePhotos;
 
-    public static ChallengeDetailResponse of(Challenge challenge, Long userCount) {
+    private String createdDate;
+
+    public static ChallengeDetailResponse of(Challenge challenge) {
         return new ChallengeDetailResponse(
                 challenge.getId(),
-                challenge.getId(),
+                challenge.getHost().getId(),
                 challenge.getHost().getImage(),
                 challenge.getHost().getName(),
                 challenge.getName(),
                 challenge.getImageUrl(),
+                challenge.getPhotoDescription(),
                 challenge.getChallengeRule(),
-                challenge.getCheckFrequency().toString(),
+                challenge.getCheckFrequencyDays(),
+                challenge.getCheckFrequencyTimes(),
                 challenge.getCategory().toString(),
                 challenge.getStartDate().toString(),
                 challenge.getEndDate().toString(),
                 challenge.getDepositPoint(),
+                challenge.getIntroduction(),
                 challenge.getStarRating(),
-                userCount,
+                challenge.getReviewCount(),
+                challenge.getUserCount(),
+                challenge.getUserCountLimit(),
                 challenge.getStatus().toString(),
                 TagResponse.listOf(challenge.getChallengeTags().getTags()),
-                challenge.getExamplePhotoUrls()
+                challenge.getExamplePhotoUrls(),
+                challenge.getCreatedDate().toString()
         );
     }
 }
