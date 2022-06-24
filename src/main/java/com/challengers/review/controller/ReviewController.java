@@ -20,7 +20,7 @@ public class ReviewController {
     private final ReviewService reviewService;
 
     @GetMapping("/{challengeId}")
-    public ResponseEntity<List<ReviewResponse>> showReviews(@PathVariable(name = "challengeId") Long challengeId) {
+    public ResponseEntity<List<ReviewResponse>> showReviewsList(@PathVariable(name = "challengeId") Long challengeId) {
         return ResponseEntity.ok(reviewService.findReviews(challengeId));
     }
 
@@ -41,7 +41,7 @@ public class ReviewController {
     }
 
     @PutMapping("/{reviewId}")
-    public ResponseEntity<Void> putReview(@PathVariable(name = "reviewId") Long reviewId,
+    public ResponseEntity<Void> updateReview(@PathVariable(name = "reviewId") Long reviewId,
                                           @RequestBody ReviewUpdateRequest reviewUpdateRequest,
                                           @CurrentUser UserPrincipal user) {
         reviewService.update(reviewId, reviewUpdateRequest, user.getId());
