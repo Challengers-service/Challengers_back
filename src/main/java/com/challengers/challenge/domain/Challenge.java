@@ -123,4 +123,10 @@ public class Challenge extends BaseTimeEntity {
         starRating = reviewCount == 0 ? 0.0f : Math.round(totalStarRating/reviewCount*10)/10.0f;
     }
 
+    public void updateStatus() {
+        LocalDate now = LocalDate.now();
+        if (now.isBefore(startDate)) status = ChallengeStatus.READY;
+        else if (now.isBefore(endDate) || now.isEqual(endDate)) status = ChallengeStatus.PROCEEDING;
+        else status = ChallengeStatus.DONE;
+    }
 }

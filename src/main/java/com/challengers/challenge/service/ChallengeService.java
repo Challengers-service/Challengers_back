@@ -39,14 +39,16 @@ public class ChallengeService {
     @Transactional
     public Long create(ChallengeRequest challengeRequest, Long userId) {
         User host = userRepository.findById(userId).orElseThrow(NoSuchElementException::new);
+        // host의 포인트를 예치포인트만큼 감소시켜야함
 
         Challenge challenge = challengeRequest.toChallenge();
         challenge.setHost(host);
-        String imageUrl = "default";
+        String imageUrl = "https://challengers-bucket.s3.ap-northeast-2.amazonaws.com/challengeDefaultImage.jpg";
         if (challengeRequest.getImage() != null)
             imageUrl = awsS3Uploader.uploadImage(challengeRequest.getImage());
         challenge.setImageUrl(imageUrl);
         challenge.addExamplePhotos(awsS3Uploader.uploadImages(challengeRequest.getExamplePhotos()));
+        challenge.updateStatus();
         challengeRepository.save(challenge);
 
         challengeRequest.getTags()
