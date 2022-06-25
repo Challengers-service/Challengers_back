@@ -28,8 +28,8 @@ public class Challenge extends BaseTimeEntity {
     private String imageUrl;
     private String photoDescription;
     private String challengeRule;
-    private int checkFrequencyDays;
-    private int checkFrequencyTimes;
+    private CheckFrequencyType checkFrequencyType;
+    private int checkTimesPerWeek;
     private Category category;
     private LocalDate startDate;
     private LocalDate endDate;
@@ -40,7 +40,8 @@ public class Challenge extends BaseTimeEntity {
     private int reviewCount;
     private int userCount;
     private int userCountLimit;
-    private ChallengeStatus status;
+    private int reward;
+    private int failedPoint;
 
     @Embedded
     private ChallengeTags challengeTags = ChallengeTags.empty();
@@ -65,18 +66,18 @@ public class Challenge extends BaseTimeEntity {
 
     @Builder
     public Challenge(Long id, User host, String name, String imageUrl, String photoDescription,
-                     String challengeRule, int checkFrequencyDays, int checkFrequencyTimes, Category category,
+                     String challengeRule, CheckFrequencyType checkFrequencyType, int checkTimesPerWeek, Category category,
                      LocalDate startDate, LocalDate endDate, int depositPoint, String introduction,
                      Float totalStarRating, Float starRating, int reviewCount, int userCount,
-                     int userCountLimit, ChallengeStatus status) {
+                     int userCountLimit, int reward, int failedPoint) {
         this.id = id;
         this.host = host;
         this.name = name;
         this.imageUrl = imageUrl;
         this.photoDescription = photoDescription;
         this.challengeRule = challengeRule;
-        this.checkFrequencyDays = checkFrequencyDays;
-        this.checkFrequencyTimes = checkFrequencyTimes;
+        this.checkFrequencyType = checkFrequencyType;
+        this.checkTimesPerWeek = checkTimesPerWeek;
         this.category = category;
         this.startDate = startDate;
         this.endDate = endDate;
@@ -87,7 +88,8 @@ public class Challenge extends BaseTimeEntity {
         this.reviewCount = reviewCount;
         this.userCount = userCount;
         this.userCountLimit = userCountLimit;
-        this.status = status;
+        this.reward = reward;
+        this.failedPoint = failedPoint;
     }
 
     public void setHost(User host) {
@@ -123,10 +125,10 @@ public class Challenge extends BaseTimeEntity {
         starRating = reviewCount == 0 ? 0.0f : Math.round(totalStarRating/reviewCount*10)/10.0f;
     }
 
-    public void updateStatus() {
+    public ChallengeStatus getStatus() {
         LocalDate now = LocalDate.now();
-        if (now.isBefore(startDate)) status = ChallengeStatus.READY;
-        else if (now.isBefore(endDate) || now.isEqual(endDate)) status = ChallengeStatus.PROCEEDING;
-        else status = ChallengeStatus.DONE;
+        if (now.isBefore(startDate)) return ChallengeStatus.READY;
+        else if (now.isBefore(endDate) || now.isEqual(endDate)) return ChallengeStatus.PROCEEDING;
+        else return ChallengeStatus.DONE;
     }
 }

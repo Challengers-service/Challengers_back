@@ -6,7 +6,6 @@ import com.challengers.challenge.dto.ChallengeRequest;
 import com.challengers.challenge.repository.ChallengeRepository;
 import com.challengers.challengetag.domain.ChallengeTag;
 import com.challengers.common.AwsS3Uploader;
-import com.challengers.examplephoto.domain.ExamplePhoto;
 import com.challengers.examplephoto.repository.ExamplePhotoRepository;
 import com.challengers.tag.domain.Tag;
 import com.challengers.tag.repository.TagRepository;
@@ -21,7 +20,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
@@ -48,7 +46,7 @@ public class ChallengeService {
             imageUrl = awsS3Uploader.uploadImage(challengeRequest.getImage());
         challenge.setImageUrl(imageUrl);
         challenge.addExamplePhotos(awsS3Uploader.uploadImages(challengeRequest.getExamplePhotos()));
-        challenge.updateStatus();
+        challenge.getStatus();
         challengeRepository.save(challenge);
 
         challengeRequest.getTags()

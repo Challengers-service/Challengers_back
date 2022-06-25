@@ -3,10 +3,9 @@ package com.challengers.challenge.service;
 import com.challengers.challenge.domain.Category;
 import com.challengers.challenge.domain.Challenge;
 import com.challengers.challenge.domain.ChallengeStatus;
-import com.challengers.challenge.domain.CheckFrequency;
+import com.challengers.challenge.domain.CheckFrequencyType;
 import com.challengers.challenge.dto.ChallengeRequest;
 import com.challengers.challenge.repository.ChallengeRepository;
-import com.challengers.challenge.service.ChallengeService;
 import com.challengers.common.AwsS3Uploader;
 import com.challengers.examplephoto.repository.ExamplePhotoRepository;
 import com.challengers.tag.domain.Tag;
@@ -18,7 +17,6 @@ import com.challengers.user.repository.AchievementRepository;
 import com.challengers.user.repository.UserRepository;
 import com.challengers.userchallenge.domain.UserChallenge;
 import com.challengers.userchallenge.repository.UserChallengeRepository;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,7 +26,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockMultipartFile;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Optional;
@@ -75,11 +72,10 @@ public class ChallengeServiceTest {
                 .build();
 
         challengeRequest = ChallengeRequest.builder()
-                .challengeName("미라클 모닝 - 아침 7시 기상")
+                .name("미라클 모닝 - 아침 7시 기상")
                 .image(new MockMultipartFile("테스트사진.png","테스트사진.png","image/png","saf".getBytes()))
                 .challengeRule("7시를 가르키는 시계와 본인이 같이 나오게 사진을 찍으시면 됩니다.")
-                .checkFrequencyDays(1)
-                .checkFrequencyTimes(7)
+                .checkFrequencyType("EVERY_DAY")
                 .category("LIFE")
                 .startDate(LocalDate.now())
                 .endDate(LocalDate.now())
@@ -98,8 +94,7 @@ public class ChallengeServiceTest {
                 .name("미라클 모닝 - 아침 7시 기상")
                 .imageUrl("https://imageUrl.png")
                 .challengeRule("7시를 가르키는 시계와 본인이 같이 나오게 사진을 찍으시면 됩니다.")
-                .checkFrequencyDays(1)
-                .checkFrequencyTimes(1)
+                .checkFrequencyType(CheckFrequencyType.EVERY_DAY)
                 .category(Category.LIFE)
                 .starRating(3.5f)
                 .depositPoint(1000)
@@ -107,7 +102,6 @@ public class ChallengeServiceTest {
                 .endDate(LocalDate.now())
                 .introduction("매일 아침 7시에 일어나면 하루가 개운합니다.")
                 .userCountLimit(2000)
-                .status(ChallengeStatus.PROCEEDING)
                 .build();
     }
 

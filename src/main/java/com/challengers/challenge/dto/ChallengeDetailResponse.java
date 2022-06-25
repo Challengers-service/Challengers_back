@@ -1,6 +1,7 @@
 package com.challengers.challenge.dto;
 
 import com.challengers.challenge.domain.Challenge;
+import com.challengers.challenge.domain.CheckFrequencyType;
 import com.challengers.tag.dto.TagResponse;
 import lombok.*;
 
@@ -20,8 +21,8 @@ public class ChallengeDetailResponse {
     private String imageUrl;
     private String photoDescription;
     private String challengeRule;
-    private int checkFrequencyDays;
-    private int checkFrequencyTimes;
+    private CheckFrequencyType checkFrequencyType;
+    private Integer checkTimesPerWeek;
     private String category;
     private String startDate;
     private String endDate;
@@ -47,8 +48,8 @@ public class ChallengeDetailResponse {
                 challenge.getImageUrl(),
                 challenge.getPhotoDescription(),
                 challenge.getChallengeRule(),
-                challenge.getCheckFrequencyDays(),
-                challenge.getCheckFrequencyTimes(),
+                challenge.getCheckFrequencyType(),
+                challenge.getCheckTimesPerWeek(),
                 challenge.getCategory().toString(),
                 challenge.getStartDate().toString(),
                 challenge.getEndDate().toString(),
