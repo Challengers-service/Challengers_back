@@ -4,28 +4,28 @@ import com.challengers.auth.dto.AuthDto;
 import com.challengers.auth.dto.LogInRequest;
 import com.challengers.auth.dto.TokenDto;
 import com.challengers.common.exception.BadRequestException;
+import com.challengers.common.exception.UserException;
 import com.challengers.security.TokenProvider;
-import com.challengers.user.domain.AuthProvider;
-import com.challengers.user.domain.Role;
-import com.challengers.user.domain.User;
+import com.challengers.user.domain.*;
+import com.challengers.user.repository.AchievementRepository;
 import com.challengers.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
-
 import javax.transaction.Transactional;
 import javax.validation.Valid;
+import java.time.Duration;
+import java.time.LocalDate;
 
 @Service
 @RequiredArgsConstructor
 public class AuthService {
-    private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
+    private final AchievementRepository achievementRepository;
     private final PasswordEncoder passwordEncoder;
     private final TokenProvider tokenProvider;
 
@@ -41,6 +41,9 @@ public class AuthService {
                 .provider(AuthProvider.local)
                 .password(passwordEncoder.encode(authDto.getPassword()))
                 .image(User.DEFAULT_IMAGE_URL)
+                .visitTime(LocalDate.now())
+                .attendanceCount(0L)
+                .challengeCount(0L)
                 .role(Role.USER)
                 .build()
         );
@@ -50,7 +53,21 @@ public class AuthService {
 
     @Transactional
     public ResponseEntity<TokenDto> signIn(@Valid @RequestBody LogInRequest logInRequest) {
-        User user = userRepository.findByEmail(logInRequest.getEmail()).get();
+        User user = userRepository.findByEmail(logInRequest.getEmail()).orElseThrow(UserException::new);
+
+        if(Duration.between(user.getVisitTime().atStartOfDay(), LocalDate.now().atStartOfDay()).toDays()==1){ //출석 로직
+            user.update(LocalDate.now(), user.getAttendanceCount()+1);
+            if(user.getAttendanceCount() >= 30){
+                Achievement achievement = Achievement.builder()
+                        .user(user)
+                        .award(Award.PERFECT_ATTENDANCE)
+                        .build();
+
+                achievementRepository.save(achievement);
+            }
+        }else{
+            user.update(LocalDate.now(), user.getAttendanceCount());
+        }
 
         String jwt = tokenProvider.createTokenByUserEntity(user);
         HttpHeaders httpHeaders = new HttpHeaders();

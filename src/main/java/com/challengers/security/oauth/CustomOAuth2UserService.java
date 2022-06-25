@@ -87,6 +87,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                 .role(Role.USER)
                 .email(oAuth2UserInfo.getEmail())
                 .image(User.DEFAULT_IMAGE_URL)
+                .attendanceCount(0L)
+                .challengeCount(0L)
                 .provider(AuthProvider.valueOf(oAuth2UserRequest.getClientRegistration().getRegistrationId()))
                 .providerId(oAuth2UserInfo.getId())
                 .build()
