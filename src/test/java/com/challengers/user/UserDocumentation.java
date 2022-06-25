@@ -19,9 +19,8 @@ public class UserDocumentation {
                 fieldWithPath("email").type(JsonFieldType.STRING).description("이메일"),
                 fieldWithPath("image").type(JsonFieldType.STRING).description("이미지"),
                 fieldWithPath("bio").type(JsonFieldType.STRING).description("한줄 소개"),
-                fieldWithPath("role").type(JsonFieldType.STRING).description("역할"),
-                fieldWithPath("provider").type(JsonFieldType.STRING).description("가입경로"),
-                fieldWithPath("providerId").type(JsonFieldType.STRING).description("oauth id"),
+                fieldWithPath("followerCount").type(JsonFieldType.NUMBER).description("팔로우 수"),
+                fieldWithPath("followingCount").type(JsonFieldType.NUMBER).description("팔로잉 수"),
         };
         return document("user/getCurrentUser",
                 responseFields(responseUser)

@@ -10,6 +10,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface FollowRepository extends JpaRepository<Follow, Long> {
+    Long countByToUser(Long userId);
+    Long countByFromUser(Long userId);
+
     Optional<Follow> findByToUserAndFromUser(Long toUserId, Long fromUserId);
 
     @Query(value = "select new com.challengers.follow.dto.FollowResponse(u.id, u.name, u.image) from Follow f INNER JOIN User u ON f.fromUser = u.id where f.toUser = :userId")

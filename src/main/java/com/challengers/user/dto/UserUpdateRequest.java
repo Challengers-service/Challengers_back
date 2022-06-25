@@ -10,7 +10,7 @@ import javax.validation.constraints.NotNull;
 @Getter
 @Setter
 @NoArgsConstructor
-public class UserUpdateDto {
+public class UserUpdateRequest {
 
     private MultipartFile image;
     private String name;
@@ -20,7 +20,7 @@ public class UserUpdateDto {
     public Boolean isImageChanged;
 
     @Builder
-    public UserUpdateDto(MultipartFile image, String name, String bio, Boolean isImageChanged){
+    public UserUpdateRequest(MultipartFile image, String name, String bio, Boolean isImageChanged){
         this.image = image;
         this.name = name;
         this.bio = bio;
