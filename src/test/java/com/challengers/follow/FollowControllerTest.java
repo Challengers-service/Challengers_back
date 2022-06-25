@@ -23,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(controllers = FollowController.class)
 public class FollowControllerTest extends DocumentationWithSecurity {
 
-    private ArrayList<FollowResponse> followList = new ArrayList<FollowResponse>();;
+    private ArrayList<FollowResponse> followList = new ArrayList<FollowResponse>();
 
     @MockBean
     FollowService followService;

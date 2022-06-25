@@ -10,7 +10,10 @@ import com.challengers.examplephoto.domain.ExamplePhoto;
 import com.challengers.examplephoto.repository.ExamplePhotoRepository;
 import com.challengers.tag.domain.Tag;
 import com.challengers.tag.repository.TagRepository;
+import com.challengers.user.domain.Achievement;
+import com.challengers.user.domain.Award;
 import com.challengers.user.domain.User;
+import com.challengers.user.repository.AchievementRepository;
 import com.challengers.user.repository.UserRepository;
 import com.challengers.userchallenge.domain.UserChallenge;
 import com.challengers.userchallenge.repository.UserChallengeRepository;
@@ -25,6 +28,7 @@ import java.util.NoSuchElementException;
 @RequiredArgsConstructor
 public class ChallengeService {
     private final ChallengeRepository challengeRepository;
+    private final AchievementRepository achievementRepository;
     private final TagRepository tagRepository;
     private final UserRepository userRepository;
     private final ExamplePhotoRepository examplePhotoRepository;
@@ -49,6 +53,23 @@ public class ChallengeService {
                 .forEach(tag -> ChallengeTag.associate(challenge,findOrCreateTag(tag)));
 
         userChallengeRepository.save(new UserChallenge(challenge,host,false));
+
+        host.update(host.getChallengeCount() + 1);
+        if(host.getChallengeCount() == 1){
+            Achievement achievement = Achievement.builder()
+                    .user(host)
+                    .award(Award.ONE_PARTICIPATION)
+                    .build();
+
+            achievementRepository.save(achievement);
+        } else if(host.getChallengeCount() == 50){
+            Achievement achievement = Achievement.builder()
+                    .user(host)
+                    .award(Award.FIFTY_PARTICIPATION)
+                    .build();
+
+            achievementRepository.save(achievement);
+        }
 
         return challenge.getId();
     }

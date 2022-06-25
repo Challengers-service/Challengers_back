@@ -5,10 +5,14 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.joda.time.DateTime;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
@@ -47,9 +51,27 @@ public class User {
 
     private String providerId;
 
+    private LocalDate visitTime;
+
+    private Long attendanceCount;
+
+    private Long challengeCount;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    List<Achievement> awards = new ArrayList<>();
+
     public User update(String name) {
         this.name = name;
         return this;
+    }
+
+    public void update(Long challengeCount) {
+        this.challengeCount = challengeCount;
+    }
+
+    public void update(LocalDate visitTime, Long attendanceCount) {
+        this.visitTime = visitTime;
+        this.attendanceCount = attendanceCount;
     }
 
     public void update(String name, String bio, String image){
@@ -59,7 +81,8 @@ public class User {
     }
 
     @Builder
-    public User(Long id, String name, String email, String image, String bio, String password, Role role, AuthProvider provider, String providerId) {
+    public User(Long id, String name, String email, String image, String bio, String password, Role role, AuthProvider provider, String providerId
+    ,LocalDate visitTime, Long attendanceCount, Long challengeCount) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -67,6 +90,9 @@ public class User {
         this.bio = bio;
         this.password = password;
         this.role = role;
+        this.visitTime = visitTime;
+        this.attendanceCount = attendanceCount;
+        this.challengeCount = challengeCount;
         this.provider = provider;
         this.providerId = providerId;
     }

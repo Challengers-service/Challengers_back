@@ -2,7 +2,9 @@ package com.challengers.user;
 
 import com.challengers.common.WithMockCustomUser;
 import com.challengers.common.documentation.DocumentationWithSecurity;
+import com.challengers.follow.dto.FollowResponse;
 import com.challengers.user.controller.UserController;
+import com.challengers.user.domain.Award;
 import com.challengers.user.domain.User;
 import com.challengers.user.dto.UserMeResponse;
 import com.challengers.user.dto.UserUpdateRequest;
@@ -15,6 +17,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static com.challengers.testtool.UploadSupporter.uploadMockSupport;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
@@ -26,12 +31,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(controllers = UserController.class)
 public class UserControllerTest extends DocumentationWithSecurity {
     private UserMeResponse userMeResponse;
+    private ArrayList<Award> awardList = new ArrayList<Award>();
 
     @MockBean
     UserService userService;
 
     @BeforeEach
     public void setup(){
+        awardList.add(Award.ONE_PARTICIPATION);
+        awardList.add(Award.FIFTY_PARTICIPATION);
+        awardList.add(Award.PERFECT_ATTENDANCE);
+
         User user = User.builder()
                 .id(1L)
                 .name("a")
@@ -43,6 +53,7 @@ public class UserControllerTest extends DocumentationWithSecurity {
                 .user(user)
                 .followerCount(3L)
                 .followingCount(7L)
+                .awardList(awardList)
                 .build();
     }
 

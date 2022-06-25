@@ -21,6 +21,7 @@ public class UserDocumentation {
                 fieldWithPath("bio").type(JsonFieldType.STRING).description("한줄 소개"),
                 fieldWithPath("followerCount").type(JsonFieldType.NUMBER).description("팔로우 수"),
                 fieldWithPath("followingCount").type(JsonFieldType.NUMBER).description("팔로잉 수"),
+                fieldWithPath("awardList.[]").type(JsonFieldType.ARRAY).description("업적"),
         };
         return document("user/getCurrentUser",
                 responseFields(responseUser)

@@ -14,6 +14,7 @@ import com.challengers.tag.repository.TagRepository;
 import com.challengers.user.domain.AuthProvider;
 import com.challengers.user.domain.Role;
 import com.challengers.user.domain.User;
+import com.challengers.user.repository.AchievementRepository;
 import com.challengers.user.repository.UserRepository;
 import com.challengers.userchallenge.domain.UserChallenge;
 import com.challengers.userchallenge.repository.UserChallengeRepository;
@@ -44,6 +45,7 @@ public class ChallengeServiceTest {
     @Mock ExamplePhotoRepository examplePhotoRepository;
     @Mock TagRepository tagRepository;
     @Mock UserChallengeRepository userChallengeRepository;
+    @Mock AchievementRepository achievementRepository;
     @Mock AwsS3Uploader awsS3Uploader;
 
     ChallengeService challengeService;
@@ -54,7 +56,7 @@ public class ChallengeServiceTest {
 
     @BeforeEach
     void setUp() {
-        challengeService = new ChallengeService(challengeRepository,tagRepository,
+        challengeService = new ChallengeService(challengeRepository,achievementRepository,tagRepository,
                 userRepository,examplePhotoRepository,userChallengeRepository,awsS3Uploader);
 
         user = User.builder()
@@ -65,6 +67,9 @@ public class ChallengeServiceTest {
                 .bio("my bio")
                 .password(null)
                 .role(Role.USER)
+                .visitTime(LocalDate.now())
+                .attendanceCount(0L)
+                .challengeCount(0L)
                 .provider(AuthProvider.google)
                 .providerId("12412521")
                 .build();
