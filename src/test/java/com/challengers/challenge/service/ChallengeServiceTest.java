@@ -106,6 +106,7 @@ public class ChallengeServiceTest {
                 .startDate(LocalDate.now())
                 .endDate(LocalDate.now())
                 .introduction("매일 아침 7시에 일어나면 하루가 개운합니다.")
+                .userCountLimit(2000)
                 .status(ChallengeStatus.PROCEEDING)
                 .build();
     }
@@ -158,5 +159,29 @@ public class ChallengeServiceTest {
         challengeService.join(1L,1L);
 
         verify(userChallengeRepository).save(any());
+    }
+
+    @Test
+    @DisplayName("챌린지 참여 실패 - 참여 인원이 초과되는 경우")
+    void join_failed_due_to_overcrowding() {
+        Challenge challengeFull = Challenge.builder()
+                .id(1L)
+                .userCount(3)
+                .userCountLimit(3)
+                .build();
+        when(challengeRepository.findById(any())).thenReturn(Optional.of(challengeFull));
+
+        assertThatThrownBy(()->challengeService.join(1L,1L)).isInstanceOf(RuntimeException.class);
+    }
+
+    @Test
+    @DisplayName("챌린지 참여 실패 - 이미 해당 챌린지에 참여하고 있는 경우")
+    void join_failed_because_already_participating_in_the_challenge() {
+        when(challengeRepository.findById(any())).thenReturn(Optional.of(challenge));
+        when(userRepository.findById(any())).thenReturn(Optional.of(user));
+        when(userChallengeRepository.findByUserIdAndChallengeId(any(),any()))
+                .thenReturn(Optional.of(new UserChallenge(challenge,user,false)));
+
+        assertThatThrownBy(()->challengeService.join(1L,1L)).isInstanceOf(RuntimeException.class);
     }
 }
