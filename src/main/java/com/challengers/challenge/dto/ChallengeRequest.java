@@ -2,6 +2,7 @@ package com.challengers.challenge.dto;
 
 import com.challengers.challenge.domain.Category;
 import com.challengers.challenge.domain.Challenge;
+import com.challengers.challenge.domain.CheckFrequencyType;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,16 +20,17 @@ import java.util.List;
 @NoArgsConstructor
 public class ChallengeRequest {
     @NotBlank
-    private String challengeName;
+    private String name;
+
     private MultipartFile image;
     @NotBlank
     private String photoDescription;
     @NotBlank
     private String challengeRule;
     @NotNull
-    private int checkFrequencyDays;
-    @NotNull
-    private int checkFrequencyTimes;
+    private String checkFrequencyType;
+
+    private int checkTimesPerWeek;
     @NotNull
     private String category;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
@@ -47,16 +49,16 @@ public class ChallengeRequest {
     private List<@NotBlank String> tags;
 
     @Builder
-    public ChallengeRequest(String challengeName, MultipartFile image, String photoDescription, String challengeRule,
-                            int checkFrequencyDays, int checkFrequencyTimes, String category, LocalDate startDate,
+    public ChallengeRequest(String name, MultipartFile image, String photoDescription, String challengeRule,
+                            String checkFrequencyType, int checkTimesPerWeek, String category, LocalDate startDate,
                             LocalDate endDate, int depositPoint, String introduction, int userCountLimit,
                             List<MultipartFile> examplePhotos, List<String> tags) {
-        this.challengeName = challengeName;
+        this.name = name;
         this.image = image;
         this.photoDescription = photoDescription;
         this.challengeRule = challengeRule;
-        this.checkFrequencyDays = checkFrequencyDays;
-        this.checkFrequencyTimes = checkFrequencyTimes;
+        this.checkFrequencyType = checkFrequencyType;
+        this.checkTimesPerWeek = checkTimesPerWeek;
         this.category = category;
         this.startDate = startDate;
         this.endDate = endDate;
@@ -69,11 +71,11 @@ public class ChallengeRequest {
 
     public Challenge toChallenge() {
         return Challenge.builder()
-                .name(challengeName)
+                .name(name)
                 .photoDescription(photoDescription)
                 .challengeRule(challengeRule)
-                .checkFrequencyDays(checkFrequencyDays)
-                .checkFrequencyTimes(checkFrequencyTimes)
+                .checkFrequencyType(CheckFrequencyType.of(checkFrequencyType))
+                .checkTimesPerWeek(checkTimesPerWeek)
                 .category(Category.of(category))
                 .startDate(startDate)
                 .endDate(endDate)

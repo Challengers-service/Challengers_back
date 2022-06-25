@@ -1,5 +1,5 @@
-= Hello API
-hello-api-docs
+= Challenge API
+challenge-api-docs
 :doctype: book
 :icons: font
 :source-highlighter: highlightjs
