@@ -103,7 +103,12 @@ public class ChallengeService {
     @Transactional
     public void join(Long challengeId, Long userId) {
         Challenge challenge = challengeRepository.findById(challengeId).orElseThrow(NoSuchElementException::new);
+        if (challenge.getUserCount() == challenge.getUserCountLimit())
+            throw new RuntimeException("참여 인원이 가득 찼습니다.");
+        challenge.joinUser();
         User user = userRepository.findById(userId).orElseThrow(NoSuchElementException::new);
+        if (userChallengeRepository.findByUserIdAndChallengeId(userId,challengeId).isPresent())
+            throw new RuntimeException("이미 참여하고 있는 챌린지 입니다.");
         UserChallenge userChallenge = new UserChallenge(challenge, user, false);
         userChallengeRepository.save(userChallenge);
     }
