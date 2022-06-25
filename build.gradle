@@ -83,6 +83,10 @@ tasks.named('asciidoctor') { // asciidoctor task의 input은 snippetsDir(스니�
 
 bootJar {
 	dependsOn asciidoctor
+	copy {
+		from "${asciidoctor.outputDir}"
+		into 'static/docs'
+	}
 	finalizedBy 'copyDocument'
 }
 

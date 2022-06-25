@@ -7,7 +7,6 @@ import com.challengers.user.domain.Role;
 import com.challengers.user.domain.User;
 import com.challengers.user.dto.UserUpdateDto;
 import com.challengers.user.service.UserService;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,7 +27,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(controllers = UserController.class)
 public class UserControllerTest extends DocumentationWithSecurity {
     private User user;
-    private ObjectMapper mapper = new ObjectMapper();
 
     @MockBean
     UserService userService;

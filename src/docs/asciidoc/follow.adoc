@@ -1,0 +1,31 @@
+= User API
+user-api-docs
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 4
+:sectlinks:
+
+[[resources-user]]
+== Follow
+
+[[resources-user-findAllFollowers]]
+=== Follow 팔로우 조회
+
+operation::follow/findAllFollowers[snippets='http-request,http-response,response-fields']
+
+[[resources-user-findAllFollowing]]
+=== Follow 팔로잉 조회
+
+operation::follow/findAllFollowing[snippets='http-request,http-response,response-fields']
+
+[[resources-user-addFollow]]
+=== Follow 팔로우 추가
+
+operation::follow/addFollow[snippets='http-request,path-parameters,http-response']
+
+[[resources-user-unfollow]]
+=== Follow 팔로우 삭제
+
+operation::follow/unFollow[snippets='http-request,path-parameters,http-response']
