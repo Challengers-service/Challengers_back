@@ -59,7 +59,7 @@ public class FollowService {
 
         Optional<Follow> relation = getFollowRelation(toUserId, fromUserId);
         if(relation.isEmpty())
-            throw new FollowException("이미 follow 한 관계입니다.");
+            throw new FollowException("follow 관계가 아닙니다.");
 
         followRepository.delete(relation.get());
     }

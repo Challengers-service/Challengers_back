@@ -2,8 +2,11 @@ package com.challengers.user.service;
 
 import com.challengers.common.AwsS3Uploader;
 import com.challengers.common.exception.ResourceNotFoundException;
+import com.challengers.common.exception.UserException;
+import com.challengers.follow.FollowRepository;
 import com.challengers.user.domain.User;
-import com.challengers.user.dto.UserUpdateDto;
+import com.challengers.user.dto.UserMeResponse;
+import com.challengers.user.dto.UserUpdateRequest;
 import com.challengers.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,24 +19,31 @@ import java.util.NoSuchElementException;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+    private final FollowRepository followRepository;
     private final AwsS3Uploader awsS3Uploader;
 
     @Transactional
-    public User getCurrentUser(Long userId){
-        return userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
+    public UserMeResponse getCurrentUser(Long userId){
+        User user = userRepository.findById(userId).orElseThrow(() -> new UserException());
+        Long followerCount = followRepository.countByFromUser(userId);
+        Long followingCount = followRepository.countByToUser(userId);
+        return UserMeResponse.builder()
+                .user(user)
+                .followerCount(followerCount)
+                .followingCount(followingCount)
+                .build();
     }
 
     @Transactional
-    public void updateUser(Long userId, UserUpdateDto userUpdateDto){
+    public void updateUser(Long userId, UserUpdateRequest userUpdateRequest){
         User user = userRepository.findById(userId).orElseThrow(NoSuchElementException::new);
 
-        String changeName = userUpdateDto.getName();
-        String changeBio = userUpdateDto.getBio();
-        MultipartFile image = userUpdateDto.getImage();
+        String changeName = userUpdateRequest.getName();
+        String changeBio = userUpdateRequest.getBio();
+        MultipartFile image = userUpdateRequest.getImage();
 
         if(image == null){
-            if(userUpdateDto.getIsImageChanged()){
+            if(userUpdateRequest.getIsImageChanged()){
                 awsS3Uploader.deleteImage(user.getImage());
                 user.update(changeName, changeBio, User.DEFAULT_IMAGE_URL);
             }else{
