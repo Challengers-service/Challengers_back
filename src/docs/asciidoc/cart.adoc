@@ -1,0 +1,21 @@
+= Cart API
+cart-api-docs
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 4
+:sectlinks:
+
+[[resources-cart]]
+== Cart
+
+[[resources-cart-addCart]]
+=== 찜하기
+
+operation::cart/addCart[snippets='http-request,path-parameters,http-response']
+
+[[resources-reviews-deleteCart]]
+=== 찜 취소하기
+
+operation::cart/deleteCart[snippets='http-request,path-parameters,http-response']
