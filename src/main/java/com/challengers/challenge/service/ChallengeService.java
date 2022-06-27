@@ -58,21 +58,8 @@ public class ChallengeService {
         userChallengeRepository.save(UserChallenge.create(challenge,host));
 
         host.update(host.getChallengeCount() + 1);
-        if(host.getChallengeCount() == 1){
-            Achievement achievement = Achievement.builder()
-                    .user(host)
-                    .award(Award.ONE_PARTICIPATION)
-                    .build();
 
-            achievementRepository.save(achievement);
-        } else if(host.getChallengeCount() == 50){
-            Achievement achievement = Achievement.builder()
-                    .user(host)
-                    .award(Award.FIFTY_PARTICIPATION)
-                    .build();
-
-            achievementRepository.save(achievement);
-        }
+        updateChallengeAchievement(host);
 
         return challenge.getId();
     }
@@ -116,7 +103,27 @@ public class ChallengeService {
                     "다음주 월요일까지 남은 일 수 보다 일주일에 인증해야 하는 횟수가 많기때문에 다음 주에 참여해야 합니다.");
 
         challenge.joinUser();
+        updateChallengeAchievement(user);
+
         userChallengeRepository.save(UserChallenge.create(challenge, user));
+    }
+
+    private void updateChallengeAchievement(User user){
+        if(user.getChallengeCount() == 1){
+            Achievement achievement = Achievement.builder()
+                    .user(user)
+                    .award(Award.ONE_PARTICIPATION)
+                    .build();
+
+            achievementRepository.save(achievement);
+        } else if(user.getChallengeCount() == 50){
+            Achievement achievement = Achievement.builder()
+                    .user(user)
+                    .award(Award.FIFTY_PARTICIPATION)
+                    .build();
+
+            achievementRepository.save(achievement);
+        }
     }
 
     private Tag findOrCreateTag(String tag) {
