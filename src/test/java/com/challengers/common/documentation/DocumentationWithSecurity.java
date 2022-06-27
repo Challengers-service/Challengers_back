@@ -1,6 +1,7 @@
 package com.challengers.common.documentation;
 
 import com.challengers.config.SecurityDocumentationConfig;
+import com.challengers.user.repository.AchievementRepository;
 import com.challengers.user.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,6 +24,9 @@ public class DocumentationWithSecurity {
 
     @MockBean
     protected UserRepository userRepository;
+
+    @MockBean
+    private AchievementRepository achievementRepository;
 
     @BeforeEach
     public void setUp(WebApplicationContext webApplicationContext,
