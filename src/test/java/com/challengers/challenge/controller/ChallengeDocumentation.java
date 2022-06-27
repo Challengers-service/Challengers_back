@@ -9,6 +9,8 @@ import org.springframework.restdocs.request.RequestPartDescriptor;
 import java.io.FileDescriptor;
 
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.requestParts;
@@ -35,6 +37,8 @@ public class ChallengeDocumentation {
                 partWithName("examplePhotos").description("챌린지 예시 사진들")
         };
         return document("challenge/createChallenge",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint()),
                 requestParameters(requestParam),
                 requestParts(requestPart)
         );
@@ -75,6 +79,8 @@ public class ChallengeDocumentation {
                 fieldWithPath("createdDate").type(JsonFieldType.STRING).description("챌린지 생성 일 [yyyy-MM-dd]")
         };
         return document("challenge/findChallenge",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint()),
                 responseFields(responseUser),
                 pathParameters(parameterWithName("id").description("조회할 챌린지 id"))
         );
@@ -82,6 +88,8 @@ public class ChallengeDocumentation {
 
     public static RestDocumentationResultHandler joinChallenge() {
         return document("challenge/joinChallenge",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint()),
                 pathParameters(parameterWithName("id").description("참여할 챌린지 id"))
         );
     }
