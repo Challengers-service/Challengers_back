@@ -106,7 +106,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                 .image(User.DEFAULT_IMAGE_URL)
                 .attendanceCount(0L)
                 .challengeCount(0L)
-                .visitTime(LocalDate.now().of(2022,06,25))
+                .visitTime(LocalDate.now())
                 .provider(AuthProvider.valueOf(oAuth2UserRequest.getClientRegistration().getRegistrationId()))
                 .providerId(oAuth2UserInfo.getId())
                 .build()
@@ -120,6 +120,4 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                 )
         );
     }
-
-
 }
