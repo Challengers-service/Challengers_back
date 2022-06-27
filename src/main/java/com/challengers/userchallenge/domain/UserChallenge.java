@@ -2,6 +2,7 @@ package com.challengers.userchallenge.domain;
 
 import com.challengers.challenge.domain.Challenge;
 import com.challengers.user.domain.User;
+import com.challengers.userchallenge.ChallengeJoinManager;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,11 +25,25 @@ public class UserChallenge {
     @JoinColumn(name = "user_id")
     private User user;
 
-    private boolean isFinished;
+    private int maxProgress;
+    private int progress;
+    private UserChallengeStatus status;
 
-    public UserChallenge(Challenge challenge, User user, boolean isFinished) {
+    public UserChallenge(Challenge challenge, User user, int maxProgress, int progress, UserChallengeStatus status) {
         this.challenge = challenge;
+        this.maxProgress = maxProgress;
+        this.progress = progress;
         this.user = user;
-        this.isFinished = isFinished;
+        this.status = status;
+    }
+
+    public static UserChallenge create(Challenge challenge, User user) {
+        return new UserChallenge(
+                challenge,
+                user,
+                ChallengeJoinManager.getMaxProgress(challenge),
+                0,
+                UserChallengeStatus.IN_PROGRESS
+        );
     }
 }
