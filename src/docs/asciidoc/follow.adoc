@@ -7,25 +7,25 @@ user-api-docs
 :toclevels: 4
 :sectlinks:
 
-[[resources-user]]
+[[resources-follow]]
 == Follow
 
-[[resources-user-findAllFollowers]]
+[[resources-follow-findAllFollowers]]
 === Follow 팔로우 조회
 
 operation::follow/findAllFollowers[snippets='http-request,http-response,response-fields']
 
-[[resources-user-findAllFollowing]]
+[[resources-follow-findAllFollowing]]
 === Follow 팔로잉 조회
 
 operation::follow/findAllFollowing[snippets='http-request,http-response,response-fields']
 
-[[resources-user-addFollow]]
+[[resources-follow-addFollow]]
 === Follow 팔로우 추가
 
 operation::follow/addFollow[snippets='http-request,path-parameters,http-response']
 
-[[resources-user-unfollow]]
+[[resources-follow-unfollow]]
 === Follow 팔로우 삭제
 
 operation::follow/unFollow[snippets='http-request,path-parameters,http-response']

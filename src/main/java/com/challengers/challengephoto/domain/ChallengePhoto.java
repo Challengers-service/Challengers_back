@@ -13,6 +13,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 public class ChallengePhoto {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "challenge_photo_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)

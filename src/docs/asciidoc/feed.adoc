@@ -1,0 +1,31 @@
+= User API
+user-api-docs
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 4
+:sectlinks:
+
+[[resources-comment]]
+== Comment
+
+[[resources-feed-comment-getComment]]
+=== Comment 댓글 조회
+
+operation::feed/comment/getComment[snippets='http-request,path-parameters,http-response,response-fields']
+
+[[resources-feed-comment-createComment]]
+=== Comment 댓글 생성
+
+operation::feed/comment/createComment[snippets='http-request,path-parameters,request-fields,http-response']
+
+[[resources-feed-comment-updateComment]]
+=== Comment 댓글 수정
+
+operation::feed/comment/updateComment[snippets='http-request,path-parameters,request-fields,http-response']
+
+[[resources-feed-comment-deleteComment]]
+=== Comment 댓글 삭제
+
+operation::feed/comment/deleteComment[snippets='http-request,path-parameters,http-response']

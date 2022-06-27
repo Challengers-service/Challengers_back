@@ -5,6 +5,8 @@ import org.springframework.restdocs.payload.FieldDescriptor;
 import org.springframework.restdocs.payload.JsonFieldType;
 
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 
 public class AuthDocumentation {
@@ -16,6 +18,8 @@ public class AuthDocumentation {
                 fieldWithPath("passwordConfirm").type(JsonFieldType.STRING).description("비밀번호 확인"),
         };
         return document("auth/signup",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint()),
                 requestFields(requestAuth)
         );
     }
@@ -29,6 +33,8 @@ public class AuthDocumentation {
                 fieldWithPath("token").type(JsonFieldType.STRING).description("Bearer 토큰"),
         };
         return document("auth/signin",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint()),
                 requestFields(requestAuth),
                 responseFields(responseAuth)
         );
