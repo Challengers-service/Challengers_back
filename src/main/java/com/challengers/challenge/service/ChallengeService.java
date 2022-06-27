@@ -14,6 +14,7 @@ import com.challengers.user.domain.Award;
 import com.challengers.user.domain.User;
 import com.challengers.user.repository.AchievementRepository;
 import com.challengers.user.repository.UserRepository;
+import com.challengers.userchallenge.ChallengeJoinManager;
 import com.challengers.userchallenge.domain.UserChallenge;
 import com.challengers.userchallenge.repository.UserChallengeRepository;
 import lombok.RequiredArgsConstructor;
@@ -40,6 +41,8 @@ public class ChallengeService {
         // host의 포인트를 예치포인트만큼 감소시켜야함
 
         Challenge challenge = challengeRequest.toChallenge();
+        // challenge 시작일, 종료일이 올바르지 않을 경우 에러 반환시켜야함
+
         challenge.setHost(host);
         String imageUrl = "https://challengers-bucket.s3.ap-northeast-2.amazonaws.com/challengeDefaultImage.jpg";
         if (challengeRequest.getImage() != null)
@@ -52,7 +55,7 @@ public class ChallengeService {
         challengeRequest.getTags()
                 .forEach(tag -> ChallengeTag.associate(challenge,findOrCreateTag(tag)));
 
-        userChallengeRepository.save(new UserChallenge(challenge,host,false));
+        userChallengeRepository.save(UserChallenge.create(challenge,host));
 
         host.update(host.getChallengeCount() + 1);
         if(host.getChallengeCount() == 1){
@@ -103,12 +106,17 @@ public class ChallengeService {
         Challenge challenge = challengeRepository.findById(challengeId).orElseThrow(NoSuchElementException::new);
         if (challenge.getUserCount() == challenge.getUserCountLimit())
             throw new RuntimeException("참여 인원이 가득 찼습니다.");
-        challenge.joinUser();
+
         User user = userRepository.findById(userId).orElseThrow(NoSuchElementException::new);
         if (userChallengeRepository.findByUserIdAndChallengeId(userId,challengeId).isPresent())
             throw new RuntimeException("이미 참여하고 있는 챌린지 입니다.");
-        UserChallenge userChallenge = new UserChallenge(challenge, user, false);
-        userChallengeRepository.save(userChallenge);
+
+        if (!ChallengeJoinManager.canJoin(challenge))
+            throw new RuntimeException(
+                    "다음주 월요일까지 남은 일 수 보다 일주일에 인증해야 하는 횟수가 많기때문에 다음 주에 참여해야 합니다.");
+
+        challenge.joinUser();
+        userChallengeRepository.save(UserChallenge.create(challenge, user));
     }
 
     private Tag findOrCreateTag(String tag) {

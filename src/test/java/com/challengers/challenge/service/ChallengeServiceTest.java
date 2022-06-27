@@ -126,7 +126,8 @@ public class ChallengeServiceTest {
     void delete() {
         when(challengeRepository.findById(any())).thenReturn(Optional.of(challenge));
         when(userChallengeRepository.countByChallengeId(any())).thenReturn(1L);
-        when(userChallengeRepository.findByUserIdAndChallengeId(any(),any())).thenReturn(Optional.of(new UserChallenge(challenge,user,false)));
+        when(userChallengeRepository.findByUserIdAndChallengeId(any(),any()))
+                .thenReturn(Optional.of(UserChallenge.create(challenge,user)));
 
         challengeService.delete(challenge.getId(),user.getId());
 
@@ -174,7 +175,7 @@ public class ChallengeServiceTest {
         when(challengeRepository.findById(any())).thenReturn(Optional.of(challenge));
         when(userRepository.findById(any())).thenReturn(Optional.of(user));
         when(userChallengeRepository.findByUserIdAndChallengeId(any(),any()))
-                .thenReturn(Optional.of(new UserChallenge(challenge,user,false)));
+                .thenReturn(Optional.of(UserChallenge.create(challenge,user)));
 
         assertThatThrownBy(()->challengeService.join(1L,1L)).isInstanceOf(RuntimeException.class);
     }
