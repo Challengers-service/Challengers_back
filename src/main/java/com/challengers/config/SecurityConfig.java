@@ -74,17 +74,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Override
-    public void configure(WebSecurity web) throws Exception {
-        web.httpFirewall(defaultHttpFirewall());
-    }
-
-    @Bean
-    public HttpFirewall defaultHttpFirewall() {
-        return new DefaultHttpFirewall();
-    }
-
-
-    @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .cors()

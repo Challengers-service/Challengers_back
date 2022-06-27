@@ -4,9 +4,8 @@ import com.challengers.common.exception.OAuth2AuthenticationProcessingException;
 import com.challengers.security.UserPrincipal;
 import com.challengers.security.oauth.user.OAuth2UserInfo;
 import com.challengers.security.oauth.user.OAuth2UserInfoFactory;
-import com.challengers.user.domain.AuthProvider;
-import com.challengers.user.domain.Role;
-import com.challengers.user.domain.User;
+import com.challengers.user.domain.*;
+import com.challengers.user.repository.AchievementRepository;
 import com.challengers.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +18,8 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.time.Duration;
+import java.time.LocalDate;
 import java.util.Optional;
 
 /**
@@ -30,6 +31,7 @@ import java.util.Optional;
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     private final UserRepository userRepository;
+    private final AchievementRepository achievementRepository;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -67,6 +69,22 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             }
             //이미 존재하는 회원 사이트로 부터 변경된 정보 업데이트.
             //user = updateExistingUser(user, oAuth2UserInfo);
+            System.out.println(Duration.between(user.getVisitTime().atStartOfDay(), LocalDate.now().atStartOfDay()).toDays());
+            if(Duration.between(user.getVisitTime().atStartOfDay(), LocalDate.now().atStartOfDay()).toDays()==1){ //출석 로직
+                user.update(LocalDate.now(), user.getAttendanceCount()+1);
+                userRepository.save(user);
+                if(user.getAttendanceCount() >= 30){
+                    Achievement achievement = Achievement.builder()
+                            .user(user)
+                            .award(Award.PERFECT_ATTENDANCE)
+                            .build();
+
+                    achievementRepository.save(achievement);
+                }
+            }else{
+                user.update(LocalDate.now(), user.getAttendanceCount());
+                userRepository.save(user);
+            }
         }else{
             log.info("새로운 회원 등록");
             user = registerNewUser(userRequest, oAuth2UserInfo);
@@ -75,7 +93,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         for (String key : oAuth2User.getAttributes().keySet()) {
             System.out.println(key + ": " + oAuth2User.getAttributes().get(key));
         }
-
 
         return UserPrincipal.create(user, oAuth2User.getAttributes());
     }
@@ -89,6 +106,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                 .image(User.DEFAULT_IMAGE_URL)
                 .attendanceCount(0L)
                 .challengeCount(0L)
+                .visitTime(LocalDate.now().of(2022,06,25))
                 .provider(AuthProvider.valueOf(oAuth2UserRequest.getClientRegistration().getRegistrationId()))
                 .providerId(oAuth2UserInfo.getId())
                 .build()
