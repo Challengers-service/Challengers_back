@@ -33,7 +33,12 @@ operation::feed/comment/deleteComment[snippets='http-request,path-parameters,htt
 [[resources-like]]
 == Like
 
-[[resources-feed-comment-createLike]]
+[[resources-feed-like-getLike]]
+=== Like 좋아요 조회
+
+operation::feed/like/getLike[snippets='http-request,http-response,response-fields']
+
+[[resources-feed-like-createLike]]
 === Like 좋아요 추가
 
 operation::feed/like/createLike[snippets='http-request,path-parameters,http-response']
