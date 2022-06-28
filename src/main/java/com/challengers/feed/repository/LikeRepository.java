@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface LikeRepository extends JpaRepository<Like, Long> {
+    Long countByChallengePhotoId(Long challengePhotoId);
     Like findByUserIdAndChallengePhotoId(Long userId, Long challengePhotoId);
 
     @Query("select l.challengePhotoId from Like l where l.userId= :userId")

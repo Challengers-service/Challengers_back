@@ -106,14 +106,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/**/*.css",
                         "/**/*.js")
                         .permitAll()
-                    .antMatchers(HttpMethod.GET,"/api/feed/comment/**")
+                    .antMatchers(HttpMethod.GET,"/api/feed/comment/**","/api/feed/post/**")
                         .permitAll()
                     .antMatchers("/auth/**", "/oauth2/**")
                         .permitAll()
                     .antMatchers("/login","/hello", "/h2-console/**", "/profile" //for dev
                         ,"/oauth2/**", "/api/signup/**", "/api/signin/**" // for Auth
                         ).permitAll()
-                    .antMatchers( "/**").hasRole(Role.USER.name())
+                    .antMatchers( "/**", "/api/feed/post/following").hasRole(Role.USER.name())
                         .anyRequest().authenticated()
                     .and()
                 .oauth2Login()
