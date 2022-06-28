@@ -1,10 +1,12 @@
-package com.challengers.feed;
+package com.challengers.feed.service;
 
 import com.challengers.common.exception.UserException;
+import com.challengers.feed.domain.Comment;
 import com.challengers.feed.dto.ChallengePhotoUserDto;
 import com.challengers.feed.dto.CommentDto;
 import com.challengers.feed.dto.CommentRequest;
 import com.challengers.feed.dto.CommentResponse;
+import com.challengers.feed.repository.CommentRepository;
 import com.challengers.user.domain.User;
 import com.challengers.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;

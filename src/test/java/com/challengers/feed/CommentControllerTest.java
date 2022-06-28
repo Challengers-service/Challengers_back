@@ -2,10 +2,12 @@ package com.challengers.feed;
 
 import com.challengers.common.WithMockCustomUser;
 import com.challengers.common.documentation.DocumentationWithSecurity;
+import com.challengers.feed.controller.CommentController;
 import com.challengers.feed.dto.ChallengePhotoUserDto;
 import com.challengers.feed.dto.CommentDto;
 import com.challengers.feed.dto.CommentRequest;
 import com.challengers.feed.dto.CommentResponse;
+import com.challengers.feed.service.CommentService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

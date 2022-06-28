@@ -1,4 +1,4 @@
-package com.challengers.feed;
+package com.challengers.feed.domain;
 
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -10,11 +10,13 @@ import javax.validation.constraints.NotNull;
 
 @Entity
 @Getter
+@Table(name="Likes")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Comment {
+public class Like {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "comment_id")
+    @Column(name = "like_id")
     private Long id;
 
     @NotNull
@@ -25,18 +27,10 @@ public class Comment {
     @Column(name = "user_id")
     private Long userId;
 
-    @Column(columnDefinition = "TEXT", nullable = false)
-    private String content;
-
     @Builder
-    public Comment(Long id, Long userId, Long challengePhotoId, String content) {
+    public Like(Long id, Long challengePhotoId, Long userId) {
         this.id = id;
-        this.userId = userId;
         this.challengePhotoId = challengePhotoId;
-        this.content = content;
-    }
-
-    public void update(String content){
-        this.content = content;
+        this.userId = userId;
     }
 }

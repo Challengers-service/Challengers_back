@@ -1,7 +1,8 @@
-package com.challengers.feed;
+package com.challengers.feed.controller;
 
 import com.challengers.feed.dto.CommentRequest;
 import com.challengers.feed.dto.CommentResponse;
+import com.challengers.feed.service.CommentService;
 import com.challengers.security.CurrentUser;
 import com.challengers.security.UserPrincipal;
 import lombok.RequiredArgsConstructor;

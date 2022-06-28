@@ -11,6 +11,21 @@ create table achievement (
     primary key (achievement_id)
 );
 
+create table comment (
+    comment_id bigint not null auto_increment,
+    challenge_photo_id bigint not null,
+    content TEXT not null,
+    user_id bigint not null,
+    primary key (comment_id)
+);
+
+create table likes (
+    like_id bigint not null auto_increment,
+    challenge_photo_id bigint not null,
+    user_id bigint not null,
+    primary key (like_id)
+);
+
 update user set attendance_count
 
 alter table users add attendance_count bigint(20);

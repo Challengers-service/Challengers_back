@@ -29,3 +29,17 @@ operation::feed/comment/updateComment[snippets='http-request,path-parameters,req
 === Comment 댓글 삭제
 
 operation::feed/comment/deleteComment[snippets='http-request,path-parameters,http-response']
+
+[[resources-like]]
+== Like
+
+[[resources-feed-comment-createLike]]
+=== Like 좋아요 추가
+
+operation::feed/like/createLike[snippets='http-request,path-parameters,http-response']
+
+
+[[resources-feed-like-deleteLike]]
+=== Like 좋아요 취소
+
+operation::feed/like/deleteLike[snippets='http-request,path-parameters,http-response']
