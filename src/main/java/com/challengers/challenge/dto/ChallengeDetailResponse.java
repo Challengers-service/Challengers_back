@@ -49,7 +49,7 @@ public class ChallengeDetailResponse {
                 challenge.getPhotoDescription(),
                 challenge.getChallengeRule(),
                 challenge.getCheckFrequencyType(),
-                challenge.getCheckTimesPerWeek(),
+                challenge.getCheckTimesPerRound(),
                 challenge.getCategory().toString(),
                 challenge.getStartDate().toString(),
                 challenge.getEndDate().toString(),

@@ -30,7 +30,7 @@ public class ChallengeRequest {
     @NotNull
     private String checkFrequencyType;
 
-    private int checkTimesPerWeek;
+    private int checkTimesPerRound;
     @NotNull
     private String category;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
@@ -50,7 +50,7 @@ public class ChallengeRequest {
 
     @Builder
     public ChallengeRequest(String name, MultipartFile image, String photoDescription, String challengeRule,
-                            String checkFrequencyType, int checkTimesPerWeek, String category, LocalDate startDate,
+                            String checkFrequencyType, int checkTimesPerRound, String category, LocalDate startDate,
                             LocalDate endDate, int depositPoint, String introduction, int userCountLimit,
                             List<MultipartFile> examplePhotos, List<String> tags) {
         this.name = name;
@@ -58,7 +58,7 @@ public class ChallengeRequest {
         this.photoDescription = photoDescription;
         this.challengeRule = challengeRule;
         this.checkFrequencyType = checkFrequencyType;
-        this.checkTimesPerWeek = checkTimesPerWeek;
+        this.checkTimesPerRound = checkTimesPerRound;
         this.category = category;
         this.startDate = startDate;
         this.endDate = endDate;
@@ -75,7 +75,7 @@ public class ChallengeRequest {
                 .photoDescription(photoDescription)
                 .challengeRule(challengeRule)
                 .checkFrequencyType(CheckFrequencyType.of(checkFrequencyType))
-                .checkTimesPerWeek(checkTimesPerWeek)
+                .checkTimesPerRound(checkTimesPerRound)
                 .category(Category.of(category))
                 .startDate(startDate)
                 .endDate(endDate)
