@@ -5,6 +5,7 @@ import com.challengers.challenge.domain.Challenge;
 import com.challengers.challenge.domain.ChallengeStatus;
 import com.challengers.challenge.domain.CheckFrequencyType;
 import com.challengers.challenge.dto.ChallengeRequest;
+import com.challengers.challenge.dto.ChallengeUpdateRequest;
 import com.challengers.challenge.repository.ChallengeRepository;
 import com.challengers.common.AwsS3Uploader;
 import com.challengers.examplephoto.repository.ExamplePhotoRepository;
@@ -17,6 +18,7 @@ import com.challengers.user.repository.AchievementRepository;
 import com.challengers.user.repository.UserRepository;
 import com.challengers.userchallenge.domain.UserChallenge;
 import com.challengers.userchallenge.repository.UserChallengeRepository;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,6 +27,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockMultipartFile;
 
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -78,7 +81,7 @@ public class ChallengeServiceTest {
                 .checkFrequencyType("EVERY_DAY")
                 .category("LIFE")
                 .startDate(LocalDate.now())
-                .endDate(LocalDate.now())
+                .endDate(LocalDate.now().plusDays(1))
                 .depositPoint(1000)
                 .introduction("매일 아침 7시에 일어나면 하루가 개운합니다.")
                 .examplePhotos(new ArrayList<>(Arrays.asList(
@@ -119,6 +122,52 @@ public class ChallengeServiceTest {
 
         //then
         verify(challengeRepository).save(any());
+    }
+
+    @Test
+    @DisplayName("챌린지 대표 이미지, 소개글 수정 성공")
+    void update_all() {
+        //given
+        String updatedImageUrl = "https://challengers-bucket.s3.ap-northeast-2.amazonaws.com/1747f32c-e5083c5e20.PNG";
+        ChallengeUpdateRequest challengeUpdateRequest = new ChallengeUpdateRequest(
+                new MockMultipartFile("image","image".getBytes()), "수정된 챌린지 소개글 입니다.");
+        when(challengeRepository.findById(any())).thenReturn(Optional.of(challenge));
+        when(awsS3Uploader.uploadImage(any())).thenReturn(updatedImageUrl);
+
+
+        //when
+        challengeService.update(challengeUpdateRequest, challenge.getId(), challenge.getHost().getId());
+
+        //then
+        assertThat(challenge.getImageUrl()).isEqualTo(updatedImageUrl);
+        assertThat(challenge.getIntroduction()).isEqualTo(challengeUpdateRequest.getIntroduction());
+    }
+
+    @Test
+    @DisplayName("챌린지 소개글 수정 성공")
+    void update_introduction() {
+        //given
+        ChallengeUpdateRequest challengeUpdateRequest = new ChallengeUpdateRequest(
+                null, "수정된 챌린지 소개글 입니다.");
+        when(challengeRepository.findById(any())).thenReturn(Optional.of(challenge));
+
+        //when
+        challengeService.update(challengeUpdateRequest, challenge.getId(), challenge.getHost().getId());
+
+        //then
+        assertThat(challenge.getIntroduction()).isEqualTo(challengeUpdateRequest.getIntroduction());
+    }
+
+    @Test
+    @DisplayName("챌린지 수정 실패 - 권한이 없습니다.")
+    void update_unauthorized() {
+        ChallengeUpdateRequest challengeUpdateRequest = new ChallengeUpdateRequest(
+                null, "수정된 챌린지 소개글 입니다.");
+        when(challengeRepository.findById(any())).thenReturn(Optional.of(challenge));
+
+        assertThatThrownBy(()-> challengeService.update(challengeUpdateRequest, challenge.getId(),
+                challenge.getHost().getId()+1))
+                .isInstanceOf(RuntimeException.class);
     }
 
     @Test

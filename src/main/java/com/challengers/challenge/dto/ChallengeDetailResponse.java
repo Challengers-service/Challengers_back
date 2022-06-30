@@ -22,7 +22,7 @@ public class ChallengeDetailResponse {
     private String photoDescription;
     private String challengeRule;
     private CheckFrequencyType checkFrequencyType;
-    private Integer checkTimesPerWeek;
+    private Integer checkTimesPerRound;
     private String category;
     private String startDate;
     private String endDate;
@@ -62,7 +62,7 @@ public class ChallengeDetailResponse {
                 challenge.getStatus().toString(),
                 TagResponse.listOf(challenge.getChallengeTags().getTags()),
                 challenge.getExamplePhotoUrls(),
-                challenge.getCreatedDate().toString()
+                challenge.getCreatedDate().toLocalDate().toString()
         );
     }
 }
