@@ -45,7 +45,7 @@ class ChallengeControllerTest extends DocumentationWithSecurity {
                 .photoDescription("7시를 가르키는 시계와 본인이 같이 나오게 사진을 찍으시면 됩니다.")
                 .challengeRule("중복된 사진을 올리면 안됩니다.")
                 .checkFrequencyType("EVERY_DAY")
-                .checkTimesPerWeek(7)
+                .checkTimesPerRound(7)
                 .category("LIFE")
                 .startDate(LocalDate.now())
                 .endDate(LocalDate.now())

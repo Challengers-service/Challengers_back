@@ -4,6 +4,7 @@ import com.challengers.common.BaseTimeEntity;
 import com.challengers.examplephoto.domain.ExamplePhoto;
 import com.challengers.tag.domain.ChallengeTags;
 import com.challengers.user.domain.User;
+import com.challengers.userchallenge.domain.UserChallenge;
 import lombok.*;
 
 import javax.persistence.*;
@@ -29,7 +30,7 @@ public class Challenge extends BaseTimeEntity {
     private String photoDescription;
     private String challengeRule;
     private CheckFrequencyType checkFrequencyType;
-    private int checkTimesPerWeek;
+    private int checkTimesPerRound;
     private Category category;
     private LocalDate startDate;
     private LocalDate endDate;
@@ -42,6 +43,8 @@ public class Challenge extends BaseTimeEntity {
     private int userCountLimit;
     private int reward;
     private int failedPoint;
+    private int round;
+    private ChallengeStatus status;
 
     @Embedded
     private ChallengeTags challengeTags = ChallengeTags.empty();
@@ -66,10 +69,10 @@ public class Challenge extends BaseTimeEntity {
 
     @Builder
     public Challenge(Long id, User host, String name, String imageUrl, String photoDescription,
-                     String challengeRule, CheckFrequencyType checkFrequencyType, int checkTimesPerWeek, Category category,
+                     String challengeRule, CheckFrequencyType checkFrequencyType, int checkTimesPerRound, Category category,
                      LocalDate startDate, LocalDate endDate, int depositPoint, String introduction,
                      Float totalStarRating, Float starRating, int reviewCount, int userCount,
-                     int userCountLimit, int reward, int failedPoint) {
+                     int userCountLimit, int reward, int failedPoint, int round, ChallengeStatus status) {
         this.id = id;
         this.host = host;
         this.name = name;
@@ -77,7 +80,7 @@ public class Challenge extends BaseTimeEntity {
         this.photoDescription = photoDescription;
         this.challengeRule = challengeRule;
         this.checkFrequencyType = checkFrequencyType;
-        this.checkTimesPerWeek = checkTimesPerWeek;
+        this.checkTimesPerRound = checkTimesPerRound;
         this.category = category;
         this.startDate = startDate;
         this.endDate = endDate;
@@ -90,6 +93,8 @@ public class Challenge extends BaseTimeEntity {
         this.userCountLimit = userCountLimit;
         this.reward = reward;
         this.failedPoint = failedPoint;
+        this.round = round;
+        this.status = status;
     }
 
     public void setHost(User host) {
@@ -121,14 +126,15 @@ public class Challenge extends BaseTimeEntity {
         updateStarRating();
     }
 
-    private void updateStarRating() {
-        starRating = reviewCount == 0 ? 0.0f : Math.round(totalStarRating/reviewCount*10)/10.0f;
+    public void toInProgress() {
+        this.status = ChallengeStatus.IN_PROGRESS;
     }
 
-    public ChallengeStatus getStatus() {
-        LocalDate now = LocalDate.now();
-        if (now.isBefore(startDate)) return ChallengeStatus.READY;
-        else if (now.isBefore(endDate) || now.isEqual(endDate)) return ChallengeStatus.PROCEEDING;
-        else return ChallengeStatus.DONE;
+    public void toValidate() {
+        this.status = ChallengeStatus.VALIDATE;
+    }
+
+    private void updateStarRating() {
+        starRating = reviewCount == 0 ? 0.0f : Math.round(totalStarRating/reviewCount*10)/10.0f;
     }
 }

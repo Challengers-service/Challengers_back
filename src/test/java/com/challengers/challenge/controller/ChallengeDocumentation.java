@@ -23,7 +23,7 @@ public class ChallengeDocumentation {
                 parameterWithName("photoDescription").description("인증샷 찍는 방법 설명글"),
                 parameterWithName("challengeRule").description("도전 규칙"),
                 parameterWithName("checkFrequencyType").description("인증 빈도 타입. 매일이면 EVERY_DAY를, 매주이면 EVERY_WEEK를, 직접 입력이면 OTHERS를 보내주시면 됩니다. [EVERY_DAY, EVERY_WEEK, OTHERS]"),
-                parameterWithName("checkTimesPerWeek").description("일주일에 인증해야 하는 횟수. 인증 빈도 타입이 EVERY_DAY 이면 7, EVERY_WEEK 이면 1, OTHERS 이면 사용자가 입력한 값"),
+                parameterWithName("checkTimesPerRound").description("회차 마다 인증해야 하는 횟수. 인증 빈도 타입이 EVERY_DAY 이면 7, EVERY_WEEK 이면 1, OTHERS 이면 사용자가 입력한 값"),
                 parameterWithName("category").description("카테고리. [EXERCISE, EATING_HABIT, LIFE, EMOTION, HOBBY, SURROUNDINGS, OTHER]"),
                 parameterWithName("startDate").description("챌린지 시작일. [yyyy-MM-dd] 형식으로 보내주시면 됩니다."),
                 parameterWithName("endDate").description("챌린지 종료일 [yyyy-MM-dd]"),

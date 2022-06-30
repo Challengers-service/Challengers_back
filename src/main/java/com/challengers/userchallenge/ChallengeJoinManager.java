@@ -25,6 +25,6 @@ public class ChallengeJoinManager {
         return !challenge.getCheckFrequencyType().equals(CheckFrequencyType.OTHERS)
                 || ChronoUnit.DAYS.between(LocalDate.now(),
                 LocalDate.now().with(TemporalAdjusters.next(DayOfWeek.MONDAY)))
-                >= challenge.getCheckTimesPerWeek();
+                >= challenge.getCheckTimesPerRound();
     }
 }
