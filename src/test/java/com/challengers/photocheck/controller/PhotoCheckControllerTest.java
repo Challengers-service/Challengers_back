@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import static com.challengers.testtool.UploadSupporter.uploadMockSupport;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -65,7 +64,7 @@ class PhotoCheckControllerTest extends DocumentationWithSecurity {
         when(photoCheckService.findPhotoCheck(any())).thenReturn(PhotoCheckResponse.of(photoCheck));
 
         mockMvc.perform(RestDocumentationRequestBuilders.get("/api/photo_check/{photo_check_id}",1L)
-                .header("Authorization", StringToken.getTokenString()))
+                .header("Authorization", StringToken.getToken()))
                 .andExpect(status().isOk())
                 .andDo(PhotoCheckDocumentation.getPhotoCheck());
     }
@@ -78,7 +77,7 @@ class PhotoCheckControllerTest extends DocumentationWithSecurity {
         when(photoCheckService.addPhotoCheck(any(),any())).thenReturn(1L);
 
         mockMvc.perform(uploadMockSupport(multipart("/api/photo_check"),photoCheckRequest)
-                .header("Authorization", StringToken.getTokenString())
+                .header("Authorization", StringToken.getToken())
                 .with(requestPostProcessor -> {
                     requestPostProcessor.setMethod("POST");
                     return requestPostProcessor;
@@ -94,7 +93,7 @@ class PhotoCheckControllerTest extends DocumentationWithSecurity {
         CheckRequest checkRequest = new CheckRequest(new ArrayList<>(Arrays.asList(1L,2L,3L)));
 
         mockMvc.perform(post("/api/photo_check/pass")
-                .header("Authorization", StringToken.getTokenString())
+                .header("Authorization", StringToken.getToken())
                 .content(mapper.writeValueAsString(checkRequest))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -107,7 +106,7 @@ class PhotoCheckControllerTest extends DocumentationWithSecurity {
         CheckRequest checkRequest = new CheckRequest(new ArrayList<>(Arrays.asList(1L)));
 
         mockMvc.perform(post("/api/photo_check/fail")
-                .header("Authorization", StringToken.getTokenString())
+                .header("Authorization", StringToken.getToken())
                 .content(mapper.writeValueAsString(checkRequest))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())

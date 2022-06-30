@@ -2,6 +2,7 @@ package com.challengers.challenge.controller;
 
 import com.challengers.challenge.dto.ChallengeRequest;
 import com.challengers.challenge.dto.ChallengeDetailResponse;
+import com.challengers.challenge.dto.ChallengeUpdateRequest;
 import com.challengers.challenge.service.ChallengeService;
 import com.challengers.security.CurrentUser;
 import com.challengers.security.UserPrincipal;
@@ -28,6 +29,15 @@ public class ChallengeController {
                                           @CurrentUser UserPrincipal user) {
         Long challengeId = challengeService.create(challengeRequest, user.getId());
         return ResponseEntity.created(URI.create("/api/challenge/"+challengeId)).build();
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Void> updateChallenge(@Valid @ModelAttribute ChallengeUpdateRequest challengeUpdateRequest,
+                                                @PathVariable(name = "id") Long challengeId,
+                                                @CurrentUser UserPrincipal user) {
+
+        challengeService.update(challengeUpdateRequest, challengeId, user.getId());
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{id}")

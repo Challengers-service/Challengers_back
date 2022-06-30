@@ -3,6 +3,7 @@ package com.challengers.challenge.service;
 import com.challengers.challenge.domain.Challenge;
 import com.challengers.challenge.dto.ChallengeDetailResponse;
 import com.challengers.challenge.dto.ChallengeRequest;
+import com.challengers.challenge.dto.ChallengeUpdateRequest;
 import com.challengers.challenge.repository.ChallengeRepository;
 import com.challengers.challengetag.domain.ChallengeTag;
 import com.challengers.common.AwsS3Uploader;
@@ -21,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
@@ -39,17 +41,14 @@ public class ChallengeService {
     public Long create(ChallengeRequest challengeRequest, Long userId) {
         User host = userRepository.findById(userId).orElseThrow(NoSuchElementException::new);
         // host의 포인트를 예치포인트만큼 감소시켜야함
-
-        Challenge challenge = challengeRequest.toChallenge();
         // challenge 시작일, 종료일이 올바르지 않을 경우 에러 반환시켜야함
 
-        challenge.setHost(host);
         String imageUrl = "https://challengers-bucket.s3.ap-northeast-2.amazonaws.com/challengeDefaultImage.jpg";
         if (challengeRequest.getImage() != null)
             imageUrl = awsS3Uploader.uploadImage(challengeRequest.getImage());
-        challenge.setImageUrl(imageUrl);
-        challenge.addExamplePhotos(awsS3Uploader.uploadImages(challengeRequest.getExamplePhotos()));
-        challenge.getStatus();
+        List<String> examplePhotoUrls = awsS3Uploader.uploadImages(challengeRequest.getExamplePhotos());
+
+        Challenge challenge = Challenge.create(challengeRequest, host, imageUrl, examplePhotoUrls);
         challengeRepository.save(challenge);
 
         challengeRequest.getTags()
@@ -62,6 +61,20 @@ public class ChallengeService {
         updateChallengeAchievement(host);
 
         return challenge.getId();
+    }
+
+    @Transactional
+    public void update(ChallengeUpdateRequest challengeUpdateRequest, Long challengeId, Long userId) {
+        Challenge challenge = challengeRepository.findById(challengeId).orElseThrow(NoSuchElementException::new);
+        if (!challenge.getHost().getId().equals(userId)) throw new RuntimeException("권한이 없는 요청");
+
+        String imageUrl = challenge.getImageUrl();
+        if (challengeUpdateRequest.getImage()!=null) {
+            awsS3Uploader.deleteImage(challenge.getImageUrl());
+            imageUrl = awsS3Uploader.uploadImage(challengeUpdateRequest.getImage());
+        }
+
+        challenge.update(imageUrl,challengeUpdateRequest.getIntroduction());
     }
 
     @Transactional

@@ -12,6 +12,7 @@ challenge-api-docs
 
 [[resources-challenge-findChallenge]]
 === Challenge 조회
+챌린지 상세 페이지 조회
 
 operation::challenge/findChallenge[snippets='http-request,path-parameters,http-response,response-fields']
 
@@ -19,6 +20,12 @@ operation::challenge/findChallenge[snippets='http-request,path-parameters,http-r
 === Challenge 생성
 
 operation::challenge/createChallenge[snippets='http-request,request-parameters,request-parts,http-response']
+
+[[resources-challenge-updateChallenge]]
+=== Challenge 수정
+챌린지 수정은 대표 이미지, 챌린지 소개글만 수정이 가능합니다.
+
+operation::challenge/updateChallenge[snippets='http-request,request-parameters,request-parts,http-response']
 
 [[resources-challenge-deleteChallenge]]
 === Challenge 삭제

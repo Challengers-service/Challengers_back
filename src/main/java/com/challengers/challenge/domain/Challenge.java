@@ -1,10 +1,10 @@
 package com.challengers.challenge.domain;
 
+import com.challengers.challenge.dto.ChallengeRequest;
 import com.challengers.common.BaseTimeEntity;
 import com.challengers.examplephoto.domain.ExamplePhoto;
 import com.challengers.tag.domain.ChallengeTags;
 import com.challengers.user.domain.User;
-import com.challengers.userchallenge.domain.UserChallenge;
 import lombok.*;
 
 import javax.persistence.*;
@@ -97,6 +97,28 @@ public class Challenge extends BaseTimeEntity {
         this.status = status;
     }
 
+    public static Challenge create(ChallengeRequest request, User host, String imageUrl, List<String> examplePhotoUrls) {
+        validate(request);
+        Challenge challenge = request.toChallenge();
+        challenge.setHost(host);
+        challenge.setImageUrl(imageUrl);
+        challenge.addExamplePhotos(examplePhotoUrls);
+        challenge.initStatus();
+        return challenge;
+    }
+
+    private static void validate(ChallengeRequest request) {
+        LocalDate startDate = request.getStartDate();
+        LocalDate endDate = request.getEndDate();
+        if (startDate.isEqual(endDate) || startDate.isAfter(endDate))
+            throw new RuntimeException("챌린지 종료일은 챌린지 시작일 이후이여야 합니다.");
+    }
+
+    public void update(String imageUrl, String introduction) {
+        this.imageUrl = imageUrl;
+        this.introduction = introduction;
+    }
+
     public void setHost(User host) {
         this.host = host;
     }
@@ -136,5 +158,10 @@ public class Challenge extends BaseTimeEntity {
 
     private void updateStarRating() {
         starRating = reviewCount == 0 ? 0.0f : Math.round(totalStarRating/reviewCount*10)/10.0f;
+    }
+
+    public void initStatus() {
+        if (startDate.isAfter(LocalDate.now())) status = ChallengeStatus.READY;
+        else status = ChallengeStatus.IN_PROGRESS;
     }
 }
