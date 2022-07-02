@@ -96,7 +96,8 @@ public class ChallengeDocumentation {
                 fieldWithPath("tags.[].id").type(JsonFieldType.NUMBER).description("챌린지 태그 아이디"),
                 fieldWithPath("tags.[].name").type(JsonFieldType.STRING).description("챌린지 태그 이름"),
                 fieldWithPath("examplePhotos").type(JsonFieldType.ARRAY).description("예시 사진들의 URL"),
-                fieldWithPath("createdDate").type(JsonFieldType.STRING).description("챌린지 생성 일 [yyyy-MM-dd]")
+                fieldWithPath("createdDate").type(JsonFieldType.STRING).description("챌린지 생성 일 [yyyy-MM-dd]"),
+                fieldWithPath("cart").type(JsonFieldType.BOOLEAN).description("찜하기 여부")
         };
         return document("challenge/findChallenge",
                 preprocessRequest(prettyPrint()),

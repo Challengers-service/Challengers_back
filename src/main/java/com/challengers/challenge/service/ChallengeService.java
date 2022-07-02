@@ -101,10 +101,11 @@ public class ChallengeService {
     }
 
     @Transactional(readOnly = true)
-    public ChallengeDetailResponse findChallenge(Long id) {
-        Challenge challenge = challengeRepository.findById(id).orElseThrow(NoSuchElementException::new);
+    public ChallengeDetailResponse findChallenge(Long challengeId, Long userId) {
+        Challenge challenge = challengeRepository.findById(challengeId).orElseThrow(NoSuchElementException::new);
 
-        return ChallengeDetailResponse.of(challenge);
+        return ChallengeDetailResponse.of(challenge,
+                cartRepository.findByChallengeIdAndUserId(challengeId, userId).isPresent());
     }
 
     @Transactional
