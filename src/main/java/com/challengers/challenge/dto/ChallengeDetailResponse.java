@@ -37,8 +37,9 @@ public class ChallengeDetailResponse {
     private List<String> examplePhotos;
 
     private String createdDate;
+    private boolean cart;
 
-    public static ChallengeDetailResponse of(Challenge challenge) {
+    public static ChallengeDetailResponse of(Challenge challenge, boolean cart) {
         return new ChallengeDetailResponse(
                 challenge.getId(),
                 challenge.getHost().getId(),
@@ -62,7 +63,8 @@ public class ChallengeDetailResponse {
                 challenge.getStatus().toString(),
                 TagResponse.listOf(challenge.getChallengeTags().getTags()),
                 challenge.getExamplePhotoUrls(),
-                challenge.getCreatedDate().toLocalDate().toString()
+                challenge.getCreatedDate().toLocalDate().toString(),
+                cart
         );
     }
 }

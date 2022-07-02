@@ -125,8 +125,8 @@ class ChallengeControllerTest extends DocumentationWithSecurity {
                 "챌린지 호스트 이름", "챌린지 이름", "https://challengeImageUrl.png", "예시 사진 설명","챌린지 규칙", CheckFrequencyType.EVERY_DAY, 1,
                 "EXERCISE","2022-06-21","2022-07-21",1000,"챌린지 소개글",3.5f,0,32,2000, ChallengeStatus.IN_PROGRESS.toString(),
                 new ArrayList<>(Arrays.asList(new TagResponse(1L,"미라클모닝"), new TagResponse(2L, "기상"))),
-                new ArrayList<>(Arrays.asList("https://examplePhotoUrl1.png","https://examplePhotoUrl2.png")), "2022-01-01");
-        when(challengeService.findChallenge(any())).thenReturn(challengeDetailResponse);
+                new ArrayList<>(Arrays.asList("https://examplePhotoUrl1.png","https://examplePhotoUrl2.png")), "2022-01-01", false);
+        when(challengeService.findChallenge(any(),any())).thenReturn(challengeDetailResponse);
 
         mockMvc.perform(RestDocumentationRequestBuilders.get("/api/challenge/{id}",1)
                 .header("Authorization", StringToken.getToken())

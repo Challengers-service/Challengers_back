@@ -26,7 +26,8 @@ public class ChallengeController {
     @GetMapping("/{id}")
     public ResponseEntity<ChallengeDetailResponse> findChallenge(@PathVariable Long id,
                                                                  @CurrentUser UserPrincipal user) {
-        return ResponseEntity.ok(challengeService.findChallenge(id));
+        Long userId = user == null ? null : user.getId();
+        return ResponseEntity.ok(challengeService.findChallenge(id,userId));
     }
 
     @GetMapping
