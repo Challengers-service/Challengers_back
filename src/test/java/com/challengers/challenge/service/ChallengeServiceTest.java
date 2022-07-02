@@ -1,5 +1,6 @@
 package com.challengers.challenge.service;
 
+import com.challengers.cart.repository.CartRepository;
 import com.challengers.challenge.domain.Category;
 import com.challengers.challenge.domain.Challenge;
 import com.challengers.challenge.domain.ChallengeStatus;
@@ -47,6 +48,7 @@ public class ChallengeServiceTest {
     @Mock UserChallengeRepository userChallengeRepository;
     @Mock AchievementRepository achievementRepository;
     @Mock AwsS3Uploader awsS3Uploader;
+    @Mock CartRepository cartRepository;
 
     ChallengeService challengeService;
 
@@ -57,7 +59,7 @@ public class ChallengeServiceTest {
     @BeforeEach
     void setUp() {
         challengeService = new ChallengeService(challengeRepository,achievementRepository,tagRepository,
-                userRepository,examplePhotoRepository,userChallengeRepository,awsS3Uploader);
+                userRepository,examplePhotoRepository,userChallengeRepository,awsS3Uploader,cartRepository);
 
         user = User.builder()
                 .id(0L)
