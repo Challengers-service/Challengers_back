@@ -2,11 +2,15 @@ package com.challengers.challenge.controller;
 
 import com.challengers.challenge.dto.ChallengeRequest;
 import com.challengers.challenge.dto.ChallengeDetailResponse;
+import com.challengers.challenge.dto.ChallengeResponse;
 import com.challengers.challenge.dto.ChallengeUpdateRequest;
 import com.challengers.challenge.service.ChallengeService;
 import com.challengers.security.CurrentUser;
 import com.challengers.security.UserPrincipal;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,8 +24,16 @@ public class ChallengeController {
     private final ChallengeService challengeService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<ChallengeDetailResponse> findChallenge(@PathVariable Long id) {
+    public ResponseEntity<ChallengeDetailResponse> findChallenge(@PathVariable Long id,
+                                                                 @CurrentUser UserPrincipal user) {
         return ResponseEntity.ok(challengeService.findChallenge(id));
+    }
+
+    @GetMapping
+    public ResponseEntity<Page<ChallengeResponse>> findCanJoinChallenges(@PageableDefault(size = 6) Pageable pageable,
+                                                                          @CurrentUser UserPrincipal user) {
+        Long userId = user == null ? null : user.getId();
+        return ResponseEntity.ok(challengeService.findReadyOrInProgressChallenges(pageable, userId));
     }
 
     @PostMapping

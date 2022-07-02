@@ -31,6 +31,12 @@ public class ChallengeTags {
 			.collect(Collectors.toList());
 	}
 
+	public List<String> getStringTags() {
+		return challengeTags.stream()
+				.map(challengeTag -> challengeTag.getTag().getName())
+				.collect(Collectors.toList());
+	}
+
 
 	public void addChallengeTag(ChallengeTag challengeTag) {
 		if (!isContainChallengeTag(challengeTag))

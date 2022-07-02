@@ -1,5 +1,6 @@
 package com.challengers.challenge.controller;
 
+import org.springframework.restdocs.headers.HeaderDescriptor;
 import org.springframework.restdocs.mockmvc.RestDocumentationResultHandler;
 import org.springframework.restdocs.payload.FieldDescriptor;
 import org.springframework.restdocs.payload.JsonFieldType;
@@ -9,6 +10,8 @@ import org.springframework.test.web.servlet.ResultHandler;
 
 import java.io.FileDescriptor;
 
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
@@ -19,6 +22,10 @@ import static org.springframework.restdocs.request.RequestDocumentation.requestP
 public class ChallengeDocumentation {
 
     public static RestDocumentationResultHandler createChallenge() {
+        HeaderDescriptor[] requestHeaders = new HeaderDescriptor[]{
+                headerWithName("Authorization").description("JWT 토큰")
+        };
+
         ParameterDescriptor[] requestParam = new ParameterDescriptor[]{
                 parameterWithName("name").description("생성할 챌린지 이름"),
                 parameterWithName("photoDescription").description("인증샷 찍는 방법 설명글"),
@@ -39,18 +46,27 @@ public class ChallengeDocumentation {
         };
         return document("challenge/createChallenge",
                 preprocessRequest(prettyPrint()),
+                requestHeaders(requestHeaders),
                 requestParameters(requestParam),
                 requestParts(requestPart)
         );
     }
 
     public static RestDocumentationResultHandler deleteChallenge() {
+        HeaderDescriptor[] requestHeaders = new HeaderDescriptor[]{
+                headerWithName("Authorization").description("JWT 토큰")
+        };
         return document("challenge/deleteChallenge",
+                requestHeaders(requestHeaders),
                 pathParameters(parameterWithName("id").description("삭제할 챌린지 ID"))
         );
     }
 
     public static RestDocumentationResultHandler findChallenge() {
+        HeaderDescriptor[] requestHeaders = new HeaderDescriptor[]{
+                headerWithName("Authorization").description("JWT 토큰. Required=false")
+        };
+
         FieldDescriptor[] responseUser= new FieldDescriptor[]{
                 fieldWithPath("id").type(JsonFieldType.NUMBER).description("조회할 챌린지의 아이디"),
                 fieldWithPath("hostId").type(JsonFieldType.NUMBER).description("챌린지를 생성한 유저의 아이디"),
@@ -86,29 +102,97 @@ public class ChallengeDocumentation {
                 preprocessRequest(prettyPrint()),
                 preprocessResponse(prettyPrint()),
                 responseFields(responseUser),
+                requestHeaders(requestHeaders),
                 pathParameters(parameterWithName("id").description("조회할 챌린지 ID"))
         );
     }
 
     public static RestDocumentationResultHandler joinChallenge() {
+        HeaderDescriptor[] requestHeaders = new HeaderDescriptor[]{
+                headerWithName("Authorization").description("JWT 토큰")
+        };
+
         return document("challenge/joinChallenge",
                 preprocessRequest(prettyPrint()),
                 preprocessResponse(prettyPrint()),
+                requestHeaders(requestHeaders),
                 pathParameters(parameterWithName("id").description("참여할 챌린지 ID"))
         );
     }
 
     public static RestDocumentationResultHandler updateChallenge() {
-        ParameterDescriptor[] requestParam = new ParameterDescriptor[]{
-                parameterWithName("introduction").description("수정할 소개글")
+        HeaderDescriptor[] requestHeaders = new HeaderDescriptor[]{
+                headerWithName("Authorization").description("JWT 토큰")
         };
+
+        ParameterDescriptor[] requestParam = new ParameterDescriptor[]{
+                parameterWithName("introduction").description("수정할 소개글. Required=true")
+        };
+
         RequestPartDescriptor[] requestPart = {
-                partWithName("image").description("수정할 챌린지 대표 이미지 파일. 소개글만 수정하는 경우에는 안보내시면 됩니다.")
+                partWithName("image").description("수정할 챌린지 대표 이미지 파일. Required=false")
         };
         return document("challenge/updateChallenge",
                 preprocessRequest(prettyPrint()),
+                requestHeaders(requestHeaders),
                 requestParameters(requestParam),
-                requestParts(requestPart)
+                requestParts(requestPart),
+                pathParameters(parameterWithName("id").description("수정할 챌린지 ID"))
+        );
+    }
+
+    public static RestDocumentationResultHandler findCanJoinChallenges() {
+        HeaderDescriptor[] requestHeaders = new HeaderDescriptor[]{
+                headerWithName("Authorization").description("JWT 토큰. Required=false").optional()
+        };
+
+        ParameterDescriptor[] requestParams = new ParameterDescriptor[]{
+                parameterWithName("page").description("페이지 번호. 0부터 시작합니다. Required=false, Default=0").optional(),
+                parameterWithName("sort").description("페이지 정렬 기준. Required=false, Default=created_date,desc").optional()
+        };
+
+        FieldDescriptor[] response= new FieldDescriptor[]{
+                fieldWithPath("content").type(JsonFieldType.ARRAY).description("조회한 챌린지들"),
+                fieldWithPath("content.[].challengeId").type(JsonFieldType.NUMBER).description("챌린지 ID"),
+                fieldWithPath("content.[].name").type(JsonFieldType.STRING).description("챌린지 이름"),
+                fieldWithPath("content.[].category").type(JsonFieldType.STRING).description("챌린지 카테고리"),
+                fieldWithPath("content.[].tags").type(JsonFieldType.ARRAY).description("챌린지 태그 Array"),
+                fieldWithPath("content.[].createdDate").type(JsonFieldType.STRING).description("챌린지 생성일"),
+                fieldWithPath("content.[].remainingDays").type(JsonFieldType.NUMBER).description("챌린지 종료까지 남은 일 수"),
+                fieldWithPath("content.[].cart").type(JsonFieldType.BOOLEAN).description("챌린지 찜 여부"),
+                fieldWithPath("content.[].challengersIds").type(JsonFieldType.ARRAY).description("챌린지 참여자들의 ID"),
+
+                fieldWithPath("pageable").type(JsonFieldType.OBJECT).description("페이징 정보"),
+                fieldWithPath("pageable.sort").type(JsonFieldType.OBJECT).description("페이징 정렬 정보"),
+                fieldWithPath("pageable.sort.empty").type(JsonFieldType.BOOLEAN).description("페이지 정렬 조건 입력 여부"),
+                fieldWithPath("pageable.sort.sorted").type(JsonFieldType.BOOLEAN).description("페이징 정렬 사용 여부"),
+                fieldWithPath("pageable.sort.unsorted").type(JsonFieldType.BOOLEAN).description("페이징 정렬 사용 여부. 항상 sorted와 반대이다."),
+                fieldWithPath("pageable.offset").type(JsonFieldType.NUMBER).description("이전 페이지까지의 content 총 갯수"),
+                fieldWithPath("pageable.pageNumber").type(JsonFieldType.NUMBER).description("페이지 번호"),
+                fieldWithPath("pageable.pageSize").type(JsonFieldType.NUMBER).description("페이징 사이즈. default=6"),
+                fieldWithPath("pageable.paged").type(JsonFieldType.BOOLEAN).description("페이지 번호 입력 여부"),
+                fieldWithPath("pageable.unpaged").type(JsonFieldType.BOOLEAN).description("페이지 번호 입력 여부. 항상 paged와 반대이다."),
+
+                fieldWithPath("last").type(JsonFieldType.BOOLEAN).description("마지막 페이지인지"),
+                fieldWithPath("totalPages").type(JsonFieldType.NUMBER).description("총 페이지 갯수"),
+                fieldWithPath("totalElements").type(JsonFieldType.NUMBER).description("총 페이지 컨텐트 갯수"),
+                fieldWithPath("size").type(JsonFieldType.NUMBER).description("페이징 사이즈"),
+                fieldWithPath("number").type(JsonFieldType.NUMBER).description(""),
+                fieldWithPath("sort").type(JsonFieldType.OBJECT).description("페이징 정렬 정보"),
+                fieldWithPath("sort.empty").type(JsonFieldType.BOOLEAN).description("페이지 정렬 조건 입력 여부"),
+                fieldWithPath("sort.sorted").type(JsonFieldType.BOOLEAN).description("페이징 정렬 사용 여부"),
+                fieldWithPath("sort.unsorted").type(JsonFieldType.BOOLEAN).description("페이징 정렬 사용 여부. 항상 sorted와 반대이다."),
+                fieldWithPath("first").type(JsonFieldType.BOOLEAN).description("첫 페이지인지"),
+                fieldWithPath("numberOfElements").type(JsonFieldType.NUMBER).description("해당 페이지에 담긴 content 갯수"),
+                fieldWithPath("empty").type(JsonFieldType.BOOLEAN).description("content 존재 여부")
+        };
+
+        return document("challenge/findCanJoinChallenge",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint()),
+                requestHeaders(requestHeaders),
+                requestParameters(requestParams),
+                responseFields(response)
         );
     }
 }

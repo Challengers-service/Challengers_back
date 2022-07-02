@@ -1,8 +1,10 @@
 package com.challengers.challenge.service;
 
+import com.challengers.cart.repository.CartRepository;
 import com.challengers.challenge.domain.Challenge;
 import com.challengers.challenge.dto.ChallengeDetailResponse;
 import com.challengers.challenge.dto.ChallengeRequest;
+import com.challengers.challenge.dto.ChallengeResponse;
 import com.challengers.challenge.dto.ChallengeUpdateRequest;
 import com.challengers.challenge.repository.ChallengeRepository;
 import com.challengers.challengetag.domain.ChallengeTag;
@@ -19,11 +21,14 @@ import com.challengers.userchallenge.ChallengeJoinManager;
 import com.challengers.userchallenge.domain.UserChallenge;
 import com.challengers.userchallenge.repository.UserChallengeRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -35,6 +40,7 @@ public class ChallengeService {
     private final ExamplePhotoRepository examplePhotoRepository;
     private final UserChallengeRepository userChallengeRepository;
     private final AwsS3Uploader awsS3Uploader;
+    private final CartRepository cartRepository;
 
 
     @Transactional
@@ -119,6 +125,16 @@ public class ChallengeService {
         updateChallengeAchievement(user);
 
         userChallengeRepository.save(UserChallenge.create(challenge, user));
+    }
+
+    @Transactional(readOnly = true)
+    public Page<ChallengeResponse> findReadyOrInProgressChallenges(Pageable pageable, Long userId) {
+        return challengeRepository.findReadyOrInProgressChallenges(pageable).map(challenge -> new ChallengeResponse(challenge,
+                userId != null && cartRepository.findByChallengeIdAndUserId(challenge.getId(), userId).isPresent(),
+                userChallengeRepository.findByChallengeId(challenge.getId())
+                        .stream().map(userChallenge -> userChallenge.getUser().getId())
+                        .collect(Collectors.toList())
+                ));
     }
 
     private void updateChallengeAchievement(User user){

@@ -4,6 +4,7 @@ import com.challengers.challenge.domain.ChallengeStatus;
 import com.challengers.challenge.domain.CheckFrequencyType;
 import com.challengers.challenge.dto.ChallengeDetailResponse;
 import com.challengers.challenge.dto.ChallengeRequest;
+import com.challengers.challenge.dto.ChallengeResponse;
 import com.challengers.challenge.dto.ChallengeUpdateRequest;
 import com.challengers.challenge.service.ChallengeService;
 import com.challengers.common.WithMockCustomUser;
@@ -16,6 +17,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
@@ -124,6 +129,7 @@ class ChallengeControllerTest extends DocumentationWithSecurity {
         when(challengeService.findChallenge(any())).thenReturn(challengeDetailResponse);
 
         mockMvc.perform(RestDocumentationRequestBuilders.get("/api/challenge/{id}",1)
+                .header("Authorization", StringToken.getToken())
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(ChallengeDocumentation.findChallenge());
@@ -147,7 +153,7 @@ class ChallengeControllerTest extends DocumentationWithSecurity {
                 new MockMultipartFile("image file","image file".getBytes()),
                 "수정된 챌린지 소개글 입니다.");
 
-        mockMvc.perform(uploadMockSupport(multipart("/api/challenge/{id}",1L), challengeUpdateRequest)
+        mockMvc.perform(uploadMockSupport(RestDocumentationRequestBuilders.multipart("/api/challenge/{id}",1L), challengeUpdateRequest)
                 .header("Authorization", StringToken.getToken())
                 .with(requestPostProcessor -> {
                     requestPostProcessor.setMethod("PUT");
@@ -158,6 +164,24 @@ class ChallengeControllerTest extends DocumentationWithSecurity {
                 .andDo(ChallengeDocumentation.updateChallenge());
 
         verify(challengeService).update(any(),any(),any());
+    }
+
+    @Test
+    @WithMockCustomUser
+    @DisplayName("참여 가능한 챌린지 조회")
+    void findCanJoinChallenges() throws Exception{
+        PageImpl<ChallengeResponse> page = new PageImpl<>(Arrays.asList(new ChallengeResponse(1L, "매일 아침 7시에 일어나기!", "LIFE",
+                        new ArrayList<>(Arrays.asList("미라클 모닝", "기상")), "2022.07.02", 10, false,
+                        new ArrayList<>(Arrays.asList(1L, 2L, 3L))),
+                new ChallengeResponse(2L, "하루 물 2L 마시기", "LIFE",
+                        new ArrayList<>(Arrays.asList("수분 섭취", "건강")), "2022.07.03", 14, true,
+                        new ArrayList<>(Arrays.asList(1L, 2L)))),PageRequest.of(0,6, Sort.by("created_date")),2);
+
+        when(challengeService.findReadyOrInProgressChallenges(any(),any())).thenReturn(page);
+        mockMvc.perform(get("/api/challenge")
+                .header("Authorization", StringToken.getToken()))
+                .andExpect(status().isOk())
+                .andDo(ChallengeDocumentation.findCanJoinChallenges());
     }
 
 }

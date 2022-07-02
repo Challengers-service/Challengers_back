@@ -12,6 +12,8 @@ public interface UserChallengeRepository extends JpaRepository<UserChallenge,Lon
     Optional<UserChallenge> findByUserIdAndChallengeId(Long userId, Long challengeId);
     Long countByChallengeId(Long challengeId);
 
+    List<UserChallenge> findByChallengeId(Long challengeId);
+
     @Query("select uc from UserChallenge uc left join uc.photoChecks pc where uc.status=2 group by uc.id having count(pc.id) < uc.challenge.checkTimesPerRound")
     List<UserChallenge> findAllFail();
 }

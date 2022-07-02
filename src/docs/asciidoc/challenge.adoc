@@ -10,29 +10,43 @@ challenge-api-docs
 [[resources-challenge]]
 == Challenge
 
-[[resources-challenge-findChallenge]]
-=== Challenge 조회
-챌린지 상세 페이지 조회
-
-operation::challenge/findChallenge[snippets='http-request,path-parameters,http-response,response-fields']
-
 [[resources-challenge-createChallenge]]
 === Challenge 생성
 
-operation::challenge/createChallenge[snippets='http-request,request-parameters,request-parts,http-response']
+operation::challenge/createChallenge[snippets='http-request,request-headers,request-parameters,request-parts,http-response']
 
 [[resources-challenge-updateChallenge]]
 === Challenge 수정
 챌린지 수정은 대표 이미지, 챌린지 소개글만 수정이 가능합니다.
 
-operation::challenge/updateChallenge[snippets='http-request,request-parameters,request-parts,http-response']
+operation::challenge/updateChallenge[snippets='http-request,path-parameters,request-headers,request-parameters,request-parts,http-response']
 
 [[resources-challenge-deleteChallenge]]
 === Challenge 삭제
 
-operation::challenge/deleteChallenge[snippets='http-request,path-parameters,http-response']
+operation::challenge/deleteChallenge[snippets='http-request,path-parameters,request-headers,http-response']
 
 [[resources-challenge-joinChallenge]]
 === Challenge 참여
 
-operation::challenge/joinChallenge[snippets='http-request,path-parameters,http-response']
+operation::challenge/joinChallenge[snippets='http-request,path-parameters,request-headers,http-response']
+
+[[resources-challenge-findCanJoinChallenges]]
+=== Challenge 조회
+
+현재 준비중이거나 진행중인 모든 챌린지들을 페이지 단위로 조회한다.
+
+sort parameter 를 이용해 인기 챌린지, 신규 챌린지를 조회할 수 있다.
+
+인기 챌린지 = /api/challenge?page=0&sort=user_count,desc
+
+신규 챌린지 = /api/challenge?page=0&sort=created_date,desc
+
+operation::challenge/findCanjoinChallenge[snippets='http-request,request-headers,request-parameters,http-response,response-fields']
+
+[[resources-challenge-findChallenge]]
+=== Challenge 상세 조회
+
+챌린지 상세 정보 페이지 조회
+
+operation::challenge/findChallenge[snippets='http-request,path-parameters,request-headers,http-response,response-fields']
