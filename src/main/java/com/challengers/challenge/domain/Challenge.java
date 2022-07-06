@@ -41,7 +41,6 @@ public class Challenge extends BaseTimeEntity {
     private int reviewCount;
     private int userCount;
     private int userCountLimit;
-    private int reward;
     private int failedPoint;
     private int round;
     private ChallengeStatus status;
@@ -72,7 +71,7 @@ public class Challenge extends BaseTimeEntity {
                      String challengeRule, CheckFrequencyType checkFrequencyType, int checkTimesPerRound, Category category,
                      LocalDate startDate, LocalDate endDate, int depositPoint, String introduction,
                      Float totalStarRating, Float starRating, int reviewCount, int userCount,
-                     int userCountLimit, int reward, int failedPoint, int round, ChallengeStatus status) {
+                     int userCountLimit, int failedPoint, int round, ChallengeStatus status) {
         this.id = id;
         this.host = host;
         this.name = name;
@@ -91,7 +90,6 @@ public class Challenge extends BaseTimeEntity {
         this.reviewCount = reviewCount;
         this.userCount = userCount;
         this.userCountLimit = userCountLimit;
-        this.reward = reward;
         this.failedPoint = failedPoint;
         this.round = round;
         this.status = status;
@@ -149,11 +147,15 @@ public class Challenge extends BaseTimeEntity {
     }
 
     public void toInProgress() {
-        this.status = ChallengeStatus.IN_PROGRESS;
+        status = ChallengeStatus.IN_PROGRESS;
     }
 
     public void toValidate() {
         this.status = ChallengeStatus.VALIDATE;
+    }
+
+    public void toFinish() {
+        this.status = ChallengeStatus.FINISH;
     }
 
     private void updateStarRating() {
@@ -162,6 +164,17 @@ public class Challenge extends BaseTimeEntity {
 
     public void initStatus() {
         if (startDate.isAfter(LocalDate.now())) status = ChallengeStatus.READY;
-        else status = ChallengeStatus.IN_PROGRESS;
+        else {
+            status = ChallengeStatus.IN_PROGRESS;
+            round = 1;
+        }
+    }
+
+    public void updateRound() {
+        round++;
+    }
+
+    public void addFailedPoint(long point) {
+        failedPoint += point;
     }
 }
