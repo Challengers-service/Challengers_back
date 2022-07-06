@@ -57,6 +57,6 @@ public class UserChallenge {
     }
 
     public void fail() {
-        this.status = UserChallengeStatus.FAIL;
+        status = UserChallengeStatus.FAIL;
     }
 }

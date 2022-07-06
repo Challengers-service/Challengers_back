@@ -38,8 +38,9 @@ public class ChallengeDetailResponse {
 
     private String createdDate;
     private boolean cart;
+    private long reward;
 
-    public static ChallengeDetailResponse of(Challenge challenge, boolean cart) {
+    public static ChallengeDetailResponse of(Challenge challenge, boolean cart, long reward) {
         return new ChallengeDetailResponse(
                 challenge.getId(),
                 challenge.getHost().getId(),
@@ -64,7 +65,8 @@ public class ChallengeDetailResponse {
                 TagResponse.listOf(challenge.getChallengeTags().getTags()),
                 challenge.getExamplePhotoUrls(),
                 challenge.getCreatedDate().toLocalDate().toString(),
-                cart
+                cart,
+                reward
         );
     }
 }

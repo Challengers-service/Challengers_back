@@ -19,6 +19,7 @@ import com.challengers.user.repository.AchievementRepository;
 import com.challengers.user.repository.UserRepository;
 import com.challengers.userchallenge.ChallengeJoinManager;
 import com.challengers.userchallenge.domain.UserChallenge;
+import com.challengers.userchallenge.domain.UserChallengeStatus;
 import com.challengers.userchallenge.repository.UserChallengeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -104,8 +105,18 @@ public class ChallengeService {
     public ChallengeDetailResponse findChallenge(Long challengeId, Long userId) {
         Challenge challenge = challengeRepository.findById(challengeId).orElseThrow(NoSuchElementException::new);
 
+        List<UserChallenge> userChallenges = userChallengeRepository
+                .findByChallengeIdAndStatus(challengeId, UserChallengeStatus.IN_PROGRESS);
+        long progress = 0L;
+
+        for (UserChallenge userChallenge : userChallenges) {
+            progress += userChallenge.getMaxProgress();
+        }
+        int maxProgress = ChallengeJoinManager.getMaxProgress(challenge);
+
         return ChallengeDetailResponse.of(challenge,
-                cartRepository.findByChallengeIdAndUserId(challengeId, userId).isPresent());
+                cartRepository.findByChallengeIdAndUserId(challengeId, userId).isPresent(),
+                challenge.getFailedPoint()/(progress+maxProgress)*maxProgress);
     }
 
     @Transactional
