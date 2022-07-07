@@ -87,10 +87,11 @@ public class AuthControllerTest extends DocumentationWithSecurity {
         String refreshToken = "rkJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNjU3MTg4MzA2LCJleHAiOjE2NTcxOTE5MDZ9.yN0JecGEWU11aeFwNGUyzhQcyTiZKnmVRx4oV-CiaNp3r_0Fx_oCIEB0gTCbOIkkUEEOGN-4PkhSWVpoHYCRgB";
 
         RefreshTokenRequest refreshTokenRequest = RefreshTokenRequest.builder()
+                .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .build();
 
-        when(authService.refreshToken(any()))
+        when(authService.refreshToken(any(),any()))
                 .thenReturn(new ResponseEntity<>(new TokenDto("Bearer " + accessToken, refreshToken), HttpStatus.OK));
 
         mockMvc.perform(post("/api/refresh")

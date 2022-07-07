@@ -43,6 +43,7 @@ public class AuthDocumentation {
 
     public static RestDocumentationResultHandler refresh() {
         FieldDescriptor[] requestAuth = new FieldDescriptor[]{
+                fieldWithPath("accessToken").type(JsonFieldType.STRING).description("만료된 Access 토큰"),
                 fieldWithPath("refreshToken").type(JsonFieldType.STRING).description("Refresh 토큰")
         };
         FieldDescriptor[] responseAuth= new FieldDescriptor[]{

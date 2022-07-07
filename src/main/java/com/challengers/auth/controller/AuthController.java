@@ -28,6 +28,6 @@ public class AuthController {
 
     @PostMapping("/api/refresh")
     public ResponseEntity<TokenDto> refreshToken(@Valid @RequestBody RefreshTokenRequest refreshTokenRequest){
-        return authService.refreshToken(refreshTokenRequest.getRefreshToken());
+        return authService.refreshToken(refreshTokenRequest.getAccessToken(), refreshTokenRequest.getRefreshToken());
     }
 }

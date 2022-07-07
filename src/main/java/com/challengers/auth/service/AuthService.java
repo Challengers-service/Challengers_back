@@ -80,32 +80,44 @@ public class AuthService {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add("Authorization", "Bearer " + accessToken);
 
-        RefreshToken newRefreshToken = RefreshToken.builder()
-                .refreshToken(refreshToken)
-                .userId(user.getId())
-                .build();
+        RefreshToken newRefreshToken = refreshTokenRepository.findByUserId(user.getId())
+                .orElseGet(() -> refreshTokenRepository.save(RefreshToken.builder()
+                        .refreshToken(refreshToken)
+                        .accessToken(accessToken)
+                        .userId(user.getId())
+                        .build()));
 
-        refreshTokenRepository.save(newRefreshToken);
-
+        newRefreshToken.update(accessToken, refreshToken);
         return new ResponseEntity<>(new TokenDto("Bearer " + accessToken, refreshToken), httpHeaders, HttpStatus.OK);
     }
 
     @Transactional
-    public ResponseEntity<TokenDto> refreshToken(@Valid @RequestBody String refreshToken) {
-        RefreshToken findRefreshToken = refreshTokenRepository.findByRefreshToken(refreshToken).orElseThrow(UserException::new);
+    public ResponseEntity<TokenDto> refreshToken(@Valid @RequestBody String accessToken, String refreshToken) {
+        RefreshToken findRefreshToken = refreshTokenRepository.findByAccessTokenAndRefreshToken(accessToken, refreshToken).orElseThrow(UserException::new);
 
-        if(!tokenProvider.isOverRefreshTokenRenewalHour(refreshToken)){ //리프레시 토큰이 1시간 이상 남았는지 체크
+        if(findRefreshToken.getUserId() != tokenProvider.getUserIdFromRefreshToken(refreshToken)){// userId가 다르면 fail
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
+        if(!tokenProvider.isAccessTokenExpired(accessToken)){ //엑세스 토큰이 만료되지 않으면 fail
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
+        if(!tokenProvider.isOverRefreshTokenRenewalHour(refreshToken)){ //리프레시 토큰이 1시간 이상남지 않았으면 fail
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
 
         Long userId = findRefreshToken.getUserId();
         User user = userRepository.findById(userId).orElseThrow(UserException::new);
 
-        String accessToken = tokenProvider.createAccessTokenByUserEntity(user);
+        String newAccessToken = tokenProvider.createAccessTokenByUserEntity(user);
+        String newRefreshToken = tokenProvider.createRefreshTokenByUserEntity(user);
+
+        findRefreshToken.update(newAccessToken, newRefreshToken);
 
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add("Authorization", "Bearer " + accessToken);
+        httpHeaders.add("Authorization", "Bearer " + newAccessToken);
 
-        return new ResponseEntity<>(new TokenDto("Bearer " + accessToken, refreshToken), httpHeaders, HttpStatus.OK);
+        return new ResponseEntity<>(new TokenDto("Bearer " + newAccessToken, refreshToken), httpHeaders, HttpStatus.OK);
     }
 }
