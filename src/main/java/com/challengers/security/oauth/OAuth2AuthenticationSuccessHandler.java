@@ -1,8 +1,11 @@
 package com.challengers.security.oauth;
 
+import com.challengers.auth.domain.RefreshToken;
+import com.challengers.auth.repository.RefreshTokenRepository;
 import com.challengers.common.exception.BadRequestException;
 import com.challengers.config.AppProperties;
 import com.challengers.security.TokenProvider;
+import com.challengers.security.UserPrincipal;
 import com.challengers.util.CookieUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -23,15 +26,19 @@ import static com.challengers.security.oauth.HttpCookieOAuth2AuthorizationReques
 public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
     private TokenProvider tokenProvider;
 
+    private RefreshTokenRepository refreshTokenRepository;
+
     private AppProperties appProperties;
 
     private HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
 
     @Autowired
     public OAuth2AuthenticationSuccessHandler(TokenProvider tokenProvider,
+                                              RefreshTokenRepository refreshTokenRepository,
                                               AppProperties appProperties,
                                               HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository) {
         this.tokenProvider = tokenProvider;
+        this.refreshTokenRepository = refreshTokenRepository;
         this.appProperties = appProperties;
         this.httpCookieOAuth2AuthorizationRequestRepository = httpCookieOAuth2AuthorizationRequestRepository;
     }
@@ -65,6 +72,18 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
         String accessToken = tokenProvider.createAccessToken(authentication);
         String refreshToken = tokenProvider.createRefreshToken(authentication);
+
+        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+
+        RefreshToken newRefreshToken = refreshTokenRepository.findByUserId(userPrincipal.getId())
+                .orElseGet(() -> refreshTokenRepository.save(RefreshToken.builder()
+                        .refreshToken(refreshToken)
+                        .accessToken(accessToken)
+                        .userId(userPrincipal.getId())
+                        .build()));
+
+        newRefreshToken.update(accessToken, refreshToken);
+        refreshTokenRepository.save(newRefreshToken);
 
         Cookie accessTokenCookie = new Cookie("accessToken", accessToken);
         accessTokenCookie.setPath("/");
