@@ -2,6 +2,7 @@ package com.challengers.auth.controller;
 
 import com.challengers.auth.dto.AuthDto;
 import com.challengers.auth.dto.LogInRequest;
+import com.challengers.auth.dto.RefreshTokenRequest;
 import com.challengers.auth.dto.TokenDto;
 import com.challengers.auth.service.AuthService;
 import lombok.RequiredArgsConstructor;
@@ -23,5 +24,10 @@ public class AuthController {
     @PostMapping("/api/signin")
     public ResponseEntity<TokenDto> signIn(@Valid @RequestBody LogInRequest logInRequest){
         return authService.signIn(logInRequest);
+    }
+
+    @PostMapping("/api/refresh")
+    public ResponseEntity<TokenDto> refreshToken(@Valid @RequestBody RefreshTokenRequest refreshTokenRequest){
+        return authService.refreshToken(refreshTokenRequest.getRefreshToken());
     }
 }

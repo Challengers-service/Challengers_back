@@ -3,6 +3,7 @@ package com.challengers.auth;
 import com.challengers.auth.controller.AuthController;
 import com.challengers.auth.dto.AuthDto;
 import com.challengers.auth.dto.LogInRequest;
+import com.challengers.auth.dto.RefreshTokenRequest;
 import com.challengers.auth.dto.TokenDto;
 import com.challengers.auth.service.AuthService;
 import com.challengers.common.documentation.DocumentationWithSecurity;
@@ -61,12 +62,14 @@ public class AuthControllerTest extends DocumentationWithSecurity {
                 .password("1234")
                 .build();
 
-        String jwt = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNjU1NzExODAyLCJleHAiOjE2NTY1NzU4MDJ9.pWHz8VTj21DA1fmfxPlrmoE_eKw_tYFTzVmVdRmof9mIe9y2OIJQ7ndThLQfwiiCbU0d0SDGgb6Oshs5R-R99A";
+        String accessToken = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNjU1NzExODAyLCJleHAiOjE2NTY1NzU4MDJ9.pWHz8VTj21DA1fmfxPlrmoE_eKw_tYFTzVmVdRmof9mIe9y2OIJQ7ndThLQfwiiCbU0d0SDGgb6Oshs5R-R99A";
+        String refreshToken = "rkJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNjU3MTg4MzA2LCJleHAiOjE2NTcxOTE5MDZ9.yN0JecGEWU11aeFwNGUyzhQcyTiZKnmVRx4oV-CiaNp3r_0Fx_oCIEB0gTCbOIkkUEEOGN-4PkhSWVpoHYCRgB";
+
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add("Authorization","Bearer" + jwt);
+        httpHeaders.add("Authorization","Bearer" + accessToken);
 
         when(authService.signIn(any()))
-                .thenReturn(new ResponseEntity<>(new TokenDto("Bearer " + jwt), httpHeaders, HttpStatus.OK));
+                .thenReturn(new ResponseEntity<>(new TokenDto("Bearer " + accessToken,refreshToken), httpHeaders, HttpStatus.OK));
 
         mockMvc.perform(post("/api/signin")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -74,6 +77,28 @@ public class AuthControllerTest extends DocumentationWithSecurity {
                         .content(mapper.writeValueAsString(logInRequest)))
                 .andExpect(status().isOk())
                 .andDo(AuthDocumentation.signIn())
+                .andDo(print());
+    }
+
+    @DisplayName("엑세스 토큰 재발급")
+    @Test
+    public void refreshToken() throws Exception {
+        String accessToken = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNjU1NzExODAyLCJleHAiOjE2NTY1NzU4MDJ9.pWHz8VTj21DA1fmfxPlrmoE_eKw_tYFTzVmVdRmof9mIe9y2OIJQ7ndThLQfwiiCbU0d0SDGgb6Oshs5R-R99A";
+        String refreshToken = "rkJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNjU3MTg4MzA2LCJleHAiOjE2NTcxOTE5MDZ9.yN0JecGEWU11aeFwNGUyzhQcyTiZKnmVRx4oV-CiaNp3r_0Fx_oCIEB0gTCbOIkkUEEOGN-4PkhSWVpoHYCRgB";
+
+        RefreshTokenRequest refreshTokenRequest = RefreshTokenRequest.builder()
+                .refreshToken(refreshToken)
+                .build();
+
+        when(authService.refreshToken(any()))
+                .thenReturn(new ResponseEntity<>(new TokenDto("Bearer " + accessToken, refreshToken), HttpStatus.OK));
+
+        mockMvc.perform(post("/api/refresh")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(refreshTokenRequest)))
+                .andExpect(status().isOk())
+                .andDo(AuthDocumentation.refresh())
                 .andDo(print());
     }
 }

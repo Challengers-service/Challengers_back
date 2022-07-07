@@ -27,7 +27,7 @@ operation::photo_check/addPhotoCheck[snippets='http-request,request-parameters,r
 
 operation::photo_check/pass[snippets='http-request,request-fields,http-response']
 
-[[resources-photo_check-pass]]
+[[resources-photo_check-fail]]
 ===  인증 사진 실패
 챌린지의 호스트가 참여자의 인증 사진을 실패시킨다.
 

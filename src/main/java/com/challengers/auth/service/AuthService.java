@@ -1,8 +1,10 @@
 package com.challengers.auth.service;
 
+import com.challengers.auth.domain.RefreshToken;
 import com.challengers.auth.dto.AuthDto;
 import com.challengers.auth.dto.LogInRequest;
 import com.challengers.auth.dto.TokenDto;
+import com.challengers.auth.repository.RefreshTokenRepository;
 import com.challengers.common.exception.BadRequestException;
 import com.challengers.common.exception.UserException;
 import com.challengers.security.TokenProvider;
@@ -13,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -28,6 +31,7 @@ public class AuthService {
     private final AchievementRepository achievementRepository;
     private final PasswordEncoder passwordEncoder;
     private final TokenProvider tokenProvider;
+    private final RefreshTokenRepository refreshTokenRepository;
 
     @Transactional
     public ResponseEntity<String> signUp(@Valid @RequestBody AuthDto authDto) {
@@ -55,7 +59,8 @@ public class AuthService {
     public ResponseEntity<TokenDto> signIn(@Valid @RequestBody LogInRequest logInRequest) {
         User user = userRepository.findByEmail(logInRequest.getEmail()).orElseThrow(UserException::new);
 
-        if(Duration.between(user.getVisitTime().atStartOfDay(), LocalDate.now().atStartOfDay()).toDays()==1){ //출석 로직
+        //개근30일 업적 로직
+        if(Duration.between(user.getVisitTime().atStartOfDay(), LocalDate.now().atStartOfDay()).toDays()==1){
             user.update(LocalDate.now(), user.getAttendanceCount()+1);
             if(user.getAttendanceCount() >= 30){
                 Achievement achievement = Achievement.builder()
@@ -69,10 +74,38 @@ public class AuthService {
             user.update(LocalDate.now(), user.getAttendanceCount());
         }
 
-        String jwt = tokenProvider.createTokenByUserEntity(user);
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add("Authorization", "Bearer " + jwt);
+        String accessToken = tokenProvider.createAccessTokenByUserEntity(user);
+        String refreshToken = tokenProvider.createRefreshTokenByUserEntity(user);
 
-        return new ResponseEntity<>(new TokenDto("Bearer " + jwt), httpHeaders, HttpStatus.OK);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("Authorization", "Bearer " + accessToken);
+
+        RefreshToken newRefreshToken = RefreshToken.builder()
+                .refreshToken(refreshToken)
+                .userId(user.getId())
+                .build();
+
+        refreshTokenRepository.save(newRefreshToken);
+
+        return new ResponseEntity<>(new TokenDto("Bearer " + accessToken, refreshToken), httpHeaders, HttpStatus.OK);
+    }
+
+    @Transactional
+    public ResponseEntity<TokenDto> refreshToken(@Valid @RequestBody String refreshToken) {
+        RefreshToken findRefreshToken = refreshTokenRepository.findByRefreshToken(refreshToken).orElseThrow(UserException::new);
+
+        if(!tokenProvider.isOverRefreshTokenRenewalHour(refreshToken)){ //리프레시 토큰이 1시간 이상 남았는지 체크
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
+        Long userId = findRefreshToken.getUserId();
+        User user = userRepository.findById(userId).orElseThrow(UserException::new);
+
+        String accessToken = tokenProvider.createAccessTokenByUserEntity(user);
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("Authorization", "Bearer " + accessToken);
+
+        return new ResponseEntity<>(new TokenDto("Bearer " + accessToken, refreshToken), httpHeaders, HttpStatus.OK);
     }
 }

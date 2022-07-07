@@ -26,6 +26,13 @@ create table likes (
     primary key (like_id)
 );
 
+create table refresh_token (
+    refresh_token_id bigint not null auto_increment,
+    refresh_token varchar(255) not null,
+    user_id bigint not null,
+    primary key (refresh_token_id)
+);
+
 update user set attendance_count
 
 alter table users add attendance_count bigint(20);

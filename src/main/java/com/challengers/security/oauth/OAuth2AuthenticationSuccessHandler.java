@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
@@ -64,15 +63,24 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         String targetUrl = redirectUri.orElse(getDefaultTargetUrl());
         logger.info("In determinTargetUrl::OAuth2AuthenticationSuccessHandler targetUrl = " + targetUrl);
 
-        String token = tokenProvider.createToken(authentication);
+        String accessToken = tokenProvider.createAccessToken(authentication);
+        String refreshToken = tokenProvider.createRefreshToken(authentication);
 
-        Cookie cookie = new Cookie(TokenProvider.ACCESS_TOKEN_NAME, token);
-        cookie.setPath("/");
-        cookie.setMaxAge(3600);
-        response.addCookie(cookie);
-        return UriComponentsBuilder.fromUriString(targetUrl)
-                .queryParam("token", token)
-                .build().toUriString();
+        Cookie accessTokenCookie = new Cookie("accessToken", accessToken);
+        accessTokenCookie.setPath("/");
+//        accessTokenCookie.setSecure(true);
+        accessTokenCookie.setHttpOnly(true);
+        accessTokenCookie.setMaxAge(3600); //1시간
+
+        Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken);
+        refreshTokenCookie.setPath("/");
+//        refreshTokenCookie.setSecure(true);
+        refreshTokenCookie.setHttpOnly(true);
+        refreshTokenCookie.setMaxAge(2592000); //1달
+
+        response.addCookie(accessTokenCookie);
+        response.addCookie(refreshTokenCookie);
+        return targetUrl;
     }
 
     protected void clearAuthenticationAttributes(HttpServletRequest request, HttpServletResponse response) {

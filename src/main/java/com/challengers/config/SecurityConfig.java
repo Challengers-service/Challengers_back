@@ -45,8 +45,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
 
-    private final OAuth2LogoutSuccessHandler oAuth2LogoutSuccessHandler;
-
     @Bean
     public TokenAuthenticationFilter tokenAuthenticationFilter(){
         return new TokenAuthenticationFilter();
@@ -111,7 +109,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers("/auth/**", "/oauth2/**")
                         .permitAll()
                     .antMatchers("/login","/hello", "/h2-console/**", "/profile" //for dev
-                        ,"/oauth2/**", "/api/signup/**", "/api/signin/**" // for Auth
+                        ,"/oauth2/**", "/api/signup/**", "/api/signin/**", "/api/refresh/**" // for Auth
                         ).permitAll()
                     .antMatchers( "/**", "/api/feed/post/following").hasRole(Role.USER.name())
                         .anyRequest().authenticated()

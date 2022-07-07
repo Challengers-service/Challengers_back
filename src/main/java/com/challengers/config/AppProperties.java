@@ -11,23 +11,42 @@ public class AppProperties {
     private final OAuth2 oauth2 = new OAuth2();
 
     public static class Auth {
-        private String tokenSecret;
-        private long tokenExpirationMsec;
+        private String accessTokenSecret;
+        private long accessTokenExpirationMsec;
 
-        public String getTokenSecret() {
-            return tokenSecret;
+        private String refreshTokenSecret;
+        private long refreshTokenExpirationMsec;
+
+        public String getAccessTokenSecret() {
+            return accessTokenSecret;
         }
 
-        public void setTokenSecret(String tokenSecret) {
-            this.tokenSecret = tokenSecret;
+        public void setAccessTokenSecret(String accessTokenSecret) {
+            this.accessTokenSecret = accessTokenSecret;
         }
 
-        public long getTokenExpirationMsec() {
-            return tokenExpirationMsec;
+        public long getAccessTokenExpirationMsec() {
+            return accessTokenExpirationMsec;
         }
 
-        public void setTokenExpirationMsec(long tokenExpirationMsec) {
-            this.tokenExpirationMsec = tokenExpirationMsec;
+        public void setAccessTokenExpirationMsec(long accessTokenExpirationMsec) {
+            this.accessTokenExpirationMsec = accessTokenExpirationMsec;
+        }
+
+        public String getRefreshTokenSecret() {
+            return refreshTokenSecret;
+        }
+
+        public void setRefreshTokenSecret(String refreshTokenSecret) {
+            this.refreshTokenSecret = refreshTokenSecret;
+        }
+
+        public long getRefreshTokenExpirationMsec() {
+            return refreshTokenExpirationMsec;
+        }
+
+        public void setRefreshTokenExpirationMsec(long refreshTokenExpirationMsec) {
+            this.refreshTokenExpirationMsec = refreshTokenExpirationMsec;
         }
     }
 
