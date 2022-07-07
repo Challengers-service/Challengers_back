@@ -1,5 +1,6 @@
 package com.challengers.common.documentation;
 
+import com.challengers.auth.repository.RefreshTokenRepository;
 import com.challengers.config.SecurityDocumentationConfig;
 import com.challengers.user.repository.AchievementRepository;
 import com.challengers.user.repository.UserRepository;
@@ -27,6 +28,9 @@ public class DocumentationWithSecurity {
 
     @MockBean
     private AchievementRepository achievementRepository;
+
+    @MockBean
+    private RefreshTokenRepository refreshTokenRepository;
 
     @BeforeEach
     public void setUp(WebApplicationContext webApplicationContext,
