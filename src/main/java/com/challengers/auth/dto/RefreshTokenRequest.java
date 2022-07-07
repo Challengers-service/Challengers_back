@@ -10,10 +10,14 @@ import javax.validation.constraints.NotBlank;
 @NoArgsConstructor
 public class RefreshTokenRequest {
     @NotBlank
+    private String accessToken;
+
+    @NotBlank
     private String refreshToken;
 
     @Builder
-    public RefreshTokenRequest(String refreshToken) {
+    public RefreshTokenRequest(String accessToken, String refreshToken) {
+        this.accessToken = accessToken;
         this.refreshToken = refreshToken;
     }
 }

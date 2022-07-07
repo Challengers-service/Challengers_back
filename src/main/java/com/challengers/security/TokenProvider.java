@@ -125,4 +125,17 @@ public class TokenProvider {
         }
         return false;
     }
+
+    public boolean isAccessTokenExpired(String accessToken) {
+        try {
+            Jwts.parser().setSigningKey(appProperties.getAuth().getAccessTokenSecret()).parseClaimsJws(accessToken);
+            return false;
+        } catch (ExpiredJwtException ex) {
+            log.error("만료된 JWT 토큰");
+            return true;
+        } catch (JwtException | IllegalArgumentException e) {
+            log.error("유효하지 않은 JWT");
+        }
+        return false;
+    }
 }

@@ -22,12 +22,21 @@ public class RefreshToken {
     private Long userId;
 
     @NotNull
+    private String accessToken;
+
+    @NotNull
     private String refreshToken;
 
     @Builder
-    public RefreshToken(Long id, Long userId, String refreshToken) {
+    public RefreshToken(Long id, Long userId, String accessToken, String refreshToken) {
         this.id = id;
         this.userId = userId;
+        this.accessToken = accessToken;
+        this.refreshToken = refreshToken;
+    }
+
+    public void update(String accessToken, String refreshToken){
+        this.accessToken = accessToken;
         this.refreshToken = refreshToken;
     }
 }
