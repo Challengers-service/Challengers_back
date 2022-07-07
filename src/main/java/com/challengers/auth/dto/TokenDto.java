@@ -3,8 +3,15 @@ package com.challengers.auth.dto;
 import lombok.*;
 
 @Getter
-@AllArgsConstructor
+@NoArgsConstructor
 public class TokenDto {
 
-    private String token;
+    private String accessToken;
+    private String refreshToken;
+
+    @Builder
+    public TokenDto(String accessToken, String refreshToken) {
+        this.accessToken = accessToken;
+        this.refreshToken = refreshToken;
+    }
 }

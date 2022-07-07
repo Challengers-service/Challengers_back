@@ -30,9 +30,26 @@ public class AuthDocumentation {
                 fieldWithPath("password").type(JsonFieldType.STRING).description("비밀번호")
         };
         FieldDescriptor[] responseAuth= new FieldDescriptor[]{
-                fieldWithPath("token").type(JsonFieldType.STRING).description("Bearer 토큰"),
+                fieldWithPath("accessToken").type(JsonFieldType.STRING).description("Access 토큰"),
+                fieldWithPath("refreshToken").type(JsonFieldType.STRING).description("Refresh 토큰")
         };
         return document("auth/signin",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint()),
+                requestFields(requestAuth),
+                responseFields(responseAuth)
+        );
+    }
+
+    public static RestDocumentationResultHandler refresh() {
+        FieldDescriptor[] requestAuth = new FieldDescriptor[]{
+                fieldWithPath("refreshToken").type(JsonFieldType.STRING).description("Refresh 토큰")
+        };
+        FieldDescriptor[] responseAuth= new FieldDescriptor[]{
+                fieldWithPath("accessToken").type(JsonFieldType.STRING).description("Access 토큰"),
+                fieldWithPath("refreshToken").type(JsonFieldType.STRING).description("Refresh 토큰")
+        };
+        return document("auth/refresh",
                 preprocessRequest(prettyPrint()),
                 preprocessResponse(prettyPrint()),
                 requestFields(requestAuth),
