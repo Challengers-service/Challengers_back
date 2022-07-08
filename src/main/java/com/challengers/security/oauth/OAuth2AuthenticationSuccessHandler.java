@@ -88,13 +88,13 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         Cookie accessTokenCookie = new Cookie("accessToken", accessToken);
         accessTokenCookie.setPath("/");
 //        accessTokenCookie.setSecure(true);
-        accessTokenCookie.setHttpOnly(true);
+//        accessTokenCookie.setHttpOnly(true);
         accessTokenCookie.setMaxAge(3600); //1시간
 
         Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken);
         refreshTokenCookie.setPath("/");
 //        refreshTokenCookie.setSecure(true);
-        refreshTokenCookie.setHttpOnly(true);
+//        refreshTokenCookie.setHttpOnly(true);
         refreshTokenCookie.setMaxAge(2592000); //1달
 
         response.addCookie(accessTokenCookie);
