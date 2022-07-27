@@ -1,0 +1,31 @@
+= Notification API
+notification-api-docs
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 4
+:sectlinks:
+
+[[resources-notification]]
+== Notification
+
+[[resources-notification-getAllNotifications]]
+=== Notification 알림 조회
+
+operation::notification/getAllNotifications[snippets='http-request,http-response,response-fields']
+
+[[resources-notification-saveNotification]]
+=== Notification 알림 저장
+
+operation::notification/saveNotification[snippets='http-request,http-response,request-fields']
+
+[[resources-notification-updateNotification]]
+=== Notification 알림 수정
+
+operation::notification/updateNotification[snippets='http-request,http-response,path-parameters']
+
+[[resources-notification-deleteNotification]]
+=== Notification 알림 삭제
+
+operation::notification/deleteNotification[snippets='http-request,http-response,path-parameters']
