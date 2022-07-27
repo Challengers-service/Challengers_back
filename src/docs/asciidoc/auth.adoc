@@ -1,4 +1,4 @@
-= Hello API
+= Auth API
 hello-api-docs
 :doctype: book
 :icons: font
