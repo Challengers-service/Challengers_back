@@ -2,10 +2,7 @@ package com.challengers.challenge.service;
 
 import com.challengers.cart.repository.CartRepository;
 import com.challengers.challenge.domain.Challenge;
-import com.challengers.challenge.dto.ChallengeDetailResponse;
-import com.challengers.challenge.dto.ChallengeRequest;
-import com.challengers.challenge.dto.ChallengeResponse;
-import com.challengers.challenge.dto.ChallengeUpdateRequest;
+import com.challengers.challenge.dto.*;
 import com.challengers.challenge.repository.ChallengeRepository;
 import com.challengers.challengetag.domain.ChallengeTag;
 import com.challengers.common.AwsS3Uploader;
@@ -140,8 +137,8 @@ public class ChallengeService {
     }
 
     @Transactional(readOnly = true)
-    public Page<ChallengeResponse> findReadyOrInProgressChallenges(Pageable pageable, Long userId) {
-        return challengeRepository.findReadyOrInProgressChallenges(pageable).map(challenge -> new ChallengeResponse(challenge,
+    public Page<ChallengeResponse> search(ChallengeSearchCondition condition, Pageable pageable, Long userId) {
+        return challengeRepository.search(condition, pageable).map(challenge -> new ChallengeResponse(challenge,
                 userId != null && cartRepository.findByChallengeIdAndUserId(challenge.getId(), userId).isPresent(),
                 userChallengeRepository.findByChallengeId(challenge.getId())
                         .stream().map(userChallenge -> userChallenge.getUser().getId())

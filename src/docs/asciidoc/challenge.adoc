@@ -17,6 +17,7 @@ operation::challenge/createChallenge[snippets='http-request,request-headers,requ
 
 [[resources-challenge-updateChallenge]]
 === Challenge 수정
+
 챌린지 수정은 대표 이미지, 챌린지 소개글만 수정이 가능합니다.
 
 operation::challenge/updateChallenge[snippets='http-request,path-parameters,request-headers,request-parameters,request-parts,http-response']
@@ -31,21 +32,62 @@ operation::challenge/deleteChallenge[snippets='http-request,path-parameters,requ
 
 operation::challenge/joinChallenge[snippets='http-request,path-parameters,request-headers,http-response']
 
-[[resources-challenge-findCanJoinChallenges]]
-=== Challenge 조회
+[[resources-challenge-searchName]]
+=== 챌린지 이름으로 챌린지 검색
 
-현재 준비중이거나 진행중인 모든 챌린지들을 페이지 단위로 조회한다.
+아래는 "매일"로 검색한 예제입니다.
 
-sort parameter 를 이용해 인기 챌린지, 신규 챌린지를 조회할 수 있다.
+챌린지 이름에 "매일"이 포함된 챌린지들이 검색된다.
 
-인기 챌린지 = /api/challenge?page=0&sort=user_count,desc
+operation::challenge/searchName[snippets='http-request,request-parameters,http-response,response-fields']
 
-신규 챌린지 = /api/challenge?page=0&sort=created_date,desc
+[[resources-challenge-searchTag]]
+=== 태그로 챌린지 검색
 
-operation::challenge/findCanjoinChallenge[snippets='http-request,request-headers,request-parameters,http-response,response-fields']
+아래는 "운동" 태그로 검색한 예제입니다.
+
+"운동" 태그를 가지고 있는 챌린지들이 검색된다.
+
+operation::challenge/searchTag[snippets='http-request,request-parameters,http-response,response-fields']
+
+[[resources-challenge-searchFilter]]
+=== 챌린지 검색결과에 필터 적용
+
+최신 순으로 정렬 : &sort=id,desc
+
+인기 순으로 정렬 : &sort=userCount,desc
+
+아래는 챌린지 이름에 "매일"이 들어가는 챌린지 검색 결과를 최신 순으로 조회한 예제입니다.
+
+태그 검색에도 동일하게 적용됩니다.
+
+operation::challenge/searchFilter[snippets='http-request,request-parameters,http-response,response-fields']
+
+[[resources-challenge-searchHot]]
+=== 인기 챌린지 조회
+
+챌린지 참여자 순으로 정렬한 결과를 반환합니다.
+
+operation::challenge/searchHot[snippets='http-request,request-parameters,http-response,response-fields']
+
+[[resources-challenge-searchNew]]
+=== 신규 챌린지 조회
+
+챌린지 생성일순으로 정렬한 결과를 반환합니다.
+
+operation::challenge/searchNew[snippets='http-request,request-parameters,http-response,response-fields']
+
+[[resources-challenge-searchCategory]]
+=== 카테고리별 챌린지 조회
+
+챌린지 카테고리로 검색한 결과를 반환합니다.
+
+카테고리에는 EXERCISE, EATING_HABIT, LIFE, EMOTION, HOBBY, SURROUNDINGS, OTHER 이 있습니다.
+
+operation::challenge/searchCategory[snippets='http-request,request-parameters,http-response,response-fields']
 
 [[resources-challenge-findChallenge]]
-=== Challenge 상세 조회
+=== 챌린지 상세 정보 페이지 조회
 
 챌린지 상세 정보 페이지 조회
 

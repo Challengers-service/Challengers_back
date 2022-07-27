@@ -1,9 +1,6 @@
 package com.challengers.challenge.controller;
 
-import com.challengers.challenge.dto.ChallengeRequest;
-import com.challengers.challenge.dto.ChallengeDetailResponse;
-import com.challengers.challenge.dto.ChallengeResponse;
-import com.challengers.challenge.dto.ChallengeUpdateRequest;
+import com.challengers.challenge.dto.*;
 import com.challengers.challenge.service.ChallengeService;
 import com.challengers.security.CurrentUser;
 import com.challengers.security.UserPrincipal;
@@ -31,10 +28,11 @@ public class ChallengeController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<ChallengeResponse>> findCanJoinChallenges(@PageableDefault(size = 6) Pageable pageable,
-                                                                          @CurrentUser UserPrincipal user) {
+    public ResponseEntity<Page<ChallengeResponse>> findCanJoinChallenges(ChallengeSearchCondition condition,
+                                                                         Pageable pageable,
+                                                                         @CurrentUser UserPrincipal user) {
         Long userId = user == null ? null : user.getId();
-        return ResponseEntity.ok(challengeService.findReadyOrInProgressChallenges(pageable, userId));
+        return ResponseEntity.ok(challengeService.search(condition, pageable, userId));
     }
 
     @PostMapping
