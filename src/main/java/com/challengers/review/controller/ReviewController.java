@@ -7,6 +7,8 @@ import com.challengers.review.service.ReviewService;
 import com.challengers.security.CurrentUser;
 import com.challengers.security.UserPrincipal;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,8 +22,9 @@ public class ReviewController {
     private final ReviewService reviewService;
 
     @GetMapping("/{challengeId}")
-    public ResponseEntity<List<ReviewResponse>> showReviewsList(@PathVariable(name = "challengeId") Long challengeId) {
-        return ResponseEntity.ok(reviewService.findReviews(challengeId));
+    public ResponseEntity<Page<ReviewResponse>> showReviewsList(@PathVariable(name = "challengeId") Long challengeId,
+                                                                Pageable pageable) {
+        return ResponseEntity.ok(reviewService.findReviews(pageable, challengeId));
     }
 
     @PostMapping

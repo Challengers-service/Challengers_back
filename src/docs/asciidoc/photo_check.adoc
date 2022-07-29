@@ -1,4 +1,4 @@
-= Photo Check API
+= Photo Check (인증 사진) API
 photo_check-api-docs
 :doctype: book
 :icons: font
@@ -8,27 +8,35 @@ photo_check-api-docs
 :sectlinks:
 
 [[resources-photo_check]]
-== Photo Check
+== Photo Check [인증 사진]
+
+챌린지에 참여한 사람들이 인증 사진을 올리고,
+
+챌린지를 개설한 Host가 인증 사진을 통과, 실패를 시키는 API가 있다.
+
+Host가 인증사진에 대한 통과나 실패 처리를 하지 않은 인증 대기중인 인증 사진들을 조회하는 API를 추가할 예정.
+
+
 
 [[resources-photo_check-getPhotoCheck]]
-===  Photo Check 조회
+===  인증 사진 조회
 
-operation::photo_check/getPhotoCheck[snippets='http-request,path-parameters,http-response,response-fields']
+operation::photo_check/getPhotoCheck[snippets='http-request,path-parameters,request-headers,http-response,response-fields']
 
 [[resources-photo_check-addPhotoCheck]]
 ===  인증 사진 올리기
 챌린지 참여자가 인증 사진을 올린다.
 
-operation::photo_check/addPhotoCheck[snippets='http-request,request-parameters,request-parts,http-response']
+operation::photo_check/addPhotoCheck[snippets='http-request,request-parameters,request-parts,request-headers,http-response']
 
 [[resources-photo_check-pass]]
 ===  인증 사진 통과
 챌린지의 호스트가 참여자의 인증 사진을 통과시킨다.
 
-operation::photo_check/pass[snippets='http-request,request-fields,http-response']
+operation::photo_check/pass[snippets='http-request,request-headers,request-fields,http-response']
 
 [[resources-photo_check-fail]]
 ===  인증 사진 실패
 챌린지의 호스트가 참여자의 인증 사진을 실패시킨다.
 
-operation::photo_check/fail[snippets='http-request,request-fields,http-response']
+operation::photo_check/fail[snippets='http-request,request-headers,request-fields,http-response']

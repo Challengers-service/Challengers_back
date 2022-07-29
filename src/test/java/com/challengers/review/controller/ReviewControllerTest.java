@@ -6,21 +6,22 @@ import com.challengers.review.dto.ReviewRequest;
 import com.challengers.review.dto.ReviewResponse;
 import com.challengers.review.dto.ReviewUpdateRequest;
 import com.challengers.review.service.ReviewService;
+import com.challengers.testtool.StringToken;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -37,22 +38,21 @@ class ReviewControllerTest extends DocumentationWithSecurity {
 
     @Test
     @WithMockCustomUser
-    @DisplayName("챌린지에 작성된 모든 리뷰 조회")
+    @DisplayName("챌린지에 작성된 리뷰 조회")
     void showReviews() throws Exception{
-        List<ReviewResponse> reviewResponseList = new ArrayList<>();
-        reviewResponseList.add(new ReviewResponse(1L,"너무 좋은 챌린지",
-                "여태 해봤던 챌린지 중에 제일 좋았던거 같아요!",4.5f,
-                "2022-06-21",1L,"김준성",
-                "https://challengers-bucket.s3.ap-northeast-2.amazonaws.com/defaultProfile.png"));
-        reviewResponseList.add(new ReviewResponse(2L,"너무 별로에요",
-                "챌린지 호스트가 인증샷 확인을 잘 안해요.",2.5f,
-                "2022-06-21",2L,"김성진",
-                "https://challengers-bucket.s3.ap-northeast-2.amazonaws.com/defaultProfile.png"));
-        when(reviewService.findReviews(any())).thenReturn(reviewResponseList);
+        PageImpl<ReviewResponse> page = new PageImpl<>(Arrays.asList(new ReviewResponse(1L, "너무 좋은 챌린지", "여태 해봤던 챌린지 중에 제일 좋았던거 같아요!",
+                        4.5f, "2022-06-21", 1L, "김준성",
+                        "https://challengers-bucket.s3.ap-northeast-2.amazonaws.com/defaultProfile.png"),
+                new ReviewResponse(2L, "너무 별로에요", "챌린지 호스트가 인증샷 확인을 잘 안해요.",
+                        2.5f, "2022-06-21", 2L, "김성진",
+                        "https://challengers-bucket.s3.ap-northeast-2.amazonaws.com/defaultProfile.png"))
+                , PageRequest.of(0,6),2);
+        when(reviewService.findReviews(any(),any())).thenReturn(page);
 
-        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/reviews/{challengeId}",1))
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/reviews/{challengeId}",1)
+                        .header("Authorization", StringToken.getToken()))
                 .andExpect(status().isOk())
-                .andDo(ReviewDocumentation.showReviewsList());
+                .andDo(ReviewDocumentation.showReviews());
     }
 
     @Test

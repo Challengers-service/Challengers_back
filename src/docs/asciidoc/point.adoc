@@ -13,9 +13,9 @@ point-api-docs
 [[resources-point-myPoint]]
 === 내 포인트 조회하기
 
-operation::point/getMyPoint[snippets='http-request,http-response,response-fields']
+operation::point/getMyPoint[snippets='http-request,request-headers,http-response,response-fields']
 
 [[resources-point-myPointHistory]]
 === 내 포인트 내역 조회하기
 
-operation::point/getMyPointHistory[snippets='http-request,http-response,response-fields']
+operation::point/getMyPointHistory[snippets='http-request,request-headers,http-response,response-fields']

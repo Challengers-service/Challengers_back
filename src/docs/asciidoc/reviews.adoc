@@ -13,22 +13,19 @@ reviews-api-docs
 [[resources-reviews-addReview]]
 === Review 생성
 
-operation::reviews/addReview[snippets='http-request,request-fields,http-response']
+operation::reviews/addReview[snippets='http-request,request-headers,request-fields,http-response']
 
 [[resources-reviews-deleteReview]]
 === Review 삭제
 
-operation::reviews/deleteReview[snippets='http-request,path-parameters,http-response']
+operation::reviews/deleteReview[snippets='http-request,path-parameters,request-headers,http-response']
 
 [[resources-reviews-updateReview]]
 === Review 수정
 
-operation::reviews/updateReview[snippets='http-request,path-parameters,request-fields,http-response']
+operation::reviews/updateReview[snippets='http-request,path-parameters,request-headers,request-fields,http-response']
 
 [[resources-reviews-showReviews]]
-=== Review 조회
+== 리뷰 조회
 
-[[resources-reviews-showReviewsList]]
-==== 챌린지의 모든 리뷰 조회 (No Pagination)
-
-operation::reviews/showReviewsList[snippets='http-request,path-parameters,http-response,response-fields']
+operation::reviews/showReviews[snippets='http-request,path-parameters,request-headers,request-parameters,http-response,response-fields']

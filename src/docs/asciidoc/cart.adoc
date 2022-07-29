@@ -13,9 +13,9 @@ cart-api-docs
 [[resources-cart-addCart]]
 === 찜하기
 
-operation::cart/addCart[snippets='http-request,path-parameters,http-response']
+operation::cart/addCart[snippets='http-request,path-parameters,request-headers,http-response']
 
 [[resources-reviews-deleteCart]]
 === 찜 취소하기
 
-operation::cart/deleteCart[snippets='http-request,path-parameters,http-response']
+operation::cart/deleteCart[snippets='http-request,path-parameters,request-headers,http-response']

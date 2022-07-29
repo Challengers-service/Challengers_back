@@ -13,7 +13,7 @@ challenge-api-docs
 [[resources-challenge-createChallenge]]
 === Challenge 생성
 
-operation::challenge/createChallenge[snippets='http-request,request-headers,request-parameters,request-parts,http-response']
+operation::challenge/createChallenge[snippets='http-request,request-parameters,request-headers,request-parts,http-response']
 
 [[resources-challenge-updateChallenge]]
 === Challenge 수정
@@ -39,7 +39,7 @@ operation::challenge/joinChallenge[snippets='http-request,path-parameters,reques
 
 챌린지 이름에 "매일"이 포함된 챌린지들이 검색된다.
 
-operation::challenge/searchName[snippets='http-request,request-parameters,http-response,response-fields']
+operation::challenge/searchName[snippets='http-request,request-parameters,request-headers,http-response,response-fields']
 
 [[resources-challenge-searchTag]]
 === 태그로 챌린지 검색
@@ -48,7 +48,7 @@ operation::challenge/searchName[snippets='http-request,request-parameters,http-r
 
 "운동" 태그를 가지고 있는 챌린지들이 검색된다.
 
-operation::challenge/searchTag[snippets='http-request,request-parameters,http-response,response-fields']
+operation::challenge/searchTag[snippets='http-request,request-parameters,request-headers,http-response,response-fields']
 
 [[resources-challenge-searchFilter]]
 === 챌린지 검색결과에 필터 적용
@@ -61,21 +61,21 @@ operation::challenge/searchTag[snippets='http-request,request-parameters,http-re
 
 태그 검색에도 동일하게 적용됩니다.
 
-operation::challenge/searchFilter[snippets='http-request,request-parameters,http-response,response-fields']
+operation::challenge/searchFilter[snippets='http-request,request-parameters,request-headers,http-response,response-fields']
 
 [[resources-challenge-searchHot]]
 === 인기 챌린지 조회
 
 챌린지 참여자 순으로 정렬한 결과를 반환합니다.
 
-operation::challenge/searchHot[snippets='http-request,request-parameters,http-response,response-fields']
+operation::challenge/searchHot[snippets='http-request,request-parameters,request-headers,http-response,response-fields']
 
 [[resources-challenge-searchNew]]
 === 신규 챌린지 조회
 
 챌린지 생성일순으로 정렬한 결과를 반환합니다.
 
-operation::challenge/searchNew[snippets='http-request,request-parameters,http-response,response-fields']
+operation::challenge/searchNew[snippets='http-request,request-parameters,request-headers,http-response,response-fields']
 
 [[resources-challenge-searchCategory]]
 === 카테고리별 챌린지 조회
@@ -84,11 +84,11 @@ operation::challenge/searchNew[snippets='http-request,request-parameters,http-re
 
 카테고리에는 EXERCISE, EATING_HABIT, LIFE, EMOTION, HOBBY, SURROUNDINGS, OTHER 이 있습니다.
 
-operation::challenge/searchCategory[snippets='http-request,request-parameters,http-response,response-fields']
+operation::challenge/searchCategory[snippets='http-request,request-parameters,request-headers,http-response,response-fields']
 
 [[resources-challenge-findChallenge]]
 === 챌린지 상세 정보 페이지 조회
 
 챌린지 상세 정보 페이지 조회
 
-operation::challenge/findChallenge[snippets='http-request,path-parameters,request-headers,http-response,response-fields']
+operation::challenge/findChallenge[snippets='http-request,path-parameters,request-headers,request-headers,http-response,response-fields']

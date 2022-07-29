@@ -3,6 +3,7 @@ package com.challengers.cart.controller;
 import com.challengers.cart.service.CartService;
 import com.challengers.common.WithMockCustomUser;
 import com.challengers.common.documentation.DocumentationWithSecurity;
+import com.challengers.testtool.StringToken;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -26,7 +27,7 @@ class CartControllerTest extends DocumentationWithSecurity {
         doNothing().when(cartService).put(any(),any());
 
         mockMvc.perform(RestDocumentationRequestBuilders.post("/api/cart/{challenge_id}", 1L)
-                .header("Authorization", "Bearer yJzdWIiOiIxIiwiaWF0IjoxNjU1NzExODAyLCJleHAiOjE2NTY1NzU4MDJ9.pWHz8VTj21DA1fmfxPlrmoE_eKw_tYFTzVmVdRmof9mIe9y2OIJQ7ndThLQfwiiCbU0d0SDGgb6Oshs5R-R99A"))
+                .header("Authorization", StringToken.getToken()))
                 .andExpect(status().isOk())
                 .andDo(CartDocumentation.addCart());
 
@@ -39,7 +40,7 @@ class CartControllerTest extends DocumentationWithSecurity {
         doNothing().when(cartService).takeOut(any(),any());
 
         mockMvc.perform(RestDocumentationRequestBuilders.delete("/api/cart/{challenge_id}", 1L)
-                .header("Authorization", "Bearer yJzdWIiOiIxIiwiaWF0IjoxNjU1NzExODAyLCJleHAiOjE2NTY1NzU4MDJ9.pWHz8VTj21DA1fmfxPlrmoE_eKw_tYFTzVmVdRmof9mIe9y2OIJQ7ndThLQfwiiCbU0d0SDGgb6Oshs5R-R99A"))
+                .header("Authorization", StringToken.getToken()))
                 .andExpect(status().isOk())
                 .andDo(CartDocumentation.deleteCart());
     }

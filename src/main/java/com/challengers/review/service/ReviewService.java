@@ -10,10 +10,11 @@ import com.challengers.review.repository.ReviewRepository;
 import com.challengers.user.domain.User;
 import com.challengers.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
@@ -61,8 +62,8 @@ public class ReviewService {
     }
 
     @Transactional(readOnly = true)
-    public List<ReviewResponse> findReviews(Long challengeId) {
-        return ReviewResponse.listOf(reviewRepository.findAllByChallengeId(challengeId));
+    public Page<ReviewResponse> findReviews(Pageable pageable, Long challengeId) {
+        return reviewRepository.findAllByChallengeId(pageable, challengeId).map(ReviewResponse::of);
     }
 
     private void authorization(Long authorizationId, Long userId) {
