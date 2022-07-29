@@ -1,9 +1,12 @@
 package com.challengers.point.controller;
 
+import org.springframework.restdocs.headers.HeaderDescriptor;
 import org.springframework.restdocs.mockmvc.RestDocumentationResultHandler;
 import org.springframework.restdocs.payload.FieldDescriptor;
 import org.springframework.restdocs.payload.JsonFieldType;
 
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
@@ -11,17 +14,26 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 public class PointDocumentation {
 
     public static RestDocumentationResultHandler getMyPoint() {
+        HeaderDescriptor[] requestHeaders = new HeaderDescriptor[]{
+                headerWithName("Authorization").description("JWT 토큰")
+        };
+
         FieldDescriptor[] response= new FieldDescriptor[]{
                 fieldWithPath("point").type(JsonFieldType.NUMBER).description("나의 현재 포인트")
         };
 
         return document("point/getMyPoint",
                 preprocessResponse(prettyPrint()),
-                responseFields(response)
+                responseFields(response),
+                requestHeaders(requestHeaders)
         );
     }
 
     public static RestDocumentationResultHandler getMyPointHistory() {
+        HeaderDescriptor[] requestHeaders = new HeaderDescriptor[]{
+                headerWithName("Authorization").description("JWT 토큰")
+        };
+
         FieldDescriptor[] response= new FieldDescriptor[]{
                 fieldWithPath("content").type(JsonFieldType.ARRAY).description("포인트 변동 내역들"),
                 fieldWithPath("content.[].pointHistory").type(JsonFieldType.NUMBER).description("변경된 포인트"),
@@ -55,7 +67,8 @@ public class PointDocumentation {
 
         return document("point/getMyPointHistory",
                 preprocessResponse(prettyPrint()),
-                responseFields(response)
+                responseFields(response),
+                requestHeaders(requestHeaders)
         );
     }
 

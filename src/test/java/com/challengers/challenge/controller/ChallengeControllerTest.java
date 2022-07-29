@@ -68,29 +68,6 @@ class ChallengeControllerTest extends DocumentationWithSecurity {
     @DisplayName("챌린지 생성")
     void createChallenge() throws Exception{
         when(challengeService.create(any(),any())).thenReturn(1L);
-/*
-        mockMvc.perform(RestDocumentationRequestBuilders.multipart("/api/challenge")
-                .file("image",challengeRequest.getImage().getBytes())
-                .file("examplePhotos",challengeRequest.getExamplePhotos().get(0).getBytes())
-                .file("examplePhotos",challengeRequest.getExamplePhotos().get(1).getBytes())
-                .param("challengeName",challengeRequest.getChallengeName())
-                .param("challengeRule", challengeRequest.getChallengeRule())
-                .param("checkFrequency", challengeRequest.getCheckFrequency())
-                .param("category", challengeRequest.getCategory())
-                .param("startDate", challengeRequest.getStartDate().toString())
-                .param("endDate", challengeRequest.getEndDate().toString())
-                .param("depositPoint", String.valueOf(challengeRequest.getDepositPoint()))
-                .param("introduction", challengeRequest.getIntroduction())
-                .param("tags", "미라클모닝")
-                .header("Authorization", "Bearer ADMIN_TOKEN")
-                .with(requestPostProcessor -> {
-                    requestPostProcessor.setMethod("POST");
-                    return requestPostProcessor;
-                })
-                .contentType(MediaType.MULTIPART_FORM_DATA))
-                .andExpect(status().isCreated())
-                .andDo(ChallengeDocumentation.createChallenge());
-*/
 
         mockMvc.perform(uploadMockSupport(multipart("/api/challenge"),challengeRequest)
                 .header("Authorization", StringToken.getToken())

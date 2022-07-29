@@ -6,9 +6,6 @@ import org.springframework.restdocs.payload.FieldDescriptor;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.restdocs.request.ParameterDescriptor;
 import org.springframework.restdocs.request.RequestPartDescriptor;
-import org.springframework.test.web.servlet.ResultHandler;
-
-import java.io.FileDescriptor;
 
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
@@ -21,8 +18,6 @@ import static org.springframework.restdocs.request.RequestDocumentation.requestP
 
 public class ChallengeDocumentation {
 
-
-
     public static RestDocumentationResultHandler createChallenge() {
         HeaderDescriptor[] requestHeaders = new HeaderDescriptor[]{
                 headerWithName("Authorization").description("JWT 토큰")
@@ -34,18 +29,20 @@ public class ChallengeDocumentation {
                 parameterWithName("challengeRule").description("도전 규칙"),
                 parameterWithName("checkFrequencyType").description("인증 빈도 타입. 매일이면 EVERY_DAY를, 매주이면 EVERY_WEEK를, 직접 입력이면 OTHERS를 보내주시면 됩니다. [EVERY_DAY, EVERY_WEEK, OTHERS]"),
                 parameterWithName("checkTimesPerRound").description("회차 마다 인증해야 하는 횟수. 인증 빈도 타입이 EVERY_DAY나 EVERY_WEEK 이면 1을, OTHERS 이면 사용자가 입력한 값을 보내주시면 됩니다."),
-                parameterWithName("category").description("카테고리. [EXERCISE, EATING_HABIT, LIFE, EMOTION, HOBBY, SURROUNDINGS, OTHER]"),
+                parameterWithName("category").description("카테고리. [EXERCISE, EATING_HABIT, LIFE, EMOTION, HOBBY, SURROUNDINGS, OTHER] 중 하나"),
                 parameterWithName("startDate").description("챌린지 시작일. [yyyy-MM-dd] 형식으로 보내주시면 됩니다."),
                 parameterWithName("endDate").description("챌린지 종료일 [yyyy-MM-dd]"),
                 parameterWithName("depositPoint").description("예치 포인트"),
                 parameterWithName("introduction").description("챌린지 소개글"),
                 parameterWithName("userCountLimit").description("참여 인원"),
-                parameterWithName("tags").description("챌린지 태그들. 태그는 쉼표로 구분해 보내주시면 됩니다. [tag1,tag2 ...]")
+                parameterWithName("tags").description("챌린지 태그들. 태그는 쉼표로 구분해 보내주시면 됩니다. [tag1,tag2 ...]").optional()
         };
+
         RequestPartDescriptor[] requestPart = {
-                partWithName("image").description("챌린지 대표 이미지 파일"),
+                partWithName("image").description("챌린지 대표 이미지 파일. 생략시 기본 이미지로 등록됩니다."),
                 partWithName("examplePhotos").description("챌린지 예시 사진 파일들")
         };
+
         return document("challenge/createChallenge",
                 preprocessRequest(prettyPrint()),
                 requestHeaders(requestHeaders),
@@ -66,7 +63,7 @@ public class ChallengeDocumentation {
 
     public static RestDocumentationResultHandler findChallenge() {
         HeaderDescriptor[] requestHeaders = new HeaderDescriptor[]{
-                headerWithName("Authorization").description("JWT 토큰. Required=false")
+                headerWithName("Authorization").description("JWT 토큰").optional()
         };
 
         FieldDescriptor[] responseUser= new FieldDescriptor[]{
@@ -102,6 +99,7 @@ public class ChallengeDocumentation {
                 fieldWithPath("cart").type(JsonFieldType.BOOLEAN).description("찜하기 여부"),
                 fieldWithPath("reward").type(JsonFieldType.NUMBER).description("리워드 포인트")
         };
+
         return document("challenge/findChallenge",
                 preprocessRequest(prettyPrint()),
                 preprocessResponse(prettyPrint()),
@@ -130,12 +128,13 @@ public class ChallengeDocumentation {
         };
 
         ParameterDescriptor[] requestParam = new ParameterDescriptor[]{
-                parameterWithName("introduction").description("수정할 소개글. Required=true")
+                parameterWithName("introduction").description("수정할 소개글")
         };
 
         RequestPartDescriptor[] requestPart = {
-                partWithName("image").description("수정할 챌린지 대표 이미지 파일. Required=false")
+                partWithName("image").description("수정할 챌린지 대표 이미지 파일. 필수로 입력해야할 값이 아닙니다.")
         };
+
         return document("challenge/updateChallenge",
                 preprocessRequest(prettyPrint()),
                 requestHeaders(requestHeaders),
@@ -146,86 +145,123 @@ public class ChallengeDocumentation {
     }
 
     public static RestDocumentationResultHandler searchHot() {
+        HeaderDescriptor[] requestHeaders = new HeaderDescriptor[]{
+                headerWithName("Authorization").description("JWT 토큰").optional()
+        };
+
         ParameterDescriptor[] requestParams = new ParameterDescriptor[]{
                 parameterWithName("page").description("페이지 번호. 번호는 0부터 시작하고 생략시 0입니다.").optional(),
-                parameterWithName("sort").description("페이지 정렬 조건").optional(),
+                parameterWithName("size").description("한번에 가져올 콘텐츠 갯수. 생략시 9개를 가져옵니다.").optional(),
+                parameterWithName("sort").description("페이지 정렬 조건. &sort=userCount,desc")
         };
 
         return document("challenge/searchHot",
                 preprocessRequest(prettyPrint()),
                 preprocessResponse(prettyPrint()),
                 requestParameters(requestParams),
+                requestHeaders(requestHeaders),
                 responseFields(ChallengeDescriptors.searchResponse)
         );
     }
 
     public static RestDocumentationResultHandler searchNew() {
+        HeaderDescriptor[] requestHeaders = new HeaderDescriptor[]{
+                headerWithName("Authorization").description("JWT 토큰").optional()
+        };
+
         ParameterDescriptor[] requestParams = new ParameterDescriptor[]{
                 parameterWithName("page").description("페이지 번호. 번호는 0부터 시작하고 생략시 0입니다.").optional(),
-                parameterWithName("sort").description("페이지 정렬 조건").optional(),
+                parameterWithName("size").description("한번에 가져올 콘텐츠 갯수. 생략시 9개를 가져옵니다.").optional(),
+                parameterWithName("sort").description("페이지 정렬 조건. &sort=id,desc")
         };
 
         return document("challenge/searchNew",
                 preprocessRequest(prettyPrint()),
                 preprocessResponse(prettyPrint()),
                 requestParameters(requestParams),
+                requestHeaders(requestHeaders),
                 responseFields(ChallengeDescriptors.searchResponse)
         );
     }
 
     public static RestDocumentationResultHandler searchCategory() {
+        HeaderDescriptor[] requestHeaders = new HeaderDescriptor[]{
+                headerWithName("Authorization").description("JWT 토큰").optional()
+        };
+
         ParameterDescriptor[] requestParams = new ParameterDescriptor[]{
                 parameterWithName("page").description("페이지 번호. 번호는 0부터 시작하고 생략시 0입니다.").optional(),
-                parameterWithName("category").description("검색할 카테고리").optional(),
+                parameterWithName("size").description("한번에 가져올 콘텐츠 갯수. 생략시 9개를 가져옵니다.").optional(),
+                parameterWithName("category").description("검색할 카테고리. [EXERCISE, EATING_HABIT, LIFE, EMOTION, HOBBY, SURROUNDINGS, OTHER] 중 하나")
         };
 
         return document("challenge/searchCategory",
                 preprocessRequest(prettyPrint()),
                 preprocessResponse(prettyPrint()),
                 requestParameters(requestParams),
+                requestHeaders(requestHeaders),
                 responseFields(ChallengeDescriptors.searchResponse)
         );
     }
 
     public static RestDocumentationResultHandler searchName() {
+        HeaderDescriptor[] requestHeaders = new HeaderDescriptor[]{
+                headerWithName("Authorization").description("JWT 토큰").optional()
+        };
+
         ParameterDescriptor[] requestParams = new ParameterDescriptor[]{
                 parameterWithName("page").description("페이지 번호. 번호는 0부터 시작하고 생략시 0입니다.").optional(),
-                parameterWithName("challengeName").description("검색할 챌린지 이름").optional()
+                parameterWithName("size").description("한번에 가져올 콘텐츠 갯수. 생략시 9개를 가져옵니다.").optional(),
+                parameterWithName("challengeName").description("검색할 챌린지 이름")
         };
 
         return document("challenge/searchName",
                 preprocessRequest(prettyPrint()),
                 preprocessResponse(prettyPrint()),
                 requestParameters(requestParams),
+                requestHeaders(requestHeaders),
                 responseFields(ChallengeDescriptors.searchResponse)
         );
     }
 
     public static RestDocumentationResultHandler searchTag() {
+        HeaderDescriptor[] requestHeaders = new HeaderDescriptor[]{
+                headerWithName("Authorization").description("JWT 토큰").optional()
+        };
+
         ParameterDescriptor[] requestParams = new ParameterDescriptor[]{
                 parameterWithName("page").description("페이지 번호. 번호는 0부터 시작하고 생략시 0입니다.").optional(),
-                parameterWithName("tagName").description("검색할 태그").optional()
+                parameterWithName("size").description("한번에 가져올 콘텐츠 갯수. 생략시 9개를 가져옵니다.").optional(),
+                parameterWithName("tagName").description("검색할 태그")
         };
 
         return document("challenge/searchTag",
                 preprocessRequest(prettyPrint()),
                 preprocessResponse(prettyPrint()),
                 requestParameters(requestParams),
+                requestHeaders(requestHeaders),
                 responseFields(ChallengeDescriptors.searchResponse)
         );
     }
 
     public static RestDocumentationResultHandler searchFilter() {
+        HeaderDescriptor[] requestHeaders = new HeaderDescriptor[]{
+                headerWithName("Authorization").description("JWT 토큰").optional()
+        };
+
         ParameterDescriptor[] requestParams = new ParameterDescriptor[]{
                 parameterWithName("page").description("페이지 번호. 번호는 0부터 시작하고 생략시 0입니다.").optional(),
-                parameterWithName("sort").description("페이지 정렬 조건").optional(),
-                parameterWithName("challengeName").description("검색할 챌린지 이름").optional()
+                parameterWithName("size").description("한번에 가져올 콘텐츠 갯수. 생략시 9개를 가져옵니다.").optional(),
+                parameterWithName("challengeName").description("검색할 챌린지 이름").optional(),
+                parameterWithName("tagName").description("검색할 태그 이름").optional(),
+                parameterWithName("sort").description("페이지 정렬 조건. 최신순은 '&sort=id,desc'를 인기순은 '&sort=userCount,desc'").optional()
         };
 
         return document("challenge/searchFilter",
                 preprocessRequest(prettyPrint()),
                 preprocessResponse(prettyPrint()),
                 requestParameters(requestParams),
+                requestHeaders(requestHeaders),
                 responseFields(ChallengeDescriptors.searchResponse)
         );
     }
