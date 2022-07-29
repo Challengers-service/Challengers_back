@@ -3,13 +3,12 @@ package com.challengers.challenge.service;
 import com.challengers.cart.repository.CartRepository;
 import com.challengers.challenge.domain.Category;
 import com.challengers.challenge.domain.Challenge;
-import com.challengers.challenge.domain.ChallengeStatus;
 import com.challengers.challenge.domain.CheckFrequencyType;
 import com.challengers.challenge.dto.ChallengeRequest;
 import com.challengers.challenge.dto.ChallengeUpdateRequest;
 import com.challengers.challenge.repository.ChallengeRepository;
 import com.challengers.common.AwsS3Uploader;
-import com.challengers.examplephoto.repository.ExamplePhotoRepository;
+import com.challengers.point.service.PointService;
 import com.challengers.tag.domain.Tag;
 import com.challengers.tag.repository.TagRepository;
 import com.challengers.user.domain.AuthProvider;
@@ -19,7 +18,6 @@ import com.challengers.user.repository.AchievementRepository;
 import com.challengers.user.repository.UserRepository;
 import com.challengers.userchallenge.domain.UserChallenge;
 import com.challengers.userchallenge.repository.UserChallengeRepository;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,7 +26,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockMultipartFile;
 
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -43,12 +40,12 @@ import static org.mockito.Mockito.when;
 public class ChallengeServiceTest {
     @Mock UserRepository userRepository;
     @Mock ChallengeRepository challengeRepository;
-    @Mock ExamplePhotoRepository examplePhotoRepository;
     @Mock TagRepository tagRepository;
     @Mock UserChallengeRepository userChallengeRepository;
     @Mock AchievementRepository achievementRepository;
     @Mock AwsS3Uploader awsS3Uploader;
     @Mock CartRepository cartRepository;
+    @Mock PointService pointService;
 
     ChallengeService challengeService;
 
@@ -59,7 +56,7 @@ public class ChallengeServiceTest {
     @BeforeEach
     void setUp() {
         challengeService = new ChallengeService(challengeRepository,achievementRepository,tagRepository,
-                userRepository,examplePhotoRepository,userChallengeRepository,awsS3Uploader,cartRepository);
+                userRepository,userChallengeRepository,awsS3Uploader,cartRepository, pointService);
 
         user = User.builder()
                 .id(0L)

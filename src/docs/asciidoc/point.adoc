@@ -1,0 +1,21 @@
+= Point API
+point-api-docs
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 4
+:sectlinks:
+
+[[resources-point]]
+== Point
+
+[[resources-point-myPoint]]
+=== 내 포인트 조회하기
+
+operation::point/getMyPoint[snippets='http-request,http-response,response-fields']
+
+[[resources-point-myPointHistory]]
+=== 내 포인트 내역 조회하기
+
+operation::point/getMyPointHistory[snippets='http-request,http-response,response-fields']
