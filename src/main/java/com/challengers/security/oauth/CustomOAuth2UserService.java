@@ -1,6 +1,8 @@
 package com.challengers.security.oauth;
 
 import com.challengers.common.exception.OAuth2AuthenticationProcessingException;
+import com.challengers.point.domain.Point;
+import com.challengers.point.repository.PointRepository;
 import com.challengers.security.UserPrincipal;
 import com.challengers.security.oauth.user.OAuth2UserInfo;
 import com.challengers.security.oauth.user.OAuth2UserInfoFactory;
@@ -32,6 +34,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     private final UserRepository userRepository;
     private final AchievementRepository achievementRepository;
+
+    private final PointRepository pointRepository;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -99,7 +103,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     private User registerNewUser(OAuth2UserRequest oAuth2UserRequest, OAuth2UserInfo oAuth2UserInfo) {
 
-        return userRepository.save(User.builder()
+        User newUser = userRepository.save(User.builder()
                 .name(oAuth2UserInfo.getName())
                 .role(Role.USER)
                 .email(oAuth2UserInfo.getEmail())
@@ -111,6 +115,11 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                 .providerId(oAuth2UserInfo.getId())
                 .build()
         );
+
+        //포인트 테이블 생성
+        pointRepository.save(Point.create(newUser.getId()));
+
+        return newUser;
     }
 
     private User updateExistingUser(User existingUser, OAuth2UserInfo oAuth2UserInfo) {

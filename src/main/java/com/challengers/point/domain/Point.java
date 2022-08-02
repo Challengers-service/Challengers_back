@@ -18,6 +18,15 @@ public class Point {
     private Long userId;
     private Long point;
 
+    private Point(Long userId, Long point) {
+        this.userId = userId;
+        this.point = point;
+    }
+
+    public static Point create(Long userId) {
+        return new Point(userId, 0L);
+    }
+
     public void updatePoint(Long pointHistory) {
         point += pointHistory;
     }

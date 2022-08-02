@@ -2,6 +2,7 @@ package com.challengers.common.documentation;
 
 import com.challengers.auth.repository.RefreshTokenRepository;
 import com.challengers.config.SecurityDocumentationConfig;
+import com.challengers.point.repository.PointRepository;
 import com.challengers.user.repository.AchievementRepository;
 import com.challengers.user.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,6 +32,9 @@ public class DocumentationWithSecurity {
 
     @MockBean
     private RefreshTokenRepository refreshTokenRepository;
+
+    @MockBean
+    private PointRepository pointRepository;
 
     @BeforeEach
     public void setUp(WebApplicationContext webApplicationContext,
