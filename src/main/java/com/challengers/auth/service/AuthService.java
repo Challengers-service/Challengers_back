@@ -7,6 +7,8 @@ import com.challengers.auth.dto.TokenDto;
 import com.challengers.auth.repository.RefreshTokenRepository;
 import com.challengers.common.exception.BadRequestException;
 import com.challengers.common.exception.UserException;
+import com.challengers.point.domain.Point;
+import com.challengers.point.repository.PointRepository;
 import com.challengers.security.TokenProvider;
 import com.challengers.user.domain.*;
 import com.challengers.user.repository.AchievementRepository;
@@ -33,13 +35,15 @@ public class AuthService {
     private final TokenProvider tokenProvider;
     private final RefreshTokenRepository refreshTokenRepository;
 
+    private final PointRepository pointRepository;
+
     @Transactional
     public ResponseEntity<String> signUp(@Valid @RequestBody AuthDto authDto) {
         if(userRepository.existsByEmail(authDto.getEmail())) {
             throw new BadRequestException("Email address already in use.");
         }
 
-        userRepository.save(User.builder()
+        User newUser = userRepository.save(User.builder()
                 .name(authDto.getName())
                 .email(authDto.getEmail())
                 .provider(AuthProvider.local)
@@ -51,6 +55,9 @@ public class AuthService {
                 .role(Role.USER)
                 .build()
         );
+
+        //포인트 테이블 생성
+        pointRepository.save(Point.create(newUser.getId()));
 
         return new ResponseEntity<String>("회원 가입이 성공적으로 완료되었습니다!", HttpStatus.CREATED);
     }
