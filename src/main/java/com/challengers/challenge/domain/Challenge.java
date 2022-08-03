@@ -9,6 +9,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -71,7 +72,8 @@ public class Challenge extends BaseTimeEntity {
                      String challengeRule, CheckFrequencyType checkFrequencyType, int checkTimesPerRound, Category category,
                      LocalDate startDate, LocalDate endDate, int depositPoint, String introduction,
                      Float totalStarRating, Float starRating, int reviewCount, int userCount,
-                     int userCountLimit, int failedPoint, int round, ChallengeStatus status) {
+                     int userCountLimit, int failedPoint, int round, ChallengeStatus status,
+                     LocalDateTime createdDate, LocalDateTime updatedDate) {
         this.id = id;
         this.host = host;
         this.name = name;
@@ -93,6 +95,8 @@ public class Challenge extends BaseTimeEntity {
         this.failedPoint = failedPoint;
         this.round = round;
         this.status = status;
+        this.createdDate = createdDate;
+        this.updatedDate = updatedDate;
     }
 
     public static Challenge create(ChallengeRequest request, User host, String imageUrl, List<String> examplePhotoUrls) {

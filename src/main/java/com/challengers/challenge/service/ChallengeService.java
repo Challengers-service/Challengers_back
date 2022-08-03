@@ -145,11 +145,13 @@ public class ChallengeService {
 
     @Transactional(readOnly = true)
     public Page<ChallengeResponse> search(ChallengeSearchCondition condition, Pageable pageable, Long userId) {
-        return challengeRepository.search(condition, pageable).map(challenge -> new ChallengeResponse(challenge,
-                userId != null && cartRepository.findByChallengeIdAndUserId(challenge.getId(), userId).isPresent(),
-                userChallengeRepository.findByChallengeId(challenge.getId())
-                        .stream().map(userChallenge -> userChallenge.getUser().getId())
-                        .collect(Collectors.toList())
+        return challengeRepository.search(condition, pageable).map(
+                challenge -> new ChallengeResponse(
+                        challenge,
+                    userId != null && cartRepository.findByChallengeIdAndUserId(challenge.getId(), userId).isPresent(),
+                        userChallengeRepository.findByChallengeId(challenge.getId())
+                                .stream().map(userChallenge -> userChallenge.getUser().getId())
+                                .collect(Collectors.toList())
                 ));
     }
 
