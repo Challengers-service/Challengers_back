@@ -10,6 +10,7 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@EqualsAndHashCode
 public class ChallengeDetailResponse {
     private Long id;
 

@@ -31,7 +31,9 @@ jacocoTestReport {
 
 	afterEvaluate {
 		classDirectories.setFrom(files(classDirectories.files.collect {
-			fileTree(dir: it, exclude: [])
+			fileTree(dir: it, exclude: ['com/challengers/ChallengersApplication.class',
+										"**/Q*.class",
+										'**/dto'])
 		}))
 	}
 }
@@ -54,6 +56,7 @@ jacocoTestCoverageVerification {
 			}
 
 			excludes = [
+					'com.challengers.ChallengersApplication'
 			]
 		}
 	}

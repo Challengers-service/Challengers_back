@@ -19,10 +19,10 @@ public abstract class BaseTimeEntity {
     private static final DateTimeFormatter customDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy.MM.dd");
 
     @CreatedDate
-    private LocalDateTime createdDate;
+    protected LocalDateTime createdDate;
 
     @LastModifiedDate
-    private LocalDateTime updatedDate;
+    protected LocalDateTime updatedDate;
 
     public String getCreatedDateYYYYMMDD() {
         return Objects.requireNonNullElseGet(createdDate, LocalDateTime::now).format(customDateTimeFormatter);
