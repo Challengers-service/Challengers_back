@@ -150,18 +150,6 @@ public class Challenge extends BaseTimeEntity {
         updateStarRating();
     }
 
-    public void toInProgress() {
-        status = ChallengeStatus.IN_PROGRESS;
-    }
-
-    public void toValidate() {
-        this.status = ChallengeStatus.VALIDATE;
-    }
-
-    public void toFinish() {
-        this.status = ChallengeStatus.FINISH;
-    }
-
     private void updateStarRating() {
         starRating = reviewCount == 0 ? 0.0f : Math.round(totalStarRating/reviewCount*10)/10.0f;
     }
@@ -172,10 +160,6 @@ public class Challenge extends BaseTimeEntity {
             status = ChallengeStatus.IN_PROGRESS;
             round = 1;
         }
-    }
-
-    public void updateRound() {
-        round++;
     }
 
     public void addFailedPoint(long point) {
