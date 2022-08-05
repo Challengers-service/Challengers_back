@@ -86,6 +86,7 @@ public class ChallengeRequest {
                 .starRating(0.0f)
                 .reviewCount(0)
                 .userCount(1)
+                .round(0)
                 .build();
     }
 }

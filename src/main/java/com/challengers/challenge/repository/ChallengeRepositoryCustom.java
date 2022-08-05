@@ -7,4 +7,12 @@ import org.springframework.data.domain.Pageable;
 
 public interface ChallengeRepositoryCustom {
     Page<Challenge> search(ChallengeSearchCondition condition, Pageable pageable);
+
+    long updateRound(boolean isMonday);
+
+    long updateStatusFromReadyToInProgress();
+
+    long updateStatusFromInProgressToValidate();
+
+    long updateStatusFromValidateToFinish();
 }
