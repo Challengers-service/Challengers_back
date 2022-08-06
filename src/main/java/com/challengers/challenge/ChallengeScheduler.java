@@ -1,11 +1,11 @@
 package com.challengers.challenge;
 
 import com.challengers.challenge.domain.Challenge;
-import com.challengers.challenge.domain.ChallengeStatus;
-import com.challengers.challenge.domain.CheckFrequencyType;
 import com.challengers.challenge.repository.ChallengeRepository;
-import com.challengers.point.repository.PointRepository;
+import com.challengers.point.domain.PointHistoryType;
+import com.challengers.point.service.PointService;
 import com.challengers.userchallenge.domain.UserChallenge;
+import com.challengers.userchallenge.domain.UserChallengeStatus;
 import com.challengers.userchallenge.repository.UserChallengeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -20,7 +20,8 @@ import java.util.*;
 public class ChallengeScheduler {
     private final ChallengeRepository challengeRepository;
     private final UserChallengeRepository userChallengeRepository;
-    private final PointRepository pointRepository;
+    private final PointService pointService;
+
 
     @Scheduled(cron = "0 0 0 * * ?")
     @Transactional
@@ -40,15 +41,21 @@ public class ChallengeScheduler {
         challengeRepository.updateRound(isMonday);
     }
 
+    //TODO : 포인트 지급을 벌크 업데이트로 변경
     private void success() {
         LocalDate validateStartDate = LocalDate.now().minusDays(7);
         List<Challenge> findChallenges = challengeRepository.findAllByEndDate(validateStartDate);
         for (Challenge challenge : findChallenges) {
-            Long successUserCount = userChallengeRepository.updateStatusToSuccess(challenge.getId());
-            long reward = (long) Math.floor(challenge.getFailedPoint() * 1.0 / successUserCount);
+            userChallengeRepository.updateStatusToSuccess(challenge.getId());
+            Long sumSuccessProgress = userChallengeRepository.getSumSuccessProgress(challenge.getId());
 
-            if (reward != 0L)
-                pointRepository.giveReward(challenge.getId(),reward);
+            long rewardUnit = (long) Math.floor(challenge.getFailedPoint() * 1.0 / sumSuccessProgress);
+
+            List<UserChallenge> successUsers = userChallengeRepository.findByChallengeIdAndStatus(challenge.getId(), UserChallengeStatus.SUCCESS);
+
+            for (UserChallenge successUser : successUsers) {
+                pointService.updatePoint(successUser.getUser().getId(),rewardUnit * successUser.getMaxProgress() + challenge.getDepositPoint(), PointHistoryType.SUCCESS);
+            }
 
         }
     }
