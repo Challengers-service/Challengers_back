@@ -69,6 +69,15 @@ public class UserChallengeRepositoryImpl implements UserChallengeRepositoryCusto
                 .fetchOne();
     }
 
+    @Override
+    public Long getSumSuccessProgress(Long challengeId) {
+        return queryFactory
+                .select(userChallenge.maxProgress.sum().longValue())
+                .from(userChallenge)
+                .where(userChallenge.challenge.id.eq(challengeId), userChallenge.status.eq(UserChallengeStatus.SUCCESS))
+                .fetchOne();
+    }
+
     /*
     select uc.user_challenge_id
     from challenge c join user_challenge uc on c.challenge_id = uc.challenge_id left join photo_check p on uc.user_challenge_id = p.user_challenge_id and c.round = p.round

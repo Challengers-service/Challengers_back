@@ -12,4 +12,6 @@ public interface UserChallengeRepositoryCustom {
     UserChallenge getChallengeById(Long userChallengeId);
 
     List<Long> getSuccessIds(boolean isMonday);
+
+    Long getSumSuccessProgress(Long challengeId);
 }
