@@ -18,4 +18,6 @@ operation::point/getMyPoint[snippets='http-request,request-headers,http-response
 [[resources-point-myPointHistory]]
 === 내 포인트 내역 조회하기
 
+현재는 포인트 내역이 생성된 시간(createdAt)이 최신인 순서대로 조회됩니다.
+
 operation::point/getMyPointHistory[snippets='http-request,request-headers,http-response,response-fields']
