@@ -3,7 +3,7 @@ package com.challengers.challenge.domain;
 import java.util.Arrays;
 
 public enum Category {
-    EXERCISE, EATING_HABIT, LIFE, EMOTION, HOBBY, SURROUNDINGS, OTHER;
+    LIFE, STUDY, WORK_OUT, SELF_DEVELOPMENT;
 
     public static Category of(String categoryStr) {
         return Arrays.stream(Category.values())
