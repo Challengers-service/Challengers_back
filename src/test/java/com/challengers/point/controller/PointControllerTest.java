@@ -45,13 +45,13 @@ public class PointControllerTest extends DocumentationWithSecurity {
         PageImpl<PointTransactionResponse> page = new PageImpl<>(
                 Arrays.asList(
                     new PointTransactionResponse(-1000L, LocalDateTime.now(), PointTransactionType.DEPOSIT, 200L),
-                    new PointTransactionResponse(100L, LocalDateTime.now(), PointTransactionType.ATTENDANCE, 300L)
+                    new PointTransactionResponse(100L, LocalDateTime.now().minusHours(1L), PointTransactionType.ATTENDANCE, 300L)
                 )
                 , PageRequest.of(0,6),2);
 
         when(pointService.getMyPointHistory(any(),any())).thenReturn(page);
 
-        mockMvc.perform(get("/api/point/history")
+        mockMvc.perform(get("/api/point/transaction")
                 .header("Authorization",StringToken.getToken()))
                 .andExpect(status().isOk())
                 .andDo(PointDocumentation.getMyPointHistory());
