@@ -36,7 +36,8 @@ public class PointDocumentation {
 
         FieldDescriptor[] response= new FieldDescriptor[]{
                 fieldWithPath("content").type(JsonFieldType.ARRAY).description("포인트 변동 내역들"),
-                fieldWithPath("content.[].pointHistory").type(JsonFieldType.NUMBER).description("변경된 포인트"),
+                fieldWithPath("content.[].amount").type(JsonFieldType.NUMBER).description("변동된 금액"),
+                fieldWithPath("content.[].result").type(JsonFieldType.NUMBER).description("변동된 결과 금액"),
                 fieldWithPath("content.[].createdAt").type(JsonFieldType.STRING).description("포인트가 변경된 시각"),
                 fieldWithPath("content.[].type").type(JsonFieldType.STRING).description("포인트가 변경된 원인"),
 

@@ -4,7 +4,6 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
-import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -12,26 +11,29 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class PointHistory {
+public class PointTransaction {
     @Id @GeneratedValue
-    @Column(name = "point_history_id")
+    @Column(name = "point_transaction_id")
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "point")
+    @JoinColumn(name = "point_id")
     private Point point;
 
-    private Long pointHistory;
+    private Long amount;
+
+    private Long result;
 
     @CreationTimestamp
     private LocalDateTime createdAt;
 
     @Enumerated(EnumType.STRING)
-    private PointHistoryType type;
+    private PointTransactionType type;
 
-    public PointHistory(Point point, Long pointHistory, PointHistoryType type) {
+    public PointTransaction(Point point, Long amount, PointTransactionType type) {
         this.point = point;
-        this.pointHistory = pointHistory;
+        this.amount = amount;
+        this.result = point.getPoint() + amount;
         this.type = type;
     }
 }

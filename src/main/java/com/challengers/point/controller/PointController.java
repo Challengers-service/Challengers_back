@@ -1,6 +1,6 @@
 package com.challengers.point.controller;
 
-import com.challengers.point.dto.PointHistoryResponse;
+import com.challengers.point.dto.PointTransactionResponse;
 import com.challengers.point.dto.PointResponse;
 import com.challengers.point.service.PointService;
 import com.challengers.security.CurrentUser;
@@ -24,9 +24,9 @@ public class PointController {
         return ResponseEntity.ok(pointService.getMyPoint(user.getId()));
     }
 
-    @GetMapping("/history")
-    public ResponseEntity<Page<PointHistoryResponse>> getMyPointHistory(Pageable pageable,
-                                                                        @CurrentUser UserPrincipal user) {
+    @GetMapping("/transaction")
+    public ResponseEntity<Page<PointTransactionResponse>> getMyPointTransaction(Pageable pageable,
+                                                                            @CurrentUser UserPrincipal user) {
         return ResponseEntity.ok(pointService.getMyPointHistory(pageable, user.getId()));
     }
 }

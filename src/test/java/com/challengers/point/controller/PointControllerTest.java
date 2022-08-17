@@ -2,8 +2,8 @@ package com.challengers.point.controller;
 
 import com.challengers.common.WithMockCustomUser;
 import com.challengers.common.documentation.DocumentationWithSecurity;
-import com.challengers.point.domain.PointHistoryType;
-import com.challengers.point.dto.PointHistoryResponse;
+import com.challengers.point.domain.PointTransactionType;
+import com.challengers.point.dto.PointTransactionResponse;
 import com.challengers.point.dto.PointResponse;
 import com.challengers.point.service.PointService;
 import com.challengers.testtool.StringToken;
@@ -42,10 +42,10 @@ public class PointControllerTest extends DocumentationWithSecurity {
     @WithMockCustomUser
     @DisplayName("나의 포인트 내역을 조회한다.")
     void getMyPointHistory() throws Exception {
-        PageImpl<PointHistoryResponse> page = new PageImpl<>(
+        PageImpl<PointTransactionResponse> page = new PageImpl<>(
                 Arrays.asList(
-                    new PointHistoryResponse(-1000L, LocalDateTime.now(), PointHistoryType.DEPOSIT),
-                    new PointHistoryResponse(100L, LocalDateTime.now(), PointHistoryType.ATTENDANCE)
+                    new PointTransactionResponse(-1000L, LocalDateTime.now(), PointTransactionType.DEPOSIT, 200L),
+                    new PointTransactionResponse(100L, LocalDateTime.now(), PointTransactionType.ATTENDANCE, 300L)
                 )
                 , PageRequest.of(0,6),2);
 
