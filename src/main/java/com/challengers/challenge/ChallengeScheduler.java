@@ -2,7 +2,7 @@ package com.challengers.challenge;
 
 import com.challengers.challenge.domain.Challenge;
 import com.challengers.challenge.repository.ChallengeRepository;
-import com.challengers.point.domain.PointHistoryType;
+import com.challengers.point.domain.PointTransactionType;
 import com.challengers.point.service.PointService;
 import com.challengers.userchallenge.domain.UserChallenge;
 import com.challengers.userchallenge.domain.UserChallengeStatus;
@@ -54,7 +54,7 @@ public class ChallengeScheduler {
             List<UserChallenge> successUsers = userChallengeRepository.findByChallengeIdAndStatus(challenge.getId(), UserChallengeStatus.SUCCESS);
 
             for (UserChallenge successUser : successUsers) {
-                pointService.updatePoint(successUser.getUser().getId(),rewardUnit * successUser.getMaxProgress() + challenge.getDepositPoint(), PointHistoryType.SUCCESS);
+                pointService.updatePoint(successUser.getUser().getId(),rewardUnit * successUser.getMaxProgress() + challenge.getDepositPoint(), PointTransactionType.SUCCESS);
             }
 
         }

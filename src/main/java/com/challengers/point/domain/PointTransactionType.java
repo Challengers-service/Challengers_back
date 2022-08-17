@@ -1,5 +1,5 @@
 package com.challengers.point.domain;
 
-public enum PointHistoryType {
+public enum PointTransactionType {
     DEPOSIT,ATTENDANCE,SUCCESS,CANCEL
 }

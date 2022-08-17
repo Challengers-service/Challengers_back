@@ -6,7 +6,7 @@ import com.challengers.challenge.dto.*;
 import com.challengers.challenge.repository.ChallengeRepository;
 import com.challengers.challengetag.domain.ChallengeTag;
 import com.challengers.common.AwsS3Uploader;
-import com.challengers.point.domain.PointHistoryType;
+import com.challengers.point.domain.PointTransactionType;
 import com.challengers.point.service.PointService;
 import com.challengers.tag.domain.Tag;
 import com.challengers.tag.repository.TagRepository;
@@ -47,7 +47,7 @@ public class ChallengeService {
     public Long create(ChallengeRequest challengeRequest, Long userId) {
         User host = userRepository.findById(userId).orElseThrow(NoSuchElementException::new);
 
-        pointService.updatePoint(userId, challengeRequest.getDepositPoint()*-1L, PointHistoryType.DEPOSIT);
+        pointService.updatePoint(userId, challengeRequest.getDepositPoint()*-1L, PointTransactionType.DEPOSIT);
 
         // challenge 시작일, 종료일이 올바르지 않을 경우 에러 반환시켜야함
 
@@ -97,7 +97,7 @@ public class ChallengeService {
 
         userChallengeRepository.delete(userChallenge);
 
-        pointService.updatePoint(userId,(long) challenge.getDepositPoint(),PointHistoryType.CANCEL);
+        pointService.updatePoint(userId,(long) challenge.getDepositPoint(), PointTransactionType.CANCEL);
         //찜한 사람이 있는 경우 찜목록에서 삭제시키고 알림 보내야함
 
         challengeRepository.delete(challenge);
@@ -138,7 +138,7 @@ public class ChallengeService {
         challenge.joinUser();
         updateChallengeAchievement(user);
 
-        pointService.updatePoint(userId,challenge.getDepositPoint()*-1L,PointHistoryType.DEPOSIT);
+        pointService.updatePoint(userId,challenge.getDepositPoint()*-1L, PointTransactionType.DEPOSIT);
 
         userChallengeRepository.save(UserChallenge.create(challenge, user));
     }

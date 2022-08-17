@@ -1,10 +1,10 @@
 package com.challengers.point.service;
 
 import com.challengers.point.domain.Point;
-import com.challengers.point.domain.PointHistoryType;
-import com.challengers.point.dto.PointHistoryResponse;
+import com.challengers.point.domain.PointTransactionType;
+import com.challengers.point.dto.PointTransactionResponse;
 import com.challengers.point.dto.PointResponse;
-import com.challengers.point.repository.PointHistoryRepository;
+import com.challengers.point.repository.PointTransactionRepository;
 import com.challengers.point.repository.PointRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -32,13 +32,13 @@ public class PointServiceTest {
     PointRepository pointRepository;
 
     @Mock
-    PointHistoryRepository pointHistoryRepository;
+    PointTransactionRepository pointTransactionRepository;
 
     PointService pointService;
 
     @BeforeEach
     void setUp() {
-        pointService = new PointService(pointRepository, pointHistoryRepository);
+        pointService = new PointService(pointRepository, pointTransactionRepository);
     }
 
     @Test
@@ -54,15 +54,15 @@ public class PointServiceTest {
     @Test
     @DisplayName("나의 포인트 내역을 조회한다.")
     void getMyPointHistory() {
-        PageImpl<PointHistoryResponse> page = new PageImpl<>(Arrays.asList(
-                new PointHistoryResponse(100L, LocalDateTime.now().minusHours(9L), PointHistoryType.ATTENDANCE),
-                new PointHistoryResponse(-500L, LocalDateTime.now().minusHours(6L), PointHistoryType.DEPOSIT),
-                new PointHistoryResponse(2000L, LocalDateTime.now().minusHours(3L),PointHistoryType.CANCEL),
-                new PointHistoryResponse(7430L,LocalDateTime.now(),PointHistoryType.SUCCESS)));
+        PageImpl<PointTransactionResponse> page = new PageImpl<>(Arrays.asList(
+                new PointTransactionResponse(100L, LocalDateTime.now().minusHours(9L), PointTransactionType.ATTENDANCE, 600L),
+                new PointTransactionResponse(-500L, LocalDateTime.now().minusHours(6L), PointTransactionType.DEPOSIT, 100L),
+                new PointTransactionResponse(2000L, LocalDateTime.now().minusHours(3L), PointTransactionType.CANCEL, 2100L),
+                new PointTransactionResponse(7430L,LocalDateTime.now(), PointTransactionType.SUCCESS, 9530L)));
         when(pointRepository.findByUserId(any())).thenReturn(Optional.of(Point.create(1L)));
-        when(pointHistoryRepository.getPointHistory(any(),any())).thenReturn(page);
+        when(pointTransactionRepository.getPointHistory(any(),any())).thenReturn(page);
 
-        Page<PointHistoryResponse> response = pointService.getMyPointHistory(PageRequest.of(0, 6), 1L);
+        Page<PointTransactionResponse> response = pointService.getMyPointHistory(PageRequest.of(0, 6), 1L);
 
         assertThat(response).isEqualTo(page);
     }
@@ -75,9 +75,9 @@ public class PointServiceTest {
                 .build();
         when(pointRepository.findByUserId(any())).thenReturn(Optional.of(point));
 
-        pointService.updatePoint(1L, 100L, PointHistoryType.ATTENDANCE);
+        pointService.updatePoint(1L, 100L, PointTransactionType.ATTENDANCE);
 
-        verify(pointHistoryRepository).save(any());
+        verify(pointTransactionRepository).save(any());
         assertThat(point.getPoint()).isEqualTo(100L);
     }
 
@@ -89,9 +89,9 @@ public class PointServiceTest {
                 .build();
         when(pointRepository.findByUserId(any())).thenReturn(Optional.of(point));
 
-        pointService.updatePoint(1L, -500L, PointHistoryType.DEPOSIT);
+        pointService.updatePoint(1L, -500L, PointTransactionType.DEPOSIT);
 
-        verify(pointHistoryRepository).save(any());
+        verify(pointTransactionRepository).save(any());
         assertThat(point.getPoint()).isEqualTo(0L);
     }
 
@@ -103,7 +103,7 @@ public class PointServiceTest {
                 .build();
         when(pointRepository.findByUserId(any())).thenReturn(Optional.of(point));
 
-        assertThatThrownBy(() -> pointService.updatePoint(1L, -500L, PointHistoryType.DEPOSIT))
+        assertThatThrownBy(() -> pointService.updatePoint(1L, -500L, PointTransactionType.DEPOSIT))
                 .isInstanceOf(RuntimeException.class);
     }
 }
