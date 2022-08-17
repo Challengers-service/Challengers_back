@@ -29,7 +29,7 @@ public class ChallengeDocumentation {
                 parameterWithName("challengeRule").description("도전 규칙"),
                 parameterWithName("checkFrequencyType").description("인증 빈도 타입. 매일이면 EVERY_DAY를, 매주이면 EVERY_WEEK를, 직접 입력이면 OTHERS를 보내주시면 됩니다. [EVERY_DAY, EVERY_WEEK, OTHERS]"),
                 parameterWithName("checkTimesPerRound").description("회차 마다 인증해야 하는 횟수. 인증 빈도 타입이 EVERY_DAY나 EVERY_WEEK 이면 1을, OTHERS 이면 사용자가 입력한 값을 보내주시면 됩니다."),
-                parameterWithName("category").description("카테고리. [EXERCISE, EATING_HABIT, LIFE, EMOTION, HOBBY, SURROUNDINGS, OTHER] 중 하나"),
+                parameterWithName("category").description("카테고리. [LIFE, STUDY, WORK_OUT, SELF_DEVELOPMENT] 중 하나"),
                 parameterWithName("startDate").description("챌린지 시작일. [yyyy-MM-dd] 형식으로 보내주시면 됩니다."),
                 parameterWithName("endDate").description("챌린지 종료일 [yyyy-MM-dd]"),
                 parameterWithName("depositPoint").description("예치 포인트"),
@@ -78,7 +78,7 @@ public class ChallengeDocumentation {
                 fieldWithPath("checkFrequencyType").type(JsonFieldType.STRING).description("챌린지 인증 빈도 타입 [EVERY_DAY, EVERY_WEEK, OTHERS]"),
                 fieldWithPath("checkTimesPerRound").type(JsonFieldType.NUMBER).description("회차별로 인증해야 하는 횟수. " +
                         "\"인증을 1주 1회해야한다\"에서 \"1회\"에 해당합니다. 인증빈도가 매일이나 매주이면 1을, 직접 입력인 경우 직접 입력한 횟수를 반환합니다. "),
-                fieldWithPath("category").type(JsonFieldType.STRING).description("챌린지 카테고리 [EXERCISE, EATING_HABIT, LIFE, EMOTION, HOBBY, SURROUNDINGS, OTHER]"),
+                fieldWithPath("category").type(JsonFieldType.STRING).description("챌린지 카테고리 [LIFE, STUDY, WORK_OUT, SELF_DEVELOPMENT]"),
                 fieldWithPath("startDate").type(JsonFieldType.STRING).description("챌린지 시작일 [yyyy-MM-dd]"),
                 fieldWithPath("endDate").type(JsonFieldType.STRING).description("챌린지 종료일 [yyyy-MM-dd]"),
                 fieldWithPath("depositPoint").type(JsonFieldType.NUMBER).description("예치 포인트"),
@@ -192,7 +192,7 @@ public class ChallengeDocumentation {
         ParameterDescriptor[] requestParams = new ParameterDescriptor[]{
                 parameterWithName("page").description("페이지 번호. 번호는 0부터 시작하고 생략시 0입니다.").optional(),
                 parameterWithName("size").description("한번에 가져올 콘텐츠 갯수. 생략시 9개를 가져옵니다.").optional(),
-                parameterWithName("category").description("검색할 카테고리. [EXERCISE, EATING_HABIT, LIFE, EMOTION, HOBBY, SURROUNDINGS, OTHER] 중 하나")
+                parameterWithName("category").description("검색할 카테고리. [LIFE, STUDY, WORK_OUT, SELF_DEVELOPMENT] 중 하나")
         };
 
         return document("challenge/searchCategory",
