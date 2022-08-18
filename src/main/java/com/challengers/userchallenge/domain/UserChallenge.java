@@ -34,6 +34,7 @@ public class UserChallenge {
 
     private int maxProgress;
     private int progress;
+    @Enumerated(EnumType.STRING)
     private UserChallengeStatus status;
 
     @Builder

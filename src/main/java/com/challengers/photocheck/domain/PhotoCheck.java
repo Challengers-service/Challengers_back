@@ -26,6 +26,7 @@ public class PhotoCheck {
 
     private int round;
 
+    @Enumerated(EnumType.STRING)
     private PhotoCheckStatus status;
 
     @Builder

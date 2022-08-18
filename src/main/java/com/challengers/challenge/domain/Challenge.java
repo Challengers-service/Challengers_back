@@ -30,8 +30,10 @@ public class Challenge extends BaseTimeEntity {
     private String imageUrl;
     private String photoDescription;
     private String challengeRule;
+    @Enumerated(EnumType.STRING)
     private CheckFrequencyType checkFrequencyType;
     private int checkTimesPerRound;
+    @Enumerated(EnumType.STRING)
     private Category category;
     private LocalDate startDate;
     private LocalDate endDate;
@@ -44,6 +46,7 @@ public class Challenge extends BaseTimeEntity {
     private int userCountLimit;
     private int failedPoint;
     private int round;
+    @Enumerated(EnumType.STRING)
     private ChallengeStatus status;
 
     @Embedded
