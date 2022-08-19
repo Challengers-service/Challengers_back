@@ -10,4 +10,6 @@ import java.util.List;
 
 public interface PhotoCheckRepository extends JpaRepository<PhotoCheck,Long> {
     Long countByUserChallengeIdAndRound(Long challengeId, Integer round);
+
+    List<PhotoCheck> findByUserChallengeId(Long userChallengeId);
 }
