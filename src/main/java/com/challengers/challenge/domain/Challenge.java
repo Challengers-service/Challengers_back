@@ -39,9 +39,6 @@ public class Challenge extends BaseTimeEntity {
     private LocalDate endDate;
     private int depositPoint;
     private String introduction;
-    private Float totalStarRating;
-    private Float starRating;
-    private int reviewCount;
     private int userCount;
     private int userCountLimit;
     private int failedPoint;
@@ -72,11 +69,10 @@ public class Challenge extends BaseTimeEntity {
 
     @Builder
     public Challenge(Long id, User host, String name, String imageUrl, String photoDescription,
-                     String challengeRule, CheckFrequencyType checkFrequencyType, int checkTimesPerRound, Category category,
-                     LocalDate startDate, LocalDate endDate, int depositPoint, String introduction,
-                     Float totalStarRating, Float starRating, int reviewCount, int userCount,
-                     int userCountLimit, int failedPoint, int round, ChallengeStatus status,
-                     LocalDateTime createdDate, LocalDateTime updatedDate) {
+                     String challengeRule, CheckFrequencyType checkFrequencyType, int checkTimesPerRound,
+                     Category category, LocalDate startDate, LocalDate endDate, int depositPoint,
+                     String introduction, int userCount, int userCountLimit, int failedPoint,
+                     int round, ChallengeStatus status, LocalDateTime createdDate, LocalDateTime updatedDate) {
         this.id = id;
         this.host = host;
         this.name = name;
@@ -90,9 +86,6 @@ public class Challenge extends BaseTimeEntity {
         this.endDate = endDate;
         this.depositPoint = depositPoint;
         this.introduction = introduction;
-        this.totalStarRating = totalStarRating;
-        this.starRating = starRating;
-        this.reviewCount = reviewCount;
         this.userCount = userCount;
         this.userCountLimit = userCountLimit;
         this.failedPoint = failedPoint;
@@ -134,27 +127,6 @@ public class Challenge extends BaseTimeEntity {
 
     public void joinUser() {
         this.userCount++;
-    }
-
-    public void addReviewRelation(Float starRating) {
-        reviewCount++;
-        totalStarRating += starRating;
-        updateStarRating();
-    }
-
-    public void deleteReviewRelation(Float starRating) {
-        reviewCount--;
-        totalStarRating -= starRating;
-        updateStarRating();
-    }
-
-    public void updateReviewRelation(Float starRating, Float newStarRating) {
-        totalStarRating = totalStarRating - starRating + newStarRating;
-        updateStarRating();
-    }
-
-    private void updateStarRating() {
-        starRating = reviewCount == 0 ? 0.0f : Math.round(totalStarRating/reviewCount*10)/10.0f;
     }
 
     public void initStatus() {

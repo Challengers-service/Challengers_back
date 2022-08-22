@@ -41,7 +41,6 @@ public class ReviewService {
                 .starRating(reviewRequest.getStarRating())
                 .build();
 
-        challenge.addReviewRelation(review.getStarRating());
         reviewRepository.save(review);
     }
 
@@ -49,8 +48,7 @@ public class ReviewService {
     public void delete(Long reviewId, Long userId) {
         Review review = reviewRepository.findById(reviewId).orElseThrow(NoSuchElementException::new);
         authorization(review.getUser().getId(), userId);
-
-        review.getChallenge().deleteReviewRelation(review.getStarRating());
+        
         reviewRepository.delete(review);
     }
 

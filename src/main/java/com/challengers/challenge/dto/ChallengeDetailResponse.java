@@ -29,19 +29,19 @@ public class ChallengeDetailResponse {
     private String endDate;
     private int depositPoint;
     private String introduction;
-    private Float starRating;
-    private int reviewCount;
     private int userCount;
     private int userCountLimit;
     private String status;
     private List<TagResponse> tags;
     private List<String> examplePhotos;
-
     private String createdDate;
-    private boolean cart;
-    private long reward;
 
-    public static ChallengeDetailResponse of(Challenge challenge, boolean cart, long reward) {
+    private Float starRating;
+    private int reviewCount;
+    private boolean cart;
+    private long expectedReward;
+
+    public static ChallengeDetailResponse of(Challenge challenge, float starRating, int reviewCount, boolean cart, long expectedReward) {
         return new ChallengeDetailResponse(
                 challenge.getId(),
                 challenge.getHost().getId(),
@@ -58,16 +58,16 @@ public class ChallengeDetailResponse {
                 challenge.getEndDate().toString(),
                 challenge.getDepositPoint(),
                 challenge.getIntroduction(),
-                challenge.getStarRating(),
-                challenge.getReviewCount(),
                 challenge.getUserCount(),
                 challenge.getUserCountLimit(),
                 challenge.getStatus().toString(),
                 TagResponse.listOf(challenge.getChallengeTags().getTags()),
                 challenge.getExamplePhotoUrls(),
                 challenge.getCreatedDate().toLocalDate().toString(),
+                starRating,
+                reviewCount,
                 cart,
-                reward
+                expectedReward
         );
     }
 }

@@ -82,9 +82,6 @@ public class ChallengeRequest {
                 .depositPoint(depositPoint)
                 .introduction(introduction)
                 .userCountLimit(userCountLimit)
-                .totalStarRating(0.0f)
-                .starRating(0.0f)
-                .reviewCount(0)
                 .userCount(1)
                 .round(0)
                 .build();
