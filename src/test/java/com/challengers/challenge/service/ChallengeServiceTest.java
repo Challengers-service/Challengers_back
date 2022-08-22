@@ -11,6 +11,7 @@ import com.challengers.challengephoto.repository.ChallengePhotoRepository;
 import com.challengers.common.AwsS3Uploader;
 import com.challengers.photocheck.repository.PhotoCheckRepository;
 import com.challengers.point.service.PointService;
+import com.challengers.review.repository.ReviewRepository;
 import com.challengers.tag.domain.Tag;
 import com.challengers.tag.repository.TagRepository;
 import com.challengers.user.domain.AuthProvider;
@@ -54,6 +55,7 @@ public class ChallengeServiceTest {
     @Mock PointService pointService;
     @Mock PhotoCheckRepository photoCheckRepository;
     @Mock ChallengePhotoRepository challengePhotoRepository;
+    @Mock ReviewRepository reviewRepository;
 
     ChallengeService challengeService;
 
@@ -65,7 +67,7 @@ public class ChallengeServiceTest {
     void setUp() {
         challengeService = new ChallengeService(challengeRepository,achievementRepository,tagRepository,
                 userRepository,userChallengeRepository,awsS3Uploader,cartRepository, photoCheckRepository,
-                challengePhotoRepository, pointService);
+                challengePhotoRepository, reviewRepository, pointService);
 
         user = User.builder()
                 .id(0L)
@@ -107,7 +109,6 @@ public class ChallengeServiceTest {
                 .challengeRule("7시를 가르키는 시계와 본인이 같이 나오게 사진을 찍으시면 됩니다.")
                 .checkFrequencyType(CheckFrequencyType.EVERY_DAY)
                 .category(Category.LIFE)
-                .starRating(3.5f)
                 .depositPoint(1000)
                 .startDate(LocalDate.now())
                 .endDate(LocalDate.now().plusDays(7))
@@ -210,11 +211,13 @@ public class ChallengeServiceTest {
         when(challengeRepository.findById(any())).thenReturn(Optional.of(challenge));
         when(userChallengeRepository.findByChallengeIdAndStatus(any(),any())).thenReturn(new ArrayList<>());
         when(cartRepository.findByChallengeIdAndUserId(any(),any())).thenReturn(Optional.empty());
+        when(reviewRepository.getStarRatingAverageByChallengeId(any())).thenReturn(3.5f);
+        when(reviewRepository.countByChallengeId(any())).thenReturn(3);
 
         ChallengeDetailResponse response = challengeService.findChallenge(1L, 1L);
 
         assertThat(response).isEqualTo(ChallengeDetailResponse
-                .of(challenge, false,0L));
+                .of(challenge,3.5f, 3, false,0L));
     }
 
 

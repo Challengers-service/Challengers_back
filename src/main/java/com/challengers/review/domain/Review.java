@@ -42,8 +42,6 @@ public class Review extends BaseTimeEntity {
     }
 
     public void update(ReviewUpdateRequest reviewUpdateRequest) {
-        challenge.updateReviewRelation(starRating, reviewUpdateRequest.getStarRating());
-
         title = reviewUpdateRequest.getTitle();
         content = reviewUpdateRequest.getContent();
         starRating = reviewUpdateRequest.getStarRating();

@@ -44,9 +44,6 @@ class ReviewServiceTest {
 
         challenge = Challenge.builder()
                 .id(1L)
-                .totalStarRating(13.5f)
-                .starRating(3.4f)
-                .reviewCount(4)
                 .build();
 
         review = Review.builder()

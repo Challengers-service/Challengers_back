@@ -10,6 +10,7 @@ import com.challengers.common.AwsS3Uploader;
 import com.challengers.photocheck.repository.PhotoCheckRepository;
 import com.challengers.point.domain.PointTransactionType;
 import com.challengers.point.service.PointService;
+import com.challengers.review.repository.ReviewRepository;
 import com.challengers.tag.domain.Tag;
 import com.challengers.tag.repository.TagRepository;
 import com.challengers.user.domain.Achievement;
@@ -43,6 +44,7 @@ public class ChallengeService {
     private final CartRepository cartRepository;
     private final PhotoCheckRepository photoCheckRepository;
     private final ChallengePhotoRepository challengePhotoRepository;
+    private final ReviewRepository reviewRepository;
 
     private final PointService pointService;
 
@@ -126,6 +128,8 @@ public class ChallengeService {
         int maxProgress = ChallengeJoinManager.getMaxProgress(challenge);
 
         return ChallengeDetailResponse.of(challenge,
+                reviewRepository.getStarRatingAverageByChallengeId(challengeId),
+                reviewRepository.countByChallengeId(challengeId),
                 cartRepository.findByChallengeIdAndUserId(challengeId, userId).isPresent(),
                 challenge.getFailedPoint()/(progress+maxProgress)*maxProgress);
     }
