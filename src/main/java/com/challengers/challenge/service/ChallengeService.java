@@ -111,6 +111,8 @@ public class ChallengeService {
 
         cartRepository.findByChallengeId(challengeId).forEach(cartRepository::delete);
 
+        reviewRepository.findByChallengeIdAndUserId(challengeId,userId).ifPresent(reviewRepository::delete);
+
         challengeRepository.delete(challenge);
     }
 
