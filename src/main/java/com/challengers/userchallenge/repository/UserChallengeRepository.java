@@ -13,7 +13,7 @@ import java.util.Optional;
 
 public interface UserChallengeRepository extends JpaRepository<UserChallenge,Long>, UserChallengeRepositoryCustom {
     Optional<UserChallenge> findByUserIdAndChallengeId(Long userId, Long challengeId);
-    Long countByChallengeId(Long challengeId);
+    int countByChallengeId(Long challengeId);
 
     List<UserChallenge> findByChallengeId(Long challengeId);
 

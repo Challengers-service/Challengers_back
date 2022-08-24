@@ -95,7 +95,7 @@ public class ChallengeService {
     public void delete(Long challengeId, Long userId) {
         Challenge challenge = challengeRepository.findById(challengeId).orElseThrow(NoSuchElementException::new);
         if (!challenge.getHost().getId().equals(userId)) throw new RuntimeException("권한이 없는 요청");
-        if (!userChallengeRepository.countByChallengeId(challengeId).equals(1L)) throw new RuntimeException("삭제 조건에 부합하지 않음 - 챌린지 참여자가 2명 이상 있음");
+        if (userChallengeRepository.countByChallengeId(challengeId) != 1) throw new RuntimeException("삭제 조건에 부합하지 않음 - 챌린지 참여자가 2명 이상 있음");
 
         awsS3Uploader.deleteImage(challenge.getImageUrl());
         awsS3Uploader.deleteImages(challenge.getExamplePhotoUrls());
@@ -130,6 +130,7 @@ public class ChallengeService {
         int maxProgress = ChallengeJoinManager.getMaxProgress(challenge);
 
         return ChallengeDetailResponse.of(challenge,
+                userChallengeRepository.countByChallengeId(challengeId),
                 reviewRepository.getStarRatingAverageByChallengeId(challengeId),
                 reviewRepository.countByChallengeId(challengeId),
                 cartRepository.findByChallengeIdAndUserId(challengeId, userId).isPresent(),
@@ -139,7 +140,7 @@ public class ChallengeService {
     @Transactional
     public void join(Long challengeId, Long userId) {
         Challenge challenge = challengeRepository.findById(challengeId).orElseThrow(NoSuchElementException::new);
-        if (challenge.getUserCount() == challenge.getUserCountLimit())
+        if (userChallengeRepository.countByChallengeId(challengeId) == challenge.getUserCountLimit())
             throw new RuntimeException("참여 인원이 가득 찼습니다.");
 
         User user = userRepository.findById(userId).orElseThrow(NoSuchElementException::new);
@@ -150,7 +151,6 @@ public class ChallengeService {
             throw new RuntimeException(
                     "다음주 월요일까지 남은 일 수 보다 일주일에 인증해야 하는 횟수가 많기때문에 다음 주에 참여해야 합니다.");
 
-        challenge.joinUser();
         updateChallengeAchievement(user);
 
         pointService.updatePoint(userId,challenge.getDepositPoint()*-1L, PointTransactionType.DEPOSIT);
