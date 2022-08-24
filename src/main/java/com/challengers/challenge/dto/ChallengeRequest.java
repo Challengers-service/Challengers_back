@@ -82,7 +82,6 @@ public class ChallengeRequest {
                 .depositPoint(depositPoint)
                 .introduction(introduction)
                 .userCountLimit(userCountLimit)
-                .userCount(1)
                 .round(0)
                 .build();
     }

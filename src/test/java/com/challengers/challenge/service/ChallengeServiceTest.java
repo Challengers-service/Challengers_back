@@ -185,7 +185,7 @@ public class ChallengeServiceTest {
     @DisplayName("챌린지 삭제 성공")
     void delete() {
         when(challengeRepository.findById(any())).thenReturn(Optional.of(challenge));
-        when(userChallengeRepository.countByChallengeId(any())).thenReturn(1L);
+        when(userChallengeRepository.countByChallengeId(any())).thenReturn(1);
         when(userChallengeRepository.findByUserIdAndChallengeId(any(),any()))
                 .thenReturn(Optional.of(UserChallenge.create(challenge,user)));
 
@@ -199,7 +199,7 @@ public class ChallengeServiceTest {
     @DisplayName("챌린지 삭제 실패 - 참가자가 2명 이상일 경우")
     void delete_fail_proceeding() {
         when(challengeRepository.findById(any())).thenReturn(Optional.of(challenge));
-        when(userChallengeRepository.countByChallengeId(any())).thenReturn(2L);
+        when(userChallengeRepository.countByChallengeId(any())).thenReturn(2);
 
         assertThatThrownBy(() -> challengeService.delete(challenge.getId(),user.getId()))
                 .isInstanceOf(RuntimeException.class);
@@ -213,11 +213,12 @@ public class ChallengeServiceTest {
         when(cartRepository.findByChallengeIdAndUserId(any(),any())).thenReturn(Optional.empty());
         when(reviewRepository.getStarRatingAverageByChallengeId(any())).thenReturn(3.5f);
         when(reviewRepository.countByChallengeId(any())).thenReturn(3);
+        when(userChallengeRepository.countByChallengeId(any())).thenReturn(5);
 
         ChallengeDetailResponse response = challengeService.findChallenge(1L, 1L);
 
         assertThat(response).isEqualTo(ChallengeDetailResponse
-                .of(challenge,3.5f, 3, false,0L));
+                .of(challenge,5,3.5f, 3, false,0L));
     }
 
 
@@ -237,7 +238,6 @@ public class ChallengeServiceTest {
     void join_failed_due_to_overcrowding() {
         Challenge challengeFull = Challenge.builder()
                 .id(1L)
-                .userCount(3)
                 .userCountLimit(3)
                 .build();
         when(challengeRepository.findById(any())).thenReturn(Optional.of(challengeFull));

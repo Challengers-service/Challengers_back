@@ -39,7 +39,6 @@ public class Challenge extends BaseTimeEntity {
     private LocalDate endDate;
     private int depositPoint;
     private String introduction;
-    private int userCount;
     private int userCountLimit;
     private int failedPoint;
     private int round;
@@ -71,7 +70,7 @@ public class Challenge extends BaseTimeEntity {
     public Challenge(Long id, User host, String name, String imageUrl, String photoDescription,
                      String challengeRule, CheckFrequencyType checkFrequencyType, int checkTimesPerRound,
                      Category category, LocalDate startDate, LocalDate endDate, int depositPoint,
-                     String introduction, int userCount, int userCountLimit, int failedPoint,
+                     String introduction, int userCountLimit, int failedPoint,
                      int round, ChallengeStatus status, LocalDateTime createdDate, LocalDateTime updatedDate) {
         this.id = id;
         this.host = host;
@@ -86,7 +85,6 @@ public class Challenge extends BaseTimeEntity {
         this.endDate = endDate;
         this.depositPoint = depositPoint;
         this.introduction = introduction;
-        this.userCount = userCount;
         this.userCountLimit = userCountLimit;
         this.failedPoint = failedPoint;
         this.round = round;
@@ -123,10 +121,6 @@ public class Challenge extends BaseTimeEntity {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
-    }
-
-    public void joinUser() {
-        this.userCount++;
     }
 
     public void initStatus() {
