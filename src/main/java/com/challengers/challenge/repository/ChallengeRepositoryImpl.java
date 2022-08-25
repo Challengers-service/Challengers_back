@@ -33,8 +33,8 @@ public class ChallengeRepositoryImpl extends Querydsl4RepositorySupport implemen
         return applyPagination(pageable, contentQuery -> contentQuery
                         .select(challenge).distinct()
                         .from(challenge)
-                        .join(challenge.challengeTags.challengeTags, challengeTag)
-                        .join(challengeTag.tag, tag)
+                        .leftJoin(challenge.challengeTags.challengeTags, challengeTag)
+                        .leftJoin(challengeTag.tag, tag)
                         .where(searchCond(condition),
                                 challenge.status.in(ChallengeStatus.READY, ChallengeStatus.IN_PROGRESS)),
 

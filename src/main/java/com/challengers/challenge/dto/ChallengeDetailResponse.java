@@ -19,7 +19,6 @@ public class ChallengeDetailResponse {
     private String hostName;
 
     private String name;
-    private String imageUrl;
     private String photoDescription;
     private String challengeRule;
     private CheckFrequencyType checkFrequencyType;
@@ -48,7 +47,6 @@ public class ChallengeDetailResponse {
                 challenge.getHost().getImage(),
                 challenge.getHost().getName(),
                 challenge.getName(),
-                challenge.getImageUrl(),
                 challenge.getPhotoDescription(),
                 challenge.getChallengeRule(),
                 challenge.getCheckFrequencyType(),

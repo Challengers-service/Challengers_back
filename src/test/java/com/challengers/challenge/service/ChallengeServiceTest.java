@@ -86,7 +86,6 @@ public class ChallengeServiceTest {
 
         challengeRequest = ChallengeRequest.builder()
                 .name("미라클 모닝 - 아침 7시 기상")
-                .image(new MockMultipartFile("테스트사진.png","테스트사진.png","image/png","saf".getBytes()))
                 .challengeRule("7시를 가르키는 시계와 본인이 같이 나오게 사진을 찍으시면 됩니다.")
                 .checkFrequencyType("EVERY_DAY")
                 .category("LIFE")
@@ -105,7 +104,6 @@ public class ChallengeServiceTest {
                 .id(1L)
                 .host(user)
                 .name("미라클 모닝 - 아침 7시 기상")
-                .imageUrl("https://imageUrl.png")
                 .challengeRule("7시를 가르키는 시계와 본인이 같이 나오게 사진을 찍으시면 됩니다.")
                 .checkFrequencyType(CheckFrequencyType.EVERY_DAY)
                 .category(Category.LIFE)
@@ -124,8 +122,6 @@ public class ChallengeServiceTest {
     void create() {
         //given
         when(userRepository.findById(any())).thenReturn(Optional.of(user));
-        when(awsS3Uploader.uploadImage(any()))
-                .thenReturn("https://challengers-bucket.s3.ap-northeast-2.amazonaws.com/1747f32c-e5083c5e2bce0.PNG");
         when(tagRepository.findTagByName(any())).thenReturn(Optional.of(new Tag("임시 태그")));
 
         //when
@@ -136,30 +132,11 @@ public class ChallengeServiceTest {
     }
 
     @Test
-    @DisplayName("챌린지 대표 이미지, 소개글 수정 성공")
-    void update_all() {
-        //given
-        String updatedImageUrl = "https://challengers-bucket.s3.ap-northeast-2.amazonaws.com/1747f32c-e5083c5e20.PNG";
-        ChallengeUpdateRequest challengeUpdateRequest = new ChallengeUpdateRequest(
-                new MockMultipartFile("image","image".getBytes()), "수정된 챌린지 소개글 입니다.");
-        when(challengeRepository.findById(any())).thenReturn(Optional.of(challenge));
-        when(awsS3Uploader.uploadImage(any())).thenReturn(updatedImageUrl);
-
-
-        //when
-        challengeService.update(challengeUpdateRequest, challenge.getId(), challenge.getHost().getId());
-
-        //then
-        assertThat(challenge.getImageUrl()).isEqualTo(updatedImageUrl);
-        assertThat(challenge.getIntroduction()).isEqualTo(challengeUpdateRequest.getIntroduction());
-    }
-
-    @Test
     @DisplayName("챌린지 소개글 수정 성공")
     void update_introduction() {
         //given
         ChallengeUpdateRequest challengeUpdateRequest = new ChallengeUpdateRequest(
-                null, "수정된 챌린지 소개글 입니다.");
+                "수정된 챌린지 소개글 입니다.");
         when(challengeRepository.findById(any())).thenReturn(Optional.of(challenge));
 
         //when
@@ -173,7 +150,7 @@ public class ChallengeServiceTest {
     @DisplayName("챌린지 수정 실패 - 권한이 없습니다.")
     void update_unauthorized() {
         ChallengeUpdateRequest challengeUpdateRequest = new ChallengeUpdateRequest(
-                null, "수정된 챌린지 소개글 입니다.");
+                "수정된 챌린지 소개글 입니다.");
         when(challengeRepository.findById(any())).thenReturn(Optional.of(challenge));
 
         assertThatThrownBy(()-> challengeService.update(challengeUpdateRequest, challenge.getId(),
