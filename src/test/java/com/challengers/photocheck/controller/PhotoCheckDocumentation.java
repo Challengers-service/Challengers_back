@@ -41,7 +41,11 @@ public class PhotoCheckDocumentation {
 
     public static RestDocumentationResultHandler addPhotoCheck() {
         HeaderDescriptor[] requestHeaders = new HeaderDescriptor[]{
-                headerWithName("Authorization").description("JWT 토큰")
+                headerWithName("Authorization").description("JWT 토큰"),
+                headerWithName("Content-Type").description("multipart/form-data; boundary=<6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm>  " +
+                        "참고로 boundary는 메시지 파트를 구분하는 역할을 하며 이 값은 client가 선택할 수 있습니다. " +
+                        "일반적으로 메시지의 본문과 충돌되지 않도록 UUID와 같은 무작위 문자를 보냅니다." +
+                        " 앞의 예시를 그대로 사용해도 됩니다.")
         };
 
         ParameterDescriptor[] requestParam = new ParameterDescriptor[]{
@@ -49,7 +53,7 @@ public class PhotoCheckDocumentation {
         };
 
         RequestPartDescriptor[] requestPart = {
-                partWithName("photo").description("인증 사진 파일")
+                partWithName("photo").description("인증 사진 파일. 필수값입니다.")
         };
 
         return document("photo_check/addPhotoCheck",
@@ -62,7 +66,8 @@ public class PhotoCheckDocumentation {
 
     public static RestDocumentationResultHandler pass() {
         HeaderDescriptor[] requestHeaders = new HeaderDescriptor[]{
-                headerWithName("Authorization").description("JWT 토큰")
+                headerWithName("Authorization").description("JWT 토큰"),
+                headerWithName("Content-Type").description("application/json")
         };
 
         FieldDescriptor[] requestField= new FieldDescriptor[]{
@@ -78,7 +83,8 @@ public class PhotoCheckDocumentation {
 
     public static RestDocumentationResultHandler fail() {
         HeaderDescriptor[] requestHeaders = new HeaderDescriptor[]{
-                headerWithName("Authorization").description("JWT 토큰")
+                headerWithName("Authorization").description("JWT 토큰"),
+                headerWithName("Content-Type").description("application/json")
         };
 
         FieldDescriptor[] requestField= new FieldDescriptor[]{

@@ -20,7 +20,11 @@ public class ChallengeDocumentation {
 
     public static RestDocumentationResultHandler createChallenge() {
         HeaderDescriptor[] requestHeaders = new HeaderDescriptor[]{
-                headerWithName("Authorization").description("JWT 토큰")
+                headerWithName("Authorization").description("JWT 토큰"),
+                headerWithName("Content-Type").description("multipart/form-data; boundary=<6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm>  " +
+                        "참고로 boundary는 메시지 파트를 구분하는 역할을 하며 이 값은 client가 선택할 수 있습니다. " +
+                        "일반적으로 메시지의 본문과 충돌되지 않도록 UUID와 같은 무작위 문자를 보냅니다." +
+                        " 앞의 예시를 그대로 사용해도 됩니다.")
         };
 
         ParameterDescriptor[] requestParam = new ParameterDescriptor[]{
@@ -39,8 +43,9 @@ public class ChallengeDocumentation {
         };
 
         RequestPartDescriptor[] requestPart = {
-                partWithName("image").description("챌린지 대표 이미지 파일. 생략시 기본 이미지로 등록됩니다."),
-                partWithName("examplePhotos").description("챌린지 예시 사진 파일들")
+                partWithName("image").description("챌린지 대표 이미지 파일. 필수값이 아니고, 생략시 기본 이미지로 등록됩니다."),
+                partWithName("examplePhotos").description("인증예시 사진 파일들. " +
+                        "최소 한장은 필수로 등록되어야 하며 최대 세장까지 등록가능합니다. ")
         };
 
         return document("challenge/createChallenge",
@@ -124,7 +129,11 @@ public class ChallengeDocumentation {
 
     public static RestDocumentationResultHandler updateChallenge() {
         HeaderDescriptor[] requestHeaders = new HeaderDescriptor[]{
-                headerWithName("Authorization").description("JWT 토큰")
+                headerWithName("Authorization").description("JWT 토큰"),
+                headerWithName("Content-Type").description("multipart/form-data; boundary=<6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm>  " +
+                        "참고로 boundary는 메시지 파트를 구분하는 역할을 하며 이 값은 client가 선택할 수 있습니다. " +
+                        "일반적으로 메시지의 본문과 충돌되지 않도록 UUID와 같은 무작위 문자를 보냅니다." +
+                        " 앞의 예시를 그대로 사용해도 됩니다.")
         };
 
         ParameterDescriptor[] requestParam = new ParameterDescriptor[]{

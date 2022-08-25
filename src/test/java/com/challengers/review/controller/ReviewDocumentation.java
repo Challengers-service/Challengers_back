@@ -18,7 +18,8 @@ public class ReviewDocumentation {
 
     public static RestDocumentationResultHandler addReview() {
         HeaderDescriptor[] requestHeaders = new HeaderDescriptor[]{
-                headerWithName("Authorization").description("JWT 토큰")
+                headerWithName("Authorization").description("JWT 토큰"),
+                headerWithName("Content-Type").description("application/json")
         };
 
         FieldDescriptor[] request = new FieldDescriptor[]{
@@ -50,7 +51,8 @@ public class ReviewDocumentation {
 
     public static RestDocumentationResultHandler updateReview() {
         HeaderDescriptor[] requestHeaders = new HeaderDescriptor[]{
-                headerWithName("Authorization").description("JWT 토큰")
+                headerWithName("Authorization").description("JWT 토큰"),
+                headerWithName("Content-Type").description("application/json")
         };
 
         FieldDescriptor[] request = new FieldDescriptor[]{
