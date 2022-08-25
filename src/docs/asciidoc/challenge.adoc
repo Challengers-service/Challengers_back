@@ -18,7 +18,7 @@ operation::challenge/createChallenge[snippets='http-request,request-parameters,r
 [[resources-challenge-updateChallenge]]
 === Challenge 수정
 
-챌린지 수정은 대표 이미지, 챌린지 소개글만 수정이 가능합니다.
+챌린지 수정은 챌린지 소개글만 수정이 가능합니다.
 
 operation::challenge/updateChallenge[snippets='http-request,path-parameters,request-headers,request-parameters,request-parts,http-response']
 

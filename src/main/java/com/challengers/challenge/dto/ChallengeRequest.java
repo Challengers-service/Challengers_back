@@ -21,8 +21,6 @@ import java.util.List;
 public class ChallengeRequest {
     @NotBlank
     private String name;
-
-    private MultipartFile image;
     @NotBlank
     private String photoDescription;
     @NotBlank
@@ -49,12 +47,11 @@ public class ChallengeRequest {
     private List<@NotBlank String> tags;
 
     @Builder
-    public ChallengeRequest(String name, MultipartFile image, String photoDescription, String challengeRule,
+    public ChallengeRequest(String name, String photoDescription, String challengeRule,
                             String checkFrequencyType, int checkTimesPerRound, String category, LocalDate startDate,
                             LocalDate endDate, int depositPoint, String introduction, int userCountLimit,
                             List<MultipartFile> examplePhotos, List<String> tags) {
         this.name = name;
-        this.image = image;
         this.photoDescription = photoDescription;
         this.challengeRule = challengeRule;
         this.checkFrequencyType = checkFrequencyType;

@@ -27,7 +27,6 @@ public class Challenge extends BaseTimeEntity {
     private User host;
 
     private String name;
-    private String imageUrl;
     private String photoDescription;
     private String challengeRule;
     @Enumerated(EnumType.STRING)
@@ -67,7 +66,7 @@ public class Challenge extends BaseTimeEntity {
     }
 
     @Builder
-    public Challenge(Long id, User host, String name, String imageUrl, String photoDescription,
+    public Challenge(Long id, User host, String name, String photoDescription,
                      String challengeRule, CheckFrequencyType checkFrequencyType, int checkTimesPerRound,
                      Category category, LocalDate startDate, LocalDate endDate, int depositPoint,
                      String introduction, int userCountLimit, int failedPoint,
@@ -75,7 +74,6 @@ public class Challenge extends BaseTimeEntity {
         this.id = id;
         this.host = host;
         this.name = name;
-        this.imageUrl = imageUrl;
         this.photoDescription = photoDescription;
         this.challengeRule = challengeRule;
         this.checkFrequencyType = checkFrequencyType;
@@ -93,11 +91,10 @@ public class Challenge extends BaseTimeEntity {
         this.updatedDate = updatedDate;
     }
 
-    public static Challenge create(ChallengeRequest request, User host, String imageUrl, List<String> examplePhotoUrls) {
+    public static Challenge create(ChallengeRequest request, User host, List<String> examplePhotoUrls) {
         validate(request);
         Challenge challenge = request.toChallenge();
         challenge.setHost(host);
-        challenge.setImageUrl(imageUrl);
         challenge.addExamplePhotos(examplePhotoUrls);
         challenge.initStatus();
         return challenge;
@@ -110,17 +107,12 @@ public class Challenge extends BaseTimeEntity {
             throw new RuntimeException("챌린지 종료일은 챌린지 시작일 이후이여야 합니다.");
     }
 
-    public void update(String imageUrl, String introduction) {
-        this.imageUrl = imageUrl;
+    public void update(String introduction) {
         this.introduction = introduction;
     }
 
     public void setHost(User host) {
         this.host = host;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
     }
 
     public void initStatus() {

@@ -43,7 +43,7 @@ public class ChallengeController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> updateChallenge(@Valid @ModelAttribute ChallengeUpdateRequest challengeUpdateRequest,
+    public ResponseEntity<Void> updateChallenge(@Valid @RequestBody ChallengeUpdateRequest challengeUpdateRequest,
                                                 @PathVariable(name = "id") Long challengeId,
                                                 @CurrentUser UserPrincipal user) {
 

@@ -57,12 +57,9 @@ public class ChallengeService {
 
         // challenge 시작일, 종료일이 올바르지 않을 경우 에러 반환시켜야함
 
-        String imageUrl = "https://challengers-bucket.s3.ap-northeast-2.amazonaws.com/challengeDefaultImage.jpg";
-        if (challengeRequest.getImage() != null)
-            imageUrl = awsS3Uploader.uploadImage(challengeRequest.getImage());
         List<String> examplePhotoUrls = awsS3Uploader.uploadImages(challengeRequest.getExamplePhotos());
 
-        Challenge challenge = Challenge.create(challengeRequest, host, imageUrl, examplePhotoUrls);
+        Challenge challenge = Challenge.create(challengeRequest, host, examplePhotoUrls);
         challengeRepository.save(challenge);
 
         if (challengeRequest.getTags() != null)
@@ -83,13 +80,7 @@ public class ChallengeService {
         Challenge challenge = challengeRepository.findById(challengeId).orElseThrow(NoSuchElementException::new);
         if (!challenge.getHost().getId().equals(userId)) throw new RuntimeException("권한이 없는 요청");
 
-        String imageUrl = challenge.getImageUrl();
-        if (challengeUpdateRequest.getImage()!=null) {
-            awsS3Uploader.deleteImage(challenge.getImageUrl());
-            imageUrl = awsS3Uploader.uploadImage(challengeUpdateRequest.getImage());
-        }
-
-        challenge.update(imageUrl,challengeUpdateRequest.getIntroduction());
+        challenge.update(challengeUpdateRequest.getIntroduction());
     }
 
     @Transactional
@@ -98,7 +89,6 @@ public class ChallengeService {
         if (!challenge.getHost().getId().equals(userId)) throw new RuntimeException("권한이 없는 요청");
         if (userChallengeRepository.countByChallengeId(challengeId) != 1) throw new RuntimeException("삭제 조건에 부합하지 않음 - 챌린지 참여자가 2명 이상 있음");
 
-        awsS3Uploader.deleteImage(challenge.getImageUrl());
         awsS3Uploader.deleteImages(challenge.getExamplePhotoUrls());
         UserChallenge userChallenge = userChallengeRepository.findByUserIdAndChallengeId(challenge.getHost().getId(), challengeId).orElseThrow(NoSuchElementException::new);
         photoCheckRepository.findByUserChallengeId(userChallenge.getId()).forEach(photoCheck -> {

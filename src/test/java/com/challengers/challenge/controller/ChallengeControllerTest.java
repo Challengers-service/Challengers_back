@@ -11,6 +11,7 @@ import com.challengers.common.WithMockCustomUser;
 import com.challengers.common.documentation.DocumentationWithSecurity;
 import com.challengers.tag.dto.TagResponse;
 import com.challengers.testtool.StringToken;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -39,12 +40,15 @@ class ChallengeControllerTest extends DocumentationWithSecurity {
 
     private ChallengeRequest challengeRequest;
 
+    private ObjectMapper mapper;
+
 
     @BeforeEach
     void setUp() {
+        mapper = new ObjectMapper();
+
         challengeRequest = ChallengeRequest.builder()
                 .name("미라클 모닝 - 아침 7시 기상")
-                .image(new MockMultipartFile("테스트사진.png","테스트사진.png","image/png","image file".getBytes()))
                 .photoDescription("7시를 가르키는 시계와 본인이 같이 나오게 사진을 찍으시면 됩니다.")
                 .challengeRule("중복된 사진을 올리면 안됩니다.")
                 .checkFrequencyType("EVERY_DAY")
@@ -96,7 +100,7 @@ class ChallengeControllerTest extends DocumentationWithSecurity {
     @DisplayName("챌린지 상세 정보 조회")
     void findChallenge() throws Exception{
         ChallengeDetailResponse challengeDetailResponse = new ChallengeDetailResponse(1L, 1L,"https://hostProfileImageUrl.png",
-                "챌린지 호스트 이름", "챌린지 이름", "https://challengeImageUrl.png", "예시 사진 설명","챌린지 규칙", CheckFrequencyType.EVERY_DAY, 1,
+                "챌린지 호스트 이름", "챌린지 이름", "예시 사진 설명","챌린지 규칙", CheckFrequencyType.EVERY_DAY, 1,
                 "EXERCISE","2022-06-21","2022-07-21",1000,"챌린지 소개글",1000, ChallengeStatus.IN_PROGRESS.toString(),
                 new ArrayList<>(Arrays.asList(new TagResponse(1L,"미라클모닝"), new TagResponse(2L, "기상"))),
                 new ArrayList<>(Arrays.asList("https://examplePhotoUrl1.png","https://examplePhotoUrl2.png")), "2022-01-01", 32, 3.5f,3,false, 100);
@@ -124,16 +128,12 @@ class ChallengeControllerTest extends DocumentationWithSecurity {
     @DisplayName("챌린지 수정")
     void updateChallenge() throws Exception{
         ChallengeUpdateRequest challengeUpdateRequest = new ChallengeUpdateRequest(
-                new MockMultipartFile("image file","image file".getBytes()),
                 "수정된 챌린지 소개글 입니다.");
 
-        mockMvc.perform(uploadMockSupport(RestDocumentationRequestBuilders.multipart("/api/challenge/{id}",1L), challengeUpdateRequest)
-                .header("Authorization", StringToken.getToken())
-                .with(requestPostProcessor -> {
-                    requestPostProcessor.setMethod("PUT");
-                    return requestPostProcessor;
-                })
-                .contentType(MediaType.MULTIPART_FORM_DATA))
+        mockMvc.perform(RestDocumentationRequestBuilders.put("/api/challenge/{id}",1L)
+                        .header("Authorization", StringToken.getToken())
+                        .content(mapper.writeValueAsString(challengeUpdateRequest))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(ChallengeDocumentation.updateChallenge());
 
