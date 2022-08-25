@@ -65,8 +65,9 @@ public class ChallengeService {
         Challenge challenge = Challenge.create(challengeRequest, host, imageUrl, examplePhotoUrls);
         challengeRepository.save(challenge);
 
-        challengeRequest.getTags()
-                .forEach(tag -> ChallengeTag.associate(challenge,findOrCreateTag(tag)));
+        if (challengeRequest.getTags() != null)
+            challengeRequest.getTags()
+                    .forEach(tag -> ChallengeTag.associate(challenge,findOrCreateTag(tag)));
 
         userChallengeRepository.save(UserChallenge.create(challenge,host));
 
