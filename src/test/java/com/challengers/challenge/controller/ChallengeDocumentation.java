@@ -29,7 +29,6 @@ public class ChallengeDocumentation {
 
         ParameterDescriptor[] requestParam = new ParameterDescriptor[]{
                 parameterWithName("name").description("생성할 챌린지 이름"),
-                parameterWithName("photoDescription").description("인증샷 찍는 방법 설명글"),
                 parameterWithName("challengeRule").description("도전 규칙"),
                 parameterWithName("checkFrequencyType").description("인증 빈도 타입. 매일이면 EVERY_DAY를, 매주이면 EVERY_WEEK를, 직접 입력이면 OTHERS를 보내주시면 됩니다. [EVERY_DAY, EVERY_WEEK, OTHERS]"),
                 parameterWithName("checkTimesPerRound").description("회차 마다 인증해야 하는 횟수. 인증 빈도 타입이 EVERY_DAY나 EVERY_WEEK 이면 1을, OTHERS 이면 사용자가 입력한 값을 보내주시면 됩니다."),
@@ -76,7 +75,6 @@ public class ChallengeDocumentation {
                 fieldWithPath("hostProfileImageUrl").type(JsonFieldType.STRING).description("챌린지를 생성한 유저의 프로필 사진 URL"),
                 fieldWithPath("hostName").type(JsonFieldType.STRING).description("챌린지를 생성한 유저의 닉네임"),
                 fieldWithPath("name").type(JsonFieldType.STRING).description("챌린지 이름"),
-                fieldWithPath("photoDescription").type(JsonFieldType.STRING).description("인증샷 찍는 방법 설명글"),
                 fieldWithPath("challengeRule").type(JsonFieldType.STRING).description("챌린지 규칙 설명 글"),
                 fieldWithPath("checkFrequencyType").type(JsonFieldType.STRING).description("챌린지 인증 빈도 타입 [EVERY_DAY, EVERY_WEEK, OTHERS]"),
                 fieldWithPath("checkTimesPerRound").type(JsonFieldType.NUMBER).description("회차별로 인증해야 하는 횟수. " +

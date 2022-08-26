@@ -27,7 +27,6 @@ public class Challenge extends BaseTimeEntity {
     private User host;
 
     private String name;
-    private String photoDescription;
     private String challengeRule;
     @Enumerated(EnumType.STRING)
     private CheckFrequencyType checkFrequencyType;
@@ -66,15 +65,13 @@ public class Challenge extends BaseTimeEntity {
     }
 
     @Builder
-    public Challenge(Long id, User host, String name, String photoDescription,
-                     String challengeRule, CheckFrequencyType checkFrequencyType, int checkTimesPerRound,
-                     Category category, LocalDate startDate, LocalDate endDate, int depositPoint,
-                     String introduction, int userCountLimit, int failedPoint,
+    public Challenge(Long id, User host, String name, String challengeRule, CheckFrequencyType checkFrequencyType,
+                     int checkTimesPerRound, Category category, LocalDate startDate, LocalDate endDate,
+                     int depositPoint, String introduction, int userCountLimit, int failedPoint,
                      int round, ChallengeStatus status, LocalDateTime createdDate, LocalDateTime updatedDate) {
         this.id = id;
         this.host = host;
         this.name = name;
-        this.photoDescription = photoDescription;
         this.challengeRule = challengeRule;
         this.checkFrequencyType = checkFrequencyType;
         this.checkTimesPerRound = checkTimesPerRound;
