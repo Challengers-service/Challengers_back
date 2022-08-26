@@ -20,7 +20,7 @@ operation::challenge/createChallenge[snippets='http-request,request-parameters,r
 
 챌린지 수정은 챌린지 소개글만 수정이 가능합니다.
 
-operation::challenge/updateChallenge[snippets='http-request,path-parameters,request-headers,request-parameters,request-parts,http-response']
+operation::challenge/updateChallenge[snippets='http-request,path-parameters,request-headers,request-fields,http-response']
 
 [[resources-challenge-deleteChallenge]]
 === Challenge 삭제
@@ -81,8 +81,6 @@ operation::challenge/searchNew[snippets='http-request,request-parameters,request
 === 카테고리별 챌린지 조회
 
 챌린지 카테고리로 검색한 결과를 반환합니다.
-
-카테고리에는 EXERCISE, EATING_HABIT, LIFE, EMOTION, HOBBY, SURROUNDINGS, OTHER 이 있습니다.
 
 operation::challenge/searchCategory[snippets='http-request,request-parameters,request-headers,http-response,response-fields']
 
