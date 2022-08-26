@@ -49,7 +49,6 @@ class ChallengeControllerTest extends DocumentationWithSecurity {
 
         challengeRequest = ChallengeRequest.builder()
                 .name("미라클 모닝 - 아침 7시 기상")
-                .photoDescription("7시를 가르키는 시계와 본인이 같이 나오게 사진을 찍으시면 됩니다.")
                 .challengeRule("중복된 사진을 올리면 안됩니다.")
                 .checkFrequencyType("EVERY_DAY")
                 .checkTimesPerRound(1)
@@ -100,7 +99,7 @@ class ChallengeControllerTest extends DocumentationWithSecurity {
     @DisplayName("챌린지 상세 정보 조회")
     void findChallenge() throws Exception{
         ChallengeDetailResponse challengeDetailResponse = new ChallengeDetailResponse(1L, 1L,"https://hostProfileImageUrl.png",
-                "챌린지 호스트 이름", "챌린지 이름", "예시 사진 설명","챌린지 규칙", CheckFrequencyType.EVERY_DAY, 1,
+                "챌린지 호스트 이름", "챌린지 이름","챌린지 규칙", CheckFrequencyType.EVERY_DAY, 1,
                 "EXERCISE","2022-06-21","2022-07-21",1000,"챌린지 소개글",1000, ChallengeStatus.IN_PROGRESS.toString(),
                 new ArrayList<>(Arrays.asList(new TagResponse(1L,"미라클모닝"), new TagResponse(2L, "기상"))),
                 new ArrayList<>(Arrays.asList("https://examplePhotoUrl1.png","https://examplePhotoUrl2.png")), "2022-01-01", 32, 3.5f,3,false, 100);

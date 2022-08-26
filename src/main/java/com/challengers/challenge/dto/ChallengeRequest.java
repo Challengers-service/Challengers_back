@@ -22,12 +22,9 @@ public class ChallengeRequest {
     @NotBlank
     private String name;
     @NotBlank
-    private String photoDescription;
-    @NotBlank
     private String challengeRule;
     @NotNull
     private String checkFrequencyType;
-
     private int checkTimesPerRound;
     @NotNull
     private String category;
@@ -47,12 +44,11 @@ public class ChallengeRequest {
     private List<@NotBlank String> tags;
 
     @Builder
-    public ChallengeRequest(String name, String photoDescription, String challengeRule,
-                            String checkFrequencyType, int checkTimesPerRound, String category, LocalDate startDate,
-                            LocalDate endDate, int depositPoint, String introduction, int userCountLimit,
-                            List<MultipartFile> examplePhotos, List<String> tags) {
+    public ChallengeRequest(String name, String challengeRule, String checkFrequencyType, int checkTimesPerRound,
+                            String category, LocalDate startDate, LocalDate endDate, int depositPoint,
+                            String introduction, int userCountLimit, List<MultipartFile> examplePhotos,
+                            List<String> tags) {
         this.name = name;
-        this.photoDescription = photoDescription;
         this.challengeRule = challengeRule;
         this.checkFrequencyType = checkFrequencyType;
         this.checkTimesPerRound = checkTimesPerRound;
@@ -69,7 +65,6 @@ public class ChallengeRequest {
     public Challenge toChallenge() {
         return Challenge.builder()
                 .name(name)
-                .photoDescription(photoDescription)
                 .challengeRule(challengeRule)
                 .checkFrequencyType(CheckFrequencyType.of(checkFrequencyType))
                 .checkTimesPerRound(checkTimesPerRound)
