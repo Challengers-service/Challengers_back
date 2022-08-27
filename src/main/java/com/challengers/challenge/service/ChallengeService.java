@@ -158,9 +158,7 @@ public class ChallengeService {
                         challenge,
                     userId != null && cartRepository.findByChallengeIdAndUserId(challenge.getId(), userId).isPresent(),
                         userChallengeRepository.findByUserIdAndChallengeId(userId,challenge.getId()).isPresent(),
-                        userChallengeRepository.findByChallengeId(challenge.getId())
-                                .stream().map(userChallenge -> userChallenge.getUser().getId())
-                                .collect(Collectors.toList())
+                        userChallengeRepository.getProfileImagesLimit2(challenge.getId())
                 ));
     }
 
