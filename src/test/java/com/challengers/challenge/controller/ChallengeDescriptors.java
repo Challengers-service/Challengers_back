@@ -16,6 +16,7 @@ public class ChallengeDescriptors {
             fieldWithPath("content.[].remainingDays").type(JsonFieldType.NUMBER).description("챌린지 종료까지 남은 일 수"),
             fieldWithPath("content.[].cart").type(JsonFieldType.BOOLEAN).description("챌린지 찜 여부"),
             fieldWithPath("content.[].challengersIds").type(JsonFieldType.ARRAY).description("챌린지 참여자들의 ID"),
+            fieldWithPath("content.[].hasJoined").type(JsonFieldType.BOOLEAN).description("챌린지 참여 여부"),
 
             fieldWithPath("pageable").type(JsonFieldType.OBJECT).description("페이징 정보"),
             fieldWithPath("pageable.sort").type(JsonFieldType.OBJECT).description("페이징 정렬 정보"),

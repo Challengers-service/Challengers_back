@@ -22,9 +22,10 @@ public class ChallengeResponse {
     private String createdDate;
     private int remainingDays;
     private boolean cart;
+    private boolean hasJoined;
     private List<Long> challengersIds;
 
-    public ChallengeResponse(Challenge challenge, boolean cart, List<Long> challengersIds) {
+    public ChallengeResponse(Challenge challenge, boolean cart, boolean hasJoined, List<Long> challengersIds) {
         challengeId = challenge.getId();
         name = challenge.getName();
         category = challenge.getCategory().toString();
@@ -32,6 +33,7 @@ public class ChallengeResponse {
         createdDate = challenge.getCreatedDateYYYYMMDD();
         remainingDays = (int) ChronoUnit.DAYS.between(LocalDate.now(),challenge.getEndDate());
         this.cart = cart;
+        this.hasJoined = hasJoined;
         this.challengersIds = challengersIds;
     }
 }

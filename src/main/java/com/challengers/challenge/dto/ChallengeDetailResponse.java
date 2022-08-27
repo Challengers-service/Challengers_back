@@ -37,9 +37,11 @@ public class ChallengeDetailResponse {
     private Float starRating;
     private int reviewCount;
     private boolean cart;
+    private boolean hasJoined;
     private long expectedReward;
 
-    public static ChallengeDetailResponse of(Challenge challenge, int userCount, float starRating, int reviewCount, boolean cart, long expectedReward) {
+    public static ChallengeDetailResponse of(Challenge challenge, int userCount, float starRating, int reviewCount,
+                                             boolean cart, boolean hasJoined, long expectedReward) {
         return new ChallengeDetailResponse(
                 challenge.getId(),
                 challenge.getHost().getId(),
@@ -63,6 +65,7 @@ public class ChallengeDetailResponse {
                 starRating,
                 reviewCount,
                 cart,
+                hasJoined,
                 expectedReward
         );
     }

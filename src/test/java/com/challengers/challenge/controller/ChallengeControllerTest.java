@@ -102,7 +102,8 @@ class ChallengeControllerTest extends DocumentationWithSecurity {
                 "챌린지 호스트 이름", "챌린지 이름","챌린지 규칙", CheckFrequencyType.EVERY_DAY, 1,
                 "EXERCISE","2022-06-21","2022-07-21",1000,"챌린지 소개글",1000, ChallengeStatus.IN_PROGRESS.toString(),
                 new ArrayList<>(Arrays.asList(new TagResponse(1L,"미라클모닝"), new TagResponse(2L, "기상"))),
-                new ArrayList<>(Arrays.asList("https://examplePhotoUrl1.png","https://examplePhotoUrl2.png")), "2022-01-01", 32, 3.5f,3,false, 100);
+                new ArrayList<>(Arrays.asList("https://examplePhotoUrl1.png","https://examplePhotoUrl2.png")), "2022-01-01", 32, 3.5f,3,
+                false, false, 100);
         when(challengeService.findChallenge(any(),any())).thenReturn(challengeDetailResponse);
 
         mockMvc.perform(RestDocumentationRequestBuilders.get("/api/challenge/{id}",1)
@@ -145,10 +146,10 @@ class ChallengeControllerTest extends DocumentationWithSecurity {
     @DisplayName("인기 챌린지 조회")
     void search_hot() throws Exception{
         PageImpl<ChallengeResponse> page = new PageImpl<>(Arrays.asList(new ChallengeResponse(1L, "매일 2시간 운동하기!", "LIFE",
-                        new ArrayList<>(Arrays.asList("건강", "운동")), "2022.07.02", 10, false,
+                        new ArrayList<>(Arrays.asList("건강", "운동")), "2022.07.02", 10, false,false,
                         new ArrayList<>(Arrays.asList(1L, 2L, 3L))),
                 new ChallengeResponse(2L, "매일 2시간 뛰기!", "LIFE",
-                        new ArrayList<>(Arrays.asList("운동", "유산소")), "2022.07.03", 14, false,
+                        new ArrayList<>(Arrays.asList("운동", "유산소")), "2022.07.03", 14, false, true,
                         new ArrayList<>(Arrays.asList(1L, 2L)))),PageRequest.of(0,6),2);
 
         when(challengeService.search(any(),any(),any())).thenReturn(page);
@@ -163,10 +164,10 @@ class ChallengeControllerTest extends DocumentationWithSecurity {
     @DisplayName("신규 챌린지 조회")
     void search_new() throws Exception{
         PageImpl<ChallengeResponse> page = new PageImpl<>(Arrays.asList(new ChallengeResponse(2L, "매일 2시간 뛰기!", "LIFE",
-                        new ArrayList<>(Arrays.asList("운동", "유산소")), "2022.07.03", 14, false,
+                        new ArrayList<>(Arrays.asList("운동", "유산소")), "2022.07.03", 14, false, false,
                         new ArrayList<>(Arrays.asList(1L, 2L))),
                 new ChallengeResponse(1L, "매일 2시간 운동하기!", "LIFE",
-                        new ArrayList<>(Arrays.asList("건강", "운동")), "2022.07.02", 10, false,
+                        new ArrayList<>(Arrays.asList("건강", "운동")), "2022.07.02", 10, false, true,
                         new ArrayList<>(Arrays.asList(1L, 2L, 3L)))
         ),PageRequest.of(0,6),2);
 
@@ -182,10 +183,10 @@ class ChallengeControllerTest extends DocumentationWithSecurity {
     @DisplayName("카테고리별 챌린지 조회")
     void search_category() throws Exception{
         PageImpl<ChallengeResponse> page = new PageImpl<>(Arrays.asList(new ChallengeResponse(1L, "매일 2시간 운동하기!", "LIFE",
-                        new ArrayList<>(Arrays.asList("건강", "운동")), "2022.07.02", 10, false,
+                        new ArrayList<>(Arrays.asList("건강", "운동")), "2022.07.02", 10, false, false,
                         new ArrayList<>(Arrays.asList(1L, 2L, 3L))),
                 new ChallengeResponse(2L, "매일 2시간 뛰기!", "LIFE",
-                        new ArrayList<>(Arrays.asList("운동", "유산소")), "2022.07.03", 14, false,
+                        new ArrayList<>(Arrays.asList("운동", "유산소")), "2022.07.03", 14, false, true,
                         new ArrayList<>(Arrays.asList(1L, 2L)))),PageRequest.of(0,6),2);
 
         when(challengeService.search(any(),any(),any())).thenReturn(page);
@@ -200,10 +201,10 @@ class ChallengeControllerTest extends DocumentationWithSecurity {
     @DisplayName("챌린지 이름으로 챌린지 검색")
     void search_name() throws Exception{
         PageImpl<ChallengeResponse> page = new PageImpl<>(Arrays.asList(new ChallengeResponse(1L, "매일 2시간 운동하기!", "LIFE",
-                        new ArrayList<>(Arrays.asList("건강", "운동")), "2022.07.02", 10, false,
+                        new ArrayList<>(Arrays.asList("건강", "운동")), "2022.07.02", 10, false, false,
                         new ArrayList<>(Arrays.asList(1L, 2L, 3L))),
                 new ChallengeResponse(2L, "매일 2시간 뛰기!", "LIFE",
-                        new ArrayList<>(Arrays.asList("운동", "유산소")), "2022.07.03", 14, false,
+                        new ArrayList<>(Arrays.asList("운동", "유산소")), "2022.07.03", 14, false, true,
                         new ArrayList<>(Arrays.asList(1L, 2L)))),PageRequest.of(0,6),2);
 
         when(challengeService.search(any(),any(),any())).thenReturn(page);
@@ -219,10 +220,10 @@ class ChallengeControllerTest extends DocumentationWithSecurity {
     @DisplayName("태그로 챌린지 검색")
     void search_tag() throws Exception{
         PageImpl<ChallengeResponse> page = new PageImpl<>(Arrays.asList(new ChallengeResponse(1L, "매일 2시간 운동하기!", "LIFE",
-                        new ArrayList<>(Arrays.asList("건강", "운동")), "2022.07.02", 10, false,
+                        new ArrayList<>(Arrays.asList("건강", "운동")), "2022.07.02", 10, false, false,
                         new ArrayList<>(Arrays.asList(1L, 2L, 3L))),
                 new ChallengeResponse(2L, "매일 2시간 뛰기!", "LIFE",
-                        new ArrayList<>(Arrays.asList("운동", "유산소")), "2022.07.03", 14, false,
+                        new ArrayList<>(Arrays.asList("운동", "유산소")), "2022.07.03", 14, false, true,
                         new ArrayList<>(Arrays.asList(1L, 2L)))),PageRequest.of(0,6),2);
 
         when(challengeService.search(any(),any(),any())).thenReturn(page);
@@ -238,10 +239,10 @@ class ChallengeControllerTest extends DocumentationWithSecurity {
     @DisplayName("챌린지 검색 결과에 필터 적용")
     void search_filter() throws Exception{
         PageImpl<ChallengeResponse> page = new PageImpl<>(Arrays.asList(new ChallengeResponse(1L, "매일 2시간 운동하기!", "LIFE",
-                        new ArrayList<>(Arrays.asList("건강", "운동")), "2022.07.02", 10, false,
+                        new ArrayList<>(Arrays.asList("건강", "운동")), "2022.07.02", 10, false, false,
                         new ArrayList<>(Arrays.asList(1L, 2L, 3L))),
                 new ChallengeResponse(2L, "매일 2시간 뛰기!", "LIFE",
-                        new ArrayList<>(Arrays.asList("운동", "유산소")), "2022.07.03", 14, false,
+                        new ArrayList<>(Arrays.asList("운동", "유산소")), "2022.07.03", 14, false, true,
                         new ArrayList<>(Arrays.asList(1L, 2L)))),PageRequest.of(0,6),2);
 
         when(challengeService.search(any(),any(),any())).thenReturn(page);
