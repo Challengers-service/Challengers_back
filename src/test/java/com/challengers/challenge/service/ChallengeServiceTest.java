@@ -241,7 +241,7 @@ public class ChallengeServiceTest {
         ), PageRequest.of(0,6),2);
 
         when(challengeRepository.search(any(),any())).thenReturn(page);
-        when(userChallengeRepository.findByChallengeId(any())).thenReturn(new ArrayList<>());
+        when(userChallengeRepository.getProfileImagesLimit2(any())).thenReturn(new ArrayList<>());
         when(cartRepository.findByChallengeIdAndUserId(any(),any())).thenReturn(Optional.empty());
         when(userChallengeRepository.findByUserIdAndChallengeId(any(),any())).thenReturn(Optional.empty());
 

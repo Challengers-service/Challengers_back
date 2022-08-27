@@ -14,4 +14,6 @@ public interface UserChallengeRepositoryCustom {
     List<Long> getSuccessIds(boolean isMonday);
 
     Long getSumSuccessProgress(Long challengeId);
+
+    List<String> getProfileImagesLimit2(Long challengeId);
 }

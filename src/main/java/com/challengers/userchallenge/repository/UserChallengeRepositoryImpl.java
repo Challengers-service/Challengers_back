@@ -4,6 +4,7 @@ package com.challengers.userchallenge.repository;
 import com.challengers.challenge.domain.ChallengeStatus;
 import com.challengers.challenge.domain.CheckFrequencyType;
 import com.challengers.photocheck.domain.PhotoCheckStatus;
+import com.challengers.user.domain.QUser;
 import com.challengers.userchallenge.domain.UserChallenge;
 import com.challengers.userchallenge.domain.UserChallengeStatus;
 import com.querydsl.core.BooleanBuilder;
@@ -17,6 +18,7 @@ import java.util.List;
 
 import static com.challengers.challenge.domain.QChallenge.*;
 import static com.challengers.photocheck.domain.QPhotoCheck.*;
+import static com.challengers.user.domain.QUser.*;
 import static com.challengers.userchallenge.domain.QUserChallenge.*;
 
 @Repository
@@ -78,6 +80,16 @@ public class UserChallengeRepositoryImpl implements UserChallengeRepositoryCusto
                 .fetchOne();
     }
 
+    @Override
+    public List<String> getProfileImagesLimit2(Long challengeId) {
+        return queryFactory
+                .select(userChallenge.user.image)
+                .from(userChallenge)
+                .join(userChallenge.user, user)
+                .limit(2L)
+                .fetch();
+    }
+
     /*
     select uc.user_challenge_id
     from challenge c join user_challenge uc on c.challenge_id = uc.challenge_id left join photo_check p on uc.user_challenge_id = p.user_challenge_id and c.round = p.round
@@ -99,6 +111,8 @@ public class UserChallengeRepositoryImpl implements UserChallengeRepositoryCusto
                 .fetch();
 
     }
+
+
 
     private BooleanBuilder mondayConditionBuilder(boolean isMonday) {
         BooleanBuilder booleanBuilder = new BooleanBuilder();

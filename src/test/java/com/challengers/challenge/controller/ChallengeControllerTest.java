@@ -147,10 +147,12 @@ class ChallengeControllerTest extends DocumentationWithSecurity {
     void search_hot() throws Exception{
         PageImpl<ChallengeResponse> page = new PageImpl<>(Arrays.asList(new ChallengeResponse(1L, "매일 2시간 운동하기!", "LIFE",
                         new ArrayList<>(Arrays.asList("건강", "운동")), "2022.07.02", 10, false,false,
-                        new ArrayList<>(Arrays.asList(1L, 2L, 3L))),
+                        new ArrayList<>(Arrays.asList("https://challengers-bucket.s3.ap-northeast-2.amazonaws.com/defaultProfile1.png",
+                                "https://challengers-bucket.s3.ap-northeast-2.amazonaws.com/profile2.png"))),
                 new ChallengeResponse(2L, "매일 2시간 뛰기!", "LIFE",
                         new ArrayList<>(Arrays.asList("운동", "유산소")), "2022.07.03", 14, false, true,
-                        new ArrayList<>(Arrays.asList(1L, 2L)))),PageRequest.of(0,6),2);
+                        new ArrayList<>(Arrays.asList("https://challengers-bucket.s3.ap-northeast-2.amazonaws.com/defaultProfile1.png",
+                                "https://challengers-bucket.s3.ap-northeast-2.amazonaws.com/profile3.png")))),PageRequest.of(0,6),2);
 
         when(challengeService.search(any(),any(),any())).thenReturn(page);
         mockMvc.perform(get("/api/challenge?sort=userCount,desc")
@@ -165,10 +167,10 @@ class ChallengeControllerTest extends DocumentationWithSecurity {
     void search_new() throws Exception{
         PageImpl<ChallengeResponse> page = new PageImpl<>(Arrays.asList(new ChallengeResponse(2L, "매일 2시간 뛰기!", "LIFE",
                         new ArrayList<>(Arrays.asList("운동", "유산소")), "2022.07.03", 14, false, false,
-                        new ArrayList<>(Arrays.asList(1L, 2L))),
+                        new ArrayList<>(Arrays.asList("https://challengers-bucket.s3.ap-northeast-2.amazonaws.com/defaultProfile1.png"))),
                 new ChallengeResponse(1L, "매일 2시간 운동하기!", "LIFE",
                         new ArrayList<>(Arrays.asList("건강", "운동")), "2022.07.02", 10, false, true,
-                        new ArrayList<>(Arrays.asList(1L, 2L, 3L)))
+                        new ArrayList<>(Arrays.asList("https://challengers-bucket.s3.ap-northeast-2.amazonaws.com/defaultProfile1.png")))
         ),PageRequest.of(0,6),2);
 
         when(challengeService.search(any(),any(),any())).thenReturn(page);
@@ -184,10 +186,11 @@ class ChallengeControllerTest extends DocumentationWithSecurity {
     void search_category() throws Exception{
         PageImpl<ChallengeResponse> page = new PageImpl<>(Arrays.asList(new ChallengeResponse(1L, "매일 2시간 운동하기!", "LIFE",
                         new ArrayList<>(Arrays.asList("건강", "운동")), "2022.07.02", 10, false, false,
-                        new ArrayList<>(Arrays.asList(1L, 2L, 3L))),
+                        new ArrayList<>(Arrays.asList("https://challengers-bucket.s3.ap-northeast-2.amazonaws.com/defaultProfile1.png"))),
                 new ChallengeResponse(2L, "매일 2시간 뛰기!", "LIFE",
                         new ArrayList<>(Arrays.asList("운동", "유산소")), "2022.07.03", 14, false, true,
-                        new ArrayList<>(Arrays.asList(1L, 2L)))),PageRequest.of(0,6),2);
+                        new ArrayList<>(Arrays.asList("https://challengers-bucket.s3.ap-northeast-2.amazonaws.com/defaultProfile1.png",
+                                "https://challengers-bucket.s3.ap-northeast-2.amazonaws.com/defaultProfile2.png")))),PageRequest.of(0,6),2);
 
         when(challengeService.search(any(),any(),any())).thenReturn(page);
         mockMvc.perform(get("/api/challenge?category=LIFE")
@@ -202,10 +205,12 @@ class ChallengeControllerTest extends DocumentationWithSecurity {
     void search_name() throws Exception{
         PageImpl<ChallengeResponse> page = new PageImpl<>(Arrays.asList(new ChallengeResponse(1L, "매일 2시간 운동하기!", "LIFE",
                         new ArrayList<>(Arrays.asList("건강", "운동")), "2022.07.02", 10, false, false,
-                        new ArrayList<>(Arrays.asList(1L, 2L, 3L))),
+                        new ArrayList<>(Arrays.asList("https://challengers-bucket.s3.ap-northeast-2.amazonaws.com/defaultProfile1.png",
+                                "https://challengers-bucket.s3.ap-northeast-2.amazonaws.com/defaultProfile2.png"))),
                 new ChallengeResponse(2L, "매일 2시간 뛰기!", "LIFE",
                         new ArrayList<>(Arrays.asList("운동", "유산소")), "2022.07.03", 14, false, true,
-                        new ArrayList<>(Arrays.asList(1L, 2L)))),PageRequest.of(0,6),2);
+                        new ArrayList<>(Arrays.asList("https://challengers-bucket.s3.ap-northeast-2.amazonaws.com/defaultProfile1.png",
+                                "https://challengers-bucket.s3.ap-northeast-2.amazonaws.com/defaultProfile2.png")))),PageRequest.of(0,6),2);
 
         when(challengeService.search(any(),any(),any())).thenReturn(page);
 
@@ -221,10 +226,12 @@ class ChallengeControllerTest extends DocumentationWithSecurity {
     void search_tag() throws Exception{
         PageImpl<ChallengeResponse> page = new PageImpl<>(Arrays.asList(new ChallengeResponse(1L, "매일 2시간 운동하기!", "LIFE",
                         new ArrayList<>(Arrays.asList("건강", "운동")), "2022.07.02", 10, false, false,
-                        new ArrayList<>(Arrays.asList(1L, 2L, 3L))),
+                        new ArrayList<>(Arrays.asList("https://challengers-bucket.s3.ap-northeast-2.amazonaws.com/defaultProfile1.png",
+                                "https://challengers-bucket.s3.ap-northeast-2.amazonaws.com/defaultProfile2.png"))),
                 new ChallengeResponse(2L, "매일 2시간 뛰기!", "LIFE",
                         new ArrayList<>(Arrays.asList("운동", "유산소")), "2022.07.03", 14, false, true,
-                        new ArrayList<>(Arrays.asList(1L, 2L)))),PageRequest.of(0,6),2);
+                        new ArrayList<>(Arrays.asList("https://challengers-bucket.s3.ap-northeast-2.amazonaws.com/defaultProfile1.png")))),
+                PageRequest.of(0,6),2);
 
         when(challengeService.search(any(),any(),any())).thenReturn(page);
 
@@ -240,10 +247,12 @@ class ChallengeControllerTest extends DocumentationWithSecurity {
     void search_filter() throws Exception{
         PageImpl<ChallengeResponse> page = new PageImpl<>(Arrays.asList(new ChallengeResponse(1L, "매일 2시간 운동하기!", "LIFE",
                         new ArrayList<>(Arrays.asList("건강", "운동")), "2022.07.02", 10, false, false,
-                        new ArrayList<>(Arrays.asList(1L, 2L, 3L))),
+                        new ArrayList<>(Arrays.asList("https://challengers-bucket.s3.ap-northeast-2.amazonaws.com/defaultProfile1.png",
+                                "https://challengers-bucket.s3.ap-northeast-2.amazonaws.com/defaultProfile2.png"))),
                 new ChallengeResponse(2L, "매일 2시간 뛰기!", "LIFE",
                         new ArrayList<>(Arrays.asList("운동", "유산소")), "2022.07.03", 14, false, true,
-                        new ArrayList<>(Arrays.asList(1L, 2L)))),PageRequest.of(0,6),2);
+                        new ArrayList<>(Arrays.asList("https://challengers-bucket.s3.ap-northeast-2.amazonaws.com/defaultProfile1.png",
+                                "https://challengers-bucket.s3.ap-northeast-2.amazonaws.com/defaultProfile2.png")))),PageRequest.of(0,6),2);
 
         when(challengeService.search(any(),any(),any())).thenReturn(page);
         mockMvc.perform(get("/api/challenge?challengeName=매일 2시간&sort=userCount,desc")

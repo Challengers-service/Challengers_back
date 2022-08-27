@@ -23,9 +23,9 @@ public class ChallengeResponse {
     private int remainingDays;
     private boolean cart;
     private boolean hasJoined;
-    private List<Long> challengersIds;
+    private List<String> profileImgUrls;
 
-    public ChallengeResponse(Challenge challenge, boolean cart, boolean hasJoined, List<Long> challengersIds) {
+    public ChallengeResponse(Challenge challenge, boolean cart, boolean hasJoined, List<String> profileImgUrls) {
         challengeId = challenge.getId();
         name = challenge.getName();
         category = challenge.getCategory().toString();
@@ -34,6 +34,6 @@ public class ChallengeResponse {
         remainingDays = (int) ChronoUnit.DAYS.between(LocalDate.now(),challenge.getEndDate());
         this.cart = cart;
         this.hasJoined = hasJoined;
-        this.challengersIds = challengersIds;
+        this.profileImgUrls = profileImgUrls;
     }
 }
