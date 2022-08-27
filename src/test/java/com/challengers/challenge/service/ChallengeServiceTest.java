@@ -191,11 +191,12 @@ public class ChallengeServiceTest {
         when(reviewRepository.getStarRatingAverageByChallengeId(any())).thenReturn(3.5f);
         when(reviewRepository.countByChallengeId(any())).thenReturn(3);
         when(userChallengeRepository.countByChallengeId(any())).thenReturn(5);
+        when(userChallengeRepository.findByUserIdAndChallengeId(any(),any())).thenReturn(Optional.empty());
 
         ChallengeDetailResponse response = challengeService.findChallenge(1L, 1L);
 
         assertThat(response).isEqualTo(ChallengeDetailResponse
-                .of(challenge,5,3.5f, 3, false,0L));
+                .of(challenge,5,3.5f, 3, false,false,0L));
     }
 
 
@@ -242,6 +243,7 @@ public class ChallengeServiceTest {
         when(challengeRepository.search(any(),any())).thenReturn(page);
         when(userChallengeRepository.findByChallengeId(any())).thenReturn(new ArrayList<>());
         when(cartRepository.findByChallengeIdAndUserId(any(),any())).thenReturn(Optional.empty());
+        when(userChallengeRepository.findByUserIdAndChallengeId(any(),any())).thenReturn(Optional.empty());
 
         Page<ChallengeResponse> response = challengeService.search(
                 new ChallengeSearchCondition(null, null, null),
@@ -249,7 +251,7 @@ public class ChallengeServiceTest {
                 1L);
 
         for (ChallengeResponse challengeResponse : response) {
-            assertThat(challengeResponse).isEqualTo(new ChallengeResponse(challenge,false,new ArrayList<>()));
+            assertThat(challengeResponse).isEqualTo(new ChallengeResponse(challenge,false,false,new ArrayList<>()));
         }
     }
 }

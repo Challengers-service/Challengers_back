@@ -113,6 +113,7 @@ public class ChallengeService {
 
         List<UserChallenge> userChallenges = userChallengeRepository
                 .findByChallengeIdAndStatus(challengeId, UserChallengeStatus.IN_PROGRESS);
+
         long progress = 0L;
 
         for (UserChallenge userChallenge : userChallenges) {
@@ -125,6 +126,7 @@ public class ChallengeService {
                 reviewRepository.getStarRatingAverageByChallengeId(challengeId),
                 reviewRepository.countByChallengeId(challengeId),
                 cartRepository.findByChallengeIdAndUserId(challengeId, userId).isPresent(),
+                userChallengeRepository.findByUserIdAndChallengeId(userId,challengeId).isPresent(),
                 challenge.getFailedPoint()/(progress+maxProgress)*maxProgress);
     }
 
@@ -155,6 +157,7 @@ public class ChallengeService {
                 challenge -> new ChallengeResponse(
                         challenge,
                     userId != null && cartRepository.findByChallengeIdAndUserId(challenge.getId(), userId).isPresent(),
+                        userChallengeRepository.findByUserIdAndChallengeId(userId,challenge.getId()).isPresent(),
                         userChallengeRepository.findByChallengeId(challenge.getId())
                                 .stream().map(userChallenge -> userChallenge.getUser().getId())
                                 .collect(Collectors.toList())
