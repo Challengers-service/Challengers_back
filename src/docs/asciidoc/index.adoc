@@ -1,0 +1,225 @@
+= API 명세서 목차
+
+[cols=4*]
+|===
+|대분류
+|기능
+|method
+|URI
+
+|Auth
+|link:auth.html#resources-auth-signup[회원 가입]
+|POST
+|/api/signup
+
+|
+|link:auth.html#resources-auth-signin[로그인]
+|POST
+|/api/signin
+
+|
+|link:auth.html#resources-auth-refresh[액세스 토큰 재발급]
+|POST
+|/api/refresh
+
+|User
+|link:user.html#resources-user-getCurrentUser[내 정보 조회]
+|GET
+|/api/user/me
+
+|
+|link:user.html#resources-user-updateUser[내 정보 수정]
+|PATCH
+|/api/user/me
+
+|Follow
+|link:follow.html#resources-follow-findAllFollowers[팔로우 조회]
+|GET
+|/api/follow/follower
+
+|
+|link:follow.html#resources-follow-findAllFollowing[팔로잉 조회]
+|GET
+|/api/follow/following
+
+|
+|link:follow.html#resources-follow-addFollow[팔로우 추가]
+|POST
+|/api/follow/{follow_id}
+
+|
+|link:follow.html#resources-follow-unfollow[팔로우 삭제]
+|DELETE
+|/api/follow/{follow_id}
+
+|Challenge
+|link:challenge.html#resources-challenge-createChallenge[챌린지 생성]
+|POST
+|/api/challenge
+
+|
+|link:challenge.html#resources-challenge-updateChallenge[챌린지 수정]
+|PUT
+|/api/challenge/{challenge_id}
+
+|
+|link:challenge.html#resources-challenge-deleteChallenge[챌린지 삭제]
+|DELETE
+|/api/challenge/{challenge_id}
+
+|
+|link:challenge.html#resources-challenge-joinChallenge[챌린지 참여]
+|POST
+|/api/challenge/join/{challenge_id}
+
+|
+|link:challenge.html#resources-challenge-findChallenge[챌린지 상세 정보 조회]
+|GET
+|/api/challenge/{challenge_id}
+
+|
+|link:challenge.html#resources-challenge-searchHot[인기 챌린지 조회]
+|GET
+|/api/challenge?sort=userCount,desc
+
+|
+|link:challenge.html#resources-challenge-searchNew[신규 챌린지 조회]
+|GET
+|/api/challenge?sort=id,desc
+
+|
+|link:challenge.html#resources-challenge-searchName[챌린지 이름으로 검색]
+|GET
+|/api/challenge?challengeName={challengeName}
+
+|
+|link:challenge.html#resources-challenge-searchTag[챌린지 태그로 검색]
+|GET
+|/api/challenge?tagName={tagName}
+
+|
+|link:challenge.html#resources-challenge-searchCategory[챌린지 카테고리로 검색]
+|GET
+|/api/challenge?category={category}
+
+|
+|link:challenge.html#resources-challenge-searchFilter[챌린지 검색결과에 필터 적용]
+|GET
+|/api/challenge?{search_condition}&{filter}
+
+|Photo Check
+|link:photo_check.html#resources-photo_check-addPhotoCheck[인증 사진 조회]
+|GET
+|/api/photo_check/{photo_check_id}
+
+|
+|link:photo_check.html#resources-photo_check-addPhotoCheck[인증 사진 올리기]
+|POST
+|/api/photo_check
+
+|
+|link:photo_check.html#resources-photo_check-pass[인증 사진 통과시키기]
+|POST
+|/api/photo_check/pass
+
+|
+|link:photo_check.html#resources-photo_check-fail[인증 사진 탈락시키기]
+|POST
+|/api/photo_check/fail
+
+|Reviews
+|link:reviews.html#resources-reviews-addReview[리뷰 작성]
+|POST
+|/api/reviews
+
+|
+|link:reviews.html#resources-reviews-deleteReview[리뷰 삭제]
+|DELETE
+|/api/reviews/{review_id}
+
+|
+|link:reviews.html#resources-reviews-updateReview[리뷰 수정]
+|PUT
+|/api/reviews/{challenge_id}
+
+|
+|link:reviews.html#resources-reviews-showReviews[리뷰 조회]
+|GET
+|/api/reviews/{challenge_id}
+
+|Cart
+|link:cart.html#resources-cart-addCart[찜하기]
+|POST
+|/api/cart/{challenge_id}
+
+|
+|link:cart.html#resources-reviews-deleteCart[찜 취소하기]
+|DELETE
+|/api/cart/{challenge_id}
+
+|Feed
+|link:feed.html#resources-feed-comment-getComment[댓글 조회]
+|GET
+|/api/feed/comment/{challenge_photo_id}
+
+|
+|link:feed.html#resources-feed-comment-createComment[댓글 생성]
+|POST
+|/api/feed/comment/{challenge_photo_id}
+
+|
+|link:feed.html#resources-feed-comment-updateComment[댓글 수정]
+|PATCH
+|/api/feed/comment/{comment_id}
+
+|
+|link:feed.html#resources-feed-comment-deleteComment[댓글 삭제]
+|DELETE
+|/api/feed/comment/{comment_id}
+
+|
+|link:feed.html#resources-feed-like-getLike[좋아요 조회]
+|GET
+|/api/feed/like
+
+|
+|link:feed.html#resources-feed-like-createLike[좋아요 추가]
+|POST
+|/api/feed/like/{challenge_photo_id}
+
+|
+|link:feed.html#resources-feed-like-deleteLike[좋아요 취소]
+|DELETE
+|/api/feed/like/{challenge_photo_id}
+
+|Notification
+|link:notification.html#resources-notification-getAllNotifications[알림 조회]
+|GET
+|/api/notification
+
+|
+|link:notification.html#resources-notification-saveNotification[알림 저장]
+|POST
+|/api/notification
+
+|
+|link:notification.html#resources-notification-updateNotification[알림 수정]
+|PATCH
+|/api/notification/{notification_id}}
+
+|
+|link:notification.html#resources-notification-deleteNotification[알림 삭제]
+|DELETE
+|/api/notification/{notification_id}
+
+|Point
+|link:point.html#resources-point-myPoint[내 포인트 조회하기]
+|GET
+|/api/point/transaction
+
+|
+|link:point.html#resources-point-myPointHistory[내 포인트 내역 조회하기]
+|GET
+|/api/point
+
+|===

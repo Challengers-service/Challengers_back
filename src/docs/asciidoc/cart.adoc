@@ -13,9 +13,25 @@ cart-api-docs
 [[resources-cart-addCart]]
 === 찜하기
 
+챌린지를 찜합니다.
+
 operation::cart/addCart[snippets='http-request,path-parameters,request-headers,http-response']
+
+==== 찜하기 실패(400)
+
+- 이미 찜하기가 되어 있는경우
+
+operation::cart/addCart/errors/hasAdded[snippets='response-body']
 
 [[resources-reviews-deleteCart]]
 === 찜 취소하기
 
+챌린지 찜한것을 취소합니다.
+
 operation::cart/deleteCart[snippets='http-request,path-parameters,request-headers,http-response']
+
+==== 찜 취소하기 실패(400)
+
+- 찜하기가 안되어 있는 경우
+
+operation::cart/deleteCart/errors/hasNotAdded[snippets='response-body']

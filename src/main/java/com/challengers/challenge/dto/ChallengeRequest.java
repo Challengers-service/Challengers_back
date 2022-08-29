@@ -7,11 +7,11 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.validator.constraints.Range;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.*;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -22,25 +22,36 @@ public class ChallengeRequest {
     @NotBlank
     private String name;
     @NotBlank
+    @Size(min = 1, max = 2000)
     private String challengeRule;
     @NotNull
     private String checkFrequencyType;
+    @NotNull
+    @Range(min = 1, max = 7)
     private int checkTimesPerRound;
     @NotNull
     private String category;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @FutureOrPresent
     @NotNull
     private LocalDate startDate;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @FutureOrPresent
     @NotNull
     private LocalDate endDate;
+    @NotNull
+    @Range(max = 10000L)
     private int depositPoint;
     @NotBlank
+    @Size(min = 1, max = 2000)
     private String introduction;
     @NotNull
+    @Range(min = 1L, max = 1000L)
     private int userCountLimit;
-    @NotNull
+    @NotEmpty
+    @Size(min = 1, max = 3)
     private List<MultipartFile> examplePhotos;
+    @Size(max = 10)
     private List<@NotBlank String> tags;
 
     @Builder

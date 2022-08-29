@@ -13,6 +13,7 @@ import com.challengers.testtool.StringToken;
 import com.challengers.userchallenge.domain.UserChallenge;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -26,7 +27,11 @@ import java.util.Arrays;
 
 import static com.challengers.testtool.UploadSupporter.uploadMockSupport;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
@@ -85,6 +90,81 @@ class PhotoCheckControllerTest extends DocumentationWithSecurity {
                 .contentType(MediaType.MULTIPART_FORM_DATA))
                 .andExpect(status().isCreated())
                 .andDo(PhotoCheckDocumentation.addPhotoCheck());
+    }
+
+    @Test
+    @WithMockCustomUser
+    @DisplayName("인증 사진 올리기 실패 - 진행중인 챌린지가 아닌 경우")
+    void addPhotoCheck_fail_invalidChallengeStatus() throws Exception {
+        doThrow(new IllegalStateException("진행중인 챌린지가 아닙니다.")).when(photoCheckService).addPhotoCheck(any(),any());
+
+        mockMvc.perform(uploadMockSupport(multipart("/api/photo_check"),new PhotoCheckRequest())
+                        .header("Authorization", StringToken.getToken())
+                        .with(requestPostProcessor -> {
+                            requestPostProcessor.setMethod("POST");
+                            return requestPostProcessor;
+                        })
+                        .contentType(MediaType.MULTIPART_FORM_DATA))
+                .andExpect(status().isBadRequest())
+                .andDo(document("photo_check/addPhotoCheck/errors/invalidChallengeStatus",
+                        preprocessResponse(prettyPrint())));
+    }
+
+    @Test
+    @WithMockCustomUser
+    @DisplayName("인증 사진 올리기 실패 - 참여중인 챌린지가 아닌경우")
+    void addPhotoCheck_fail_hasNotJoined() throws Exception {
+        doThrow(new IllegalStateException("해당 챌린지를 참여하고 있지 않습니다."))
+                .when(photoCheckService).addPhotoCheck(any(),any());
+
+        mockMvc.perform(uploadMockSupport(multipart("/api/photo_check"),new PhotoCheckRequest())
+                        .header("Authorization", StringToken.getToken())
+                        .with(requestPostProcessor -> {
+                            requestPostProcessor.setMethod("POST");
+                            return requestPostProcessor;
+                        })
+                        .contentType(MediaType.MULTIPART_FORM_DATA))
+                .andExpect(status().isBadRequest())
+                .andDo(document("photo_check/addPhotoCheck/errors/hasNotJoined",
+                        preprocessResponse(prettyPrint())));
+    }
+
+    @Test
+    @WithMockCustomUser
+    @DisplayName("인증 사진 올리기 실패 - 챌린지에 성공하거나 실패해서 진행상태가 아닌 경우")
+    void addPhotoCheck_fail_notInProgress() throws Exception {
+        doThrow(new IllegalStateException("해당 챌린지에 성공하거나 실패하여 현재 진행하고 있는 상태가 아닙니다."))
+                .when(photoCheckService).addPhotoCheck(any(),any());
+
+        mockMvc.perform(uploadMockSupport(multipart("/api/photo_check"),new PhotoCheckRequest())
+                        .header("Authorization", StringToken.getToken())
+                        .with(requestPostProcessor -> {
+                            requestPostProcessor.setMethod("POST");
+                            return requestPostProcessor;
+                        })
+                        .contentType(MediaType.MULTIPART_FORM_DATA))
+                .andExpect(status().isBadRequest())
+                .andDo(document("photo_check/addPhotoCheck/errors/notInProgress",
+                        preprocessResponse(prettyPrint())));
+    }
+
+    @Test
+    @WithMockCustomUser
+    @DisplayName("인증 사진 올리기 실패 - 이미 해당 회차에 인증 사진을 전부 올린 경우")
+    void addPhotoCheck_fail_full() throws Exception {
+        doThrow(new IllegalStateException("이미 해당 회차에 인증 사진을 전부 올렸습니다."))
+                .when(photoCheckService).addPhotoCheck(any(),any());
+
+        mockMvc.perform(uploadMockSupport(multipart("/api/photo_check"),new PhotoCheckRequest())
+                        .header("Authorization", StringToken.getToken())
+                        .with(requestPostProcessor -> {
+                            requestPostProcessor.setMethod("POST");
+                            return requestPostProcessor;
+                        })
+                        .contentType(MediaType.MULTIPART_FORM_DATA))
+                .andExpect(status().isBadRequest())
+                .andDo(document("photo_check/addPhotoCheck/errors/full",
+                        preprocessResponse(prettyPrint())));
     }
 
     @Test

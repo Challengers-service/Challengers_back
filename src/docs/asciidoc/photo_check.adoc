@@ -10,33 +10,57 @@ photo_check-api-docs
 [[resources-photo_check]]
 == Photo Check [인증 사진]
 
-챌린지에 참여한 사람들이 인증 사진을 올리고,
-
-챌린지를 개설한 Host가 인증 사진을 통과, 실패를 시키는 API가 있다.
-
 Host가 인증사진에 대한 통과나 실패 처리를 하지 않은 인증 대기중인 인증 사진들을 조회하는 API를 추가할 예정.
-
 
 
 [[resources-photo_check-getPhotoCheck]]
 ===  인증 사진 조회
 
+인증 사진을 인증 사진 ID로 단건 조회한다.
+
 operation::photo_check/getPhotoCheck[snippets='http-request,path-parameters,request-headers,http-response,response-fields']
 
 [[resources-photo_check-addPhotoCheck]]
 ===  인증 사진 올리기
+
 챌린지 참여자가 인증 사진을 올린다.
+
+인증 사진은 인증 회차마다 인증 횟수만큼만 올릴 수 있다.
+
+예를 들어 일주일에 3회 인증해야 하면 일주일에 3번만 올릴 수 있다.
+
+그런데 만약 올린 인증 사진이 호스트에 의해 탈락되면 인증 마감일 전까지 탈락된 인증 사진 수 만큼 다시 올릴 수 있다.
 
 operation::photo_check/addPhotoCheck[snippets='http-request,request-parameters,request-parts,request-headers,http-response']
 
+==== 인증 사진 올리기 실패(400)
+
+- 진행중인 챌린지가 아닌 경우
+
+operation::photo_check/addPhotoCheck/errors/invalidChallengeStatus[snippets='response-body']
+
+- 챌린지에 참여하고 있지 않은 경우
+
+operation::photo_check/addPhotoCheck/errors/hasNotJoined[snippets='response-body']
+
+- 챌린지에 성공하거나 실패해서 진행상태가 아닌경우
+
+operation::photo_check/addPhotoCheck/errors/notInProgress[snippets='response-body']
+
+- 이미 해당 회차에 인증사진을 전부 올린 경우
+
+operation::photo_check/addPhotoCheck/errors/full[snippets='response-body']
+
 [[resources-photo_check-pass]]
-===  인증 사진 통과
+===  인증 사진 통과시키기
+
 챌린지의 호스트가 참여자의 인증 사진을 통과시킨다.
 
 operation::photo_check/pass[snippets='http-request,request-headers,request-fields,http-response']
 
 [[resources-photo_check-fail]]
-===  인증 사진 실패
-챌린지의 호스트가 참여자의 인증 사진을 실패시킨다.
+===  인증 사진 탈락시키기
+
+챌린지의 호스트가 참여자의 인증 사진을 탈락시킨다.
 
 operation::photo_check/fail[snippets='http-request,request-headers,request-fields,http-response']

@@ -12,8 +12,10 @@ import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = CartController.class)
@@ -30,7 +32,19 @@ class CartControllerTest extends DocumentationWithSecurity {
                 .header("Authorization", StringToken.getToken()))
                 .andExpect(status().isOk())
                 .andDo(CartDocumentation.addCart());
+    }
 
+    @Test
+    @WithMockCustomUser
+    @DisplayName("챌린지 찜하기 실패 - 이미 찜한 챌린지인 경우")
+    void addCart_fail_hasAdded() throws Exception {
+        doThrow(new IllegalStateException("이미 찜한 챌린지입니다.")).when(cartService).put(any(),any());
+
+        mockMvc.perform(RestDocumentationRequestBuilders.post("/api/cart/{challenge_id}", 1L)
+                        .header("Authorization", StringToken.getToken()))
+                .andExpect(status().isBadRequest())
+                .andDo(document("cart/addCart/errors/hasAdded",
+                        preprocessResponse(prettyPrint())));
     }
 
     @Test
@@ -43,5 +57,18 @@ class CartControllerTest extends DocumentationWithSecurity {
                 .header("Authorization", StringToken.getToken()))
                 .andExpect(status().isOk())
                 .andDo(CartDocumentation.deleteCart());
+    }
+
+    @Test
+    @WithMockCustomUser
+    @DisplayName("챌린지 찜하기 취소 실패 - 찜하기가 안되어 있는 경우")
+    void deleteCart_fail_hasNotAdded() throws Exception {
+        doThrow(new IllegalStateException("찜하기가 안되어 있습니다.")).when(cartService).takeOut(any(),any());
+
+        mockMvc.perform(RestDocumentationRequestBuilders.delete("/api/cart/{challenge_id}", 1L)
+                        .header("Authorization", StringToken.getToken()))
+                .andExpect(status().isBadRequest())
+                .andDo(document("cart/deleteCart/errors/hasNotAdded",
+                        preprocessResponse(prettyPrint())));
     }
 }
