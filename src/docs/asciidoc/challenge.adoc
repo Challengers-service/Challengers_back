@@ -10,30 +10,104 @@ challenge-api-docs
 [[resources-challenge]]
 == Challenge
 
+- 챌린지에는 인증 빈도, 인증 회차, 챌린지 진행률, 예상 리워드 포인트 개념이 있습니다.
+
+- 인증 빈도는 챌린지 참여자가 챌린지 인증을 하는 빈도를 뜻하며 매일, 매주, 직접 입력 세가지 경우가 있습니다.
+
+- 인증 회차는 인증 빈도가 매일인 경우 인증 회차는 매일마다, 인증 빈도가 매주 혹은 직접 입력인 경우 매주 월요일마다 1씩 증가합니다.
+
+- 챌린지 진행률이란 사용자가 챌린지에 참여해 도전을 진행한 정도를 나타냅니다. 예를 들어 챌린지 시작일부터 참여해서 챌린지를 성공한 경우 진행률은 100입니다.
+챌린지가 시작된지 챌린지 기간의 절반이 되었을때 참여해서 성공한 경우에는 50입니다.
+
+- 예상 리워드 포인트는 지금 챌린지에 참여해서 챌린지를 끝까지 성공하면 받을 수 있는 최대 포인트를 뜻합니다.
+따라서 예상 리워드 포인트는 성공시 실제 지급되는 포인트와 다를 수 있습니다.
+
+- 예상 리워드 포인트 = (현재까지 실패한 사람들의 예치 포인트 합)
+/ (진행중인 인원들이 남은 기간 다 성공한다는 가정하의 모든 진행중인 사람들의 진행률의 합+남은 기간 다 성공한다는 가정하의 나의 진행률) * 남은 기간 다 성공 한다는 가정하에 나의 진행률
+
+---
+
 [[resources-challenge-createChallenge]]
-=== Challenge 생성
+=== 챌린지 생성
 
 operation::challenge/createChallenge[snippets='http-request,request-parameters,request-headers,request-parts,http-response']
 
+---
+
 [[resources-challenge-updateChallenge]]
-=== Challenge 수정
+=== 챌린지 수정
 
 챌린지 수정은 챌린지 소개글만 수정이 가능합니다.
 
 operation::challenge/updateChallenge[snippets='http-request,path-parameters,request-headers,request-fields,http-response']
 
+---
+
 [[resources-challenge-deleteChallenge]]
-=== Challenge 삭제
+=== 챌린지 삭제
+
+챌린지 삭제는 챌린지에 참여하고 있는 사람이 1명 이하일 경우에만 삭제가 가능합니다.
 
 operation::challenge/deleteChallenge[snippets='http-request,path-parameters,request-headers,http-response']
 
+==== 챌린지 삭제 실패 (400)
+
+- 챌린지 참여자가 1명 이하가 아닌 경우
+
+operation::challenge/deleteChallenge/errors/gt1[snippets='response-body']
+
+---
+
 [[resources-challenge-joinChallenge]]
-=== Challenge 참여
+=== 챌린지 참여
 
 operation::challenge/joinChallenge[snippets='http-request,path-parameters,request-headers,http-response']
 
+==== 챌린지 참여 실패 (400)
+
+- 참여 인원이 가득찬 경우
+
+operation::challenge/joinChallenge/errors/full[snippets='response-body']
+
+- 이미 참여하고 있는 챌린지인 경우
+
+operation::challenge/joinChallenge/errors/hasJoined[snippets='response-body']
+
+- 인증 마감일까지 남은 일 수 보다 인증해야하는 횟수가 더 많이 남은 경우
+
+operation::challenge/joinChallenge/errors/canNotSuccess[snippets='response-body']
+
+---
+
+[[resources-challenge-findChallenge]]
+=== 챌린지 상세 정보 페이지 조회
+
+챌린지 상세 정보 페이지 조회
+
+operation::challenge/findChallenge[snippets='http-request,path-parameters,request-headers,request-headers,http-response,response-fields']
+
+---
+
+[[resources-challenge-searchHot]]
+=== 인기 챌린지 조회
+
+챌린지 참여자 순으로 정렬한 결과를 반환합니다.
+
+operation::challenge/searchHot[snippets='http-request,request-parameters,request-headers,http-response,response-fields']
+
+---
+
+[[resources-challenge-searchNew]]
+=== 신규 챌린지 조회
+
+챌린지 생성일순으로 정렬한 결과를 반환합니다.
+
+operation::challenge/searchNew[snippets='http-request,request-parameters,request-headers,http-response,response-fields']
+
+---
+
 [[resources-challenge-searchName]]
-=== 챌린지 이름으로 챌린지 검색
+=== 챌린지 이름으로 검색
 
 아래는 "매일"로 검색한 예제입니다.
 
@@ -41,14 +115,27 @@ operation::challenge/joinChallenge[snippets='http-request,path-parameters,reques
 
 operation::challenge/searchName[snippets='http-request,request-parameters,request-headers,http-response,response-fields']
 
+---
+
 [[resources-challenge-searchTag]]
-=== 태그로 챌린지 검색
+=== 챌린지 태그로 검색
 
 아래는 "운동" 태그로 검색한 예제입니다.
 
 "운동" 태그를 가지고 있는 챌린지들이 검색된다.
 
 operation::challenge/searchTag[snippets='http-request,request-parameters,request-headers,http-response,response-fields']
+
+---
+
+[[resources-challenge-searchCategory]]
+=== 챌린지 카테고리로 검색
+
+챌린지 카테고리로 검색한 결과를 반환합니다.
+
+operation::challenge/searchCategory[snippets='http-request,request-parameters,request-headers,http-response,response-fields']
+
+---
 
 [[resources-challenge-searchFilter]]
 === 챌린지 검색결과에 필터 적용
@@ -62,31 +149,3 @@ operation::challenge/searchTag[snippets='http-request,request-parameters,request
 태그 검색에도 동일하게 적용됩니다.
 
 operation::challenge/searchFilter[snippets='http-request,request-parameters,request-headers,http-response,response-fields']
-
-[[resources-challenge-searchHot]]
-=== 인기 챌린지 조회
-
-챌린지 참여자 순으로 정렬한 결과를 반환합니다.
-
-operation::challenge/searchHot[snippets='http-request,request-parameters,request-headers,http-response,response-fields']
-
-[[resources-challenge-searchNew]]
-=== 신규 챌린지 조회
-
-챌린지 생성일순으로 정렬한 결과를 반환합니다.
-
-operation::challenge/searchNew[snippets='http-request,request-parameters,request-headers,http-response,response-fields']
-
-[[resources-challenge-searchCategory]]
-=== 카테고리별 챌린지 조회
-
-챌린지 카테고리로 검색한 결과를 반환합니다.
-
-operation::challenge/searchCategory[snippets='http-request,request-parameters,request-headers,http-response,response-fields']
-
-[[resources-challenge-findChallenge]]
-=== 챌린지 상세 정보 페이지 조회
-
-챌린지 상세 정보 페이지 조회
-
-operation::challenge/findChallenge[snippets='http-request,path-parameters,request-headers,request-headers,http-response,response-fields']

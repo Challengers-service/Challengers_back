@@ -1,5 +1,7 @@
 package com.challengers.challenge.domain;
 
+import com.challengers.common.exception.TypeCastingException;
+
 import java.util.Arrays;
 
 public enum CheckFrequencyType {
@@ -9,6 +11,6 @@ public enum CheckFrequencyType {
         return Arrays.stream(CheckFrequencyType.values())
                 .filter(checkFrequencyType -> checkFrequencyType.name().equals(checkFrequencyStr))
                 .findFirst()
-                .orElseThrow(()->new RuntimeException());
+                .orElseThrow(()->new TypeCastingException("CheckFrequencyType",values()));
     }
 }

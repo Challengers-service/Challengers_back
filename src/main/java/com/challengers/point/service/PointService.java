@@ -41,7 +41,7 @@ public class PointService {
     public void updatePoint(Long userId, Long pointHistory, PointTransactionType type) {
         Point point = pointRepository.findByUserId(userId).orElseThrow(NoSuchElementException::new);
         if (pointHistory < 0L && point.getPoint() < pointHistory*-1)
-            throw new RuntimeException("포인트가 부족합니다.");
+            throw new IllegalStateException("포인트가 부족합니다.");
         pointTransactionRepository.save(new PointTransaction(point,pointHistory, type));
         point.updatePoint(pointHistory);
     }

@@ -6,6 +6,8 @@ import com.challengers.challenge.repository.ChallengeRepository;
 import com.challengers.challengephoto.domain.ChallengePhoto;
 import com.challengers.challengephoto.repository.ChallengePhotoRepository;
 import com.challengers.common.AwsS3Uploader;
+import com.challengers.common.exception.NotFoundException;
+import com.challengers.common.exception.UnAuthorizedException;
 import com.challengers.photocheck.domain.PhotoCheck;
 import com.challengers.photocheck.domain.PhotoCheckStatus;
 import com.challengers.photocheck.dto.CheckRequest;
@@ -36,21 +38,21 @@ public class PhotoCheckService {
     @Transactional(readOnly = true)
     public PhotoCheckResponse findPhotoCheck(Long photoCheckId) {
         return PhotoCheckResponse.of(photoCheckRepository
-                .findById(photoCheckId).orElseThrow(NoSuchElementException::new));
+                .findById(photoCheckId).orElseThrow(NotFoundException::new));
     }
 
     @Transactional
     public Long addPhotoCheck(PhotoCheckRequest photoCheckRequest, Long userId) {
         Challenge challenge = challengeRepository.findById(photoCheckRequest.getChallengeId()).orElseThrow(NoSuchElementException::new);
         if (!challenge.getStatus().equals(ChallengeStatus.IN_PROGRESS))
-            throw new RuntimeException("진행중인 챌린지가 아닙니다.");
+            throw new IllegalStateException("진행중인 챌린지가 아닙니다.");
         User user = userRepository.findById(userId).orElseThrow(NoSuchElementException::new);
 
         UserChallenge userChallenge = userChallengeRepository.findByUserIdAndChallengeId(userId, challenge.getId())
-                .orElseThrow(NoSuchElementException::new);
+                .orElseThrow(() -> new IllegalStateException("해당 챌린지를 참여하고 있지 않습니다."));
 
         if(!userChallenge.getStatus().equals(UserChallengeStatus.IN_PROGRESS))
-            throw new RuntimeException("해당 챌린지에 참여중이 아닙니다.");
+            throw new IllegalStateException("해당 챌린지에 성공하거나 실패하여 현재 진행하고 있는 상태가 아닙니다.");
 
         if (photoCheckRepository.countByUserChallengeIdAndRound(challenge.getId(), challenge.getRound())
                 >= challenge.getCheckTimesPerRound())
@@ -83,14 +85,11 @@ public class PhotoCheckService {
                 .orElseThrow(NoSuchElementException::new)
                 .getUserChallenge().getChallenge().getHost();
         if (!host.getId().equals(userId))
-            throw new RuntimeException("인증샷을 처리할 권한이 없습니다.");
+            throw new UnAuthorizedException("인증샷을 처리할 권한이 없습니다.");
 
         for (Long photoCheckId : checkRequest.getPhotoCheckIds()) {
-            PhotoCheck photoCheck = photoCheckRepository.findById(photoCheckId)
-                    .orElseThrow(NoSuchElementException::new);
-            if (photoCheck.getStatus().equals(PhotoCheckStatus.PASS))
-                throw new RuntimeException("이미 인증 통과된 사진이 있습니다.");
-            photoCheck.pass();
+            photoCheckRepository.findById(photoCheckId)
+                    .orElseThrow(NoSuchElementException::new).pass();
         }
     }
 
@@ -102,14 +101,11 @@ public class PhotoCheckService {
                 .orElseThrow(NoSuchElementException::new)
                 .getUserChallenge().getChallenge().getHost();
         if (!host.getId().equals(userId))
-            throw new RuntimeException("인증샷을 처리할 권한이 없습니다.");
+            throw new UnAuthorizedException("인증샷을 처리할 권한이 없습니다.");
 
         for (Long photoCheckId : checkRequest.getPhotoCheckIds()) {
-            PhotoCheck photoCheck = photoCheckRepository.findById(photoCheckId)
-                    .orElseThrow(NoSuchElementException::new);
-            if (photoCheck.getStatus().equals(PhotoCheckStatus.FAIL))
-                throw new RuntimeException("이미 인증 실패 처리된 사진이 있습니다.");
-            photoCheck.fail();
+            photoCheckRepository.findById(photoCheckId)
+                    .orElseThrow(NoSuchElementException::new).fail();
         }
     }
 

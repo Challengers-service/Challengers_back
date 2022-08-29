@@ -11,21 +11,27 @@ reviews-api-docs
 == Reviews
 
 [[resources-reviews-addReview]]
-=== Review 생성
+=== 리뷰 작성
 
 operation::reviews/addReview[snippets='http-request,request-headers,request-fields,http-response']
 
+==== 리뷰 작성 실패(400)
+
+- 이미 작성한 리뷰가 있는 경우
+
+operation::reviews/addReview/errors/hasWritten[snippets='response-body']
+
 [[resources-reviews-deleteReview]]
-=== Review 삭제
+=== 리뷰 삭제
 
 operation::reviews/deleteReview[snippets='http-request,path-parameters,request-headers,http-response']
 
 [[resources-reviews-updateReview]]
-=== Review 수정
+=== 리뷰 수정
 
 operation::reviews/updateReview[snippets='http-request,path-parameters,request-headers,request-fields,http-response']
 
 [[resources-reviews-showReviews]]
-== 리뷰 조회
+=== 리뷰 조회
 
 operation::reviews/showReviews[snippets='http-request,path-parameters,request-headers,request-parameters,http-response,response-fields']

@@ -22,6 +22,9 @@ import java.util.Arrays;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -61,7 +64,7 @@ class ReviewControllerTest extends DocumentationWithSecurity {
     void addReview() throws Exception{
         ReviewRequest reviewRequest = new ReviewRequest(1L, "너무 좋은 챌린지",
                 "여태 해봤던 챌린지 중에 제일 좋았던거 같아요!", 4.5f);
-        mockMvc.perform(post("/api/reviews/")
+        mockMvc.perform(post("/api/reviews")
                 .header("Authorization", "Bearer yJzdWIiOiIxIiwiaWF0IjoxN" +
                         "jU1NzExODAyLCJleHAiOjE2NTY1NzU4MDJ9.pWHz8VTj21DA1fmfxPlrmoE_e" +
                         "Kw_tYFTzVmVdRmof9mIe9y2OIJQ7ndThLQfwiiCbU0d0SDGgb6Oshs5R-R99A")
@@ -71,6 +74,25 @@ class ReviewControllerTest extends DocumentationWithSecurity {
                 .andDo(ReviewDocumentation.addReview());
 
         verify(reviewService).create(any(),any());
+    }
+
+    @Test
+    @WithMockCustomUser
+    @DisplayName("리뷰 생성 실패 - 이미 작성한 리뷰가 있는 경우")
+    void addReview_fail_hasWritten() throws Exception{
+        ReviewRequest reviewRequest = new ReviewRequest(1L, "너무 좋은 챌린지",
+                "여태 해봤던 챌린지 중에 제일 좋았던거 같아요!", 4.5f);
+        doThrow(new IllegalStateException("이미 작성한 리뷰가 있습니다. 한 챌린지에 하나의 리뷰만 생성할 수 있습니다.")).when(reviewService).create(any(),any());
+
+        mockMvc.perform(post("/api/reviews")
+                        .header("Authorization", "Bearer yJzdWIiOiIxIiwiaWF0IjoxN" +
+                                "jU1NzExODAyLCJleHAiOjE2NTY1NzU4MDJ9.pWHz8VTj21DA1fmfxPlrmoE_e" +
+                                "Kw_tYFTzVmVdRmof9mIe9y2OIJQ7ndThLQfwiiCbU0d0SDGgb6Oshs5R-R99A")
+                        .content(mapper.writeValueAsString(reviewRequest))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andDo(document("reviews/addReview/errors/hasWritten",
+                        preprocessResponse(prettyPrint())));
     }
 
     @Test

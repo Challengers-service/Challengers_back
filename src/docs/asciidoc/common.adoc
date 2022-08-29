@@ -1,0 +1,26 @@
+= 공통 예외 처리
+
+==== 모든 API에서 공통적으로 발생할 수 있는 예외들을 정의합니다.
+
+=== 요청 필드를 잘못 입력했을 경우(400)
+
+- 응답의 invalidFields 는 요청의 잘못 입력된 필드 목록을 보여줍니다.
+
+include::{snippets}/challenge/createChallenge/errors/binding/response-body.adoc[]
+
+=== 요청 필드중 지정되지 않은 문자를 입력했을 경우(400)
+
+- 챌린지의 카테고리, 인증 빈도 타입과 같이 서버에 등록되지 않은 문자로 입력이 오는 경우 발생합니다.
+
+
+include::{snippets}/challenge/createChallenge/errors/typeCasting/response-body.adoc[]
+
+=== 요청에 대한 권한이 없는 경우(403)
+
+- 메세지는 각 API 마다 다릅니다.
+
+include::{snippets}/challenge/deleteChallenge/errors/unAuthorization/response-body.adoc[]
+
+=== 요청한 데이터가 없는 경우(404)
+
+include::{snippets}/challenge/findChallenge/errors/notFound/response-body.adoc[]

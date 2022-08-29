@@ -2,6 +2,8 @@ package com.challengers.review.service;
 
 import com.challengers.challenge.domain.Challenge;
 import com.challengers.challenge.repository.ChallengeRepository;
+import com.challengers.common.exception.NotFoundException;
+import com.challengers.common.exception.UnAuthorizedException;
 import com.challengers.review.domain.Review;
 import com.challengers.review.dto.ReviewRequest;
 import com.challengers.review.dto.ReviewResponse;
@@ -31,7 +33,7 @@ public class ReviewService {
         User user = userRepository.findById(userId).orElseThrow(NoSuchElementException::new);
 
         if (reviewRepository.findByChallengeIdAndUserId(challenge.getId(), userId).isPresent())
-            throw new RuntimeException("한 챌린지에 하나의 리뷰만 생성할 수 있습니다.");
+            throw new IllegalStateException("이미 작성한 리뷰가 있습니다. 한 챌린지에 하나의 리뷰만 생성할 수 있습니다.");
 
         Review review = Review.builder()
                 .challenge(challenge)
@@ -46,7 +48,7 @@ public class ReviewService {
 
     @Transactional
     public void delete(Long reviewId, Long userId) {
-        Review review = reviewRepository.findById(reviewId).orElseThrow(NoSuchElementException::new);
+        Review review = reviewRepository.findById(reviewId).orElseThrow(NotFoundException::new);
         authorization(review.getUser().getId(), userId);
         
         reviewRepository.delete(review);
@@ -54,7 +56,7 @@ public class ReviewService {
 
     @Transactional
     public void update(Long reviewId, ReviewUpdateRequest reviewUpdateRequest, Long userId) {
-        Review review = reviewRepository.findById(reviewId).orElseThrow(NoSuchElementException::new);
+        Review review = reviewRepository.findById(reviewId).orElseThrow(NotFoundException::new);
         authorization(review.getUser().getId(), userId);
         review.update(reviewUpdateRequest);
     }
@@ -65,6 +67,6 @@ public class ReviewService {
     }
 
     private void authorization(Long authorizationId, Long userId) {
-        if (!authorizationId.equals(userId)) throw new RuntimeException("권한이 없습니다.");
+        if (!authorizationId.equals(userId)) throw new UnAuthorizedException("권한이 없습니다.");
     }
 }

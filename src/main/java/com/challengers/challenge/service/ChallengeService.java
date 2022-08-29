@@ -7,6 +7,8 @@ import com.challengers.challenge.repository.ChallengeRepository;
 import com.challengers.challengephoto.repository.ChallengePhotoRepository;
 import com.challengers.challengetag.domain.ChallengeTag;
 import com.challengers.common.AwsS3Uploader;
+import com.challengers.common.exception.NotFoundException;
+import com.challengers.common.exception.UnAuthorizedException;
 import com.challengers.photocheck.repository.PhotoCheckRepository;
 import com.challengers.point.domain.PointTransactionType;
 import com.challengers.point.service.PointService;
@@ -77,20 +79,29 @@ public class ChallengeService {
 
     @Transactional
     public void update(ChallengeUpdateRequest challengeUpdateRequest, Long challengeId, Long userId) {
-        Challenge challenge = challengeRepository.findById(challengeId).orElseThrow(NoSuchElementException::new);
-        if (!challenge.getHost().getId().equals(userId)) throw new RuntimeException("권한이 없는 요청");
+        Challenge challenge = challengeRepository.findById(challengeId)
+                .orElseThrow(NotFoundException::new);
+        if (!challenge.getHost().getId().equals(userId))
+            throw new UnAuthorizedException("챌린지를 개설한 사용자만 챌린지를 수정할 수 있습니다.");
 
         challenge.update(challengeUpdateRequest.getIntroduction());
     }
 
     @Transactional
     public void delete(Long challengeId, Long userId) {
-        Challenge challenge = challengeRepository.findById(challengeId).orElseThrow(NoSuchElementException::new);
-        if (!challenge.getHost().getId().equals(userId)) throw new RuntimeException("권한이 없는 요청");
-        if (userChallengeRepository.countByChallengeId(challengeId) != 1) throw new RuntimeException("삭제 조건에 부합하지 않음 - 챌린지 참여자가 2명 이상 있음");
+        Challenge challenge = challengeRepository.findById(challengeId)
+                .orElseThrow(NotFoundException::new);
+        if (!challenge.getHost().getId().equals(userId))
+            throw new UnAuthorizedException("챌린지를 개설한 사용자만 챌린지를 삭제할 수 있습니다.");
+        if (userChallengeRepository.countByChallengeId(challengeId) != 1)
+            throw new IllegalStateException("챌린지 참여자가 1명 이하일 경우에만 챌린지를 삭제할 수 있습니다.");
 
         awsS3Uploader.deleteImages(challenge.getExamplePhotoUrls());
-        UserChallenge userChallenge = userChallengeRepository.findByUserIdAndChallengeId(challenge.getHost().getId(), challengeId).orElseThrow(NoSuchElementException::new);
+
+        UserChallenge userChallenge = userChallengeRepository
+                .findByUserIdAndChallengeId(challenge.getHost().getId(), challengeId)
+                .orElseThrow(NoSuchElementException::new);
+
         photoCheckRepository.findByUserChallengeId(userChallenge.getId()).forEach(photoCheck -> {
             photoCheckRepository.delete(photoCheck);
             challengePhotoRepository.delete(photoCheck.getChallengePhoto());
@@ -109,7 +120,8 @@ public class ChallengeService {
 
     @Transactional(readOnly = true)
     public ChallengeDetailResponse findChallenge(Long challengeId, Long userId) {
-        Challenge challenge = challengeRepository.findById(challengeId).orElseThrow(NoSuchElementException::new);
+        Challenge challenge = challengeRepository.findById(challengeId)
+                .orElseThrow(NotFoundException::new);
 
         List<UserChallenge> userChallenges = userChallengeRepository
                 .findByChallengeIdAndStatus(challengeId, UserChallengeStatus.IN_PROGRESS);
@@ -132,16 +144,15 @@ public class ChallengeService {
 
     @Transactional
     public void join(Long challengeId, Long userId) {
-        Challenge challenge = challengeRepository.findById(challengeId).orElseThrow(NoSuchElementException::new);
+        Challenge challenge = challengeRepository.findById(challengeId).orElseThrow(NotFoundException::new);
         if (userChallengeRepository.countByChallengeId(challengeId) == challenge.getUserCountLimit())
-            throw new RuntimeException("참여 인원이 가득 찼습니다.");
-
+            throw new IllegalStateException("참여 인원이 가득 찼습니다.");
         User user = userRepository.findById(userId).orElseThrow(NoSuchElementException::new);
         if (userChallengeRepository.findByUserIdAndChallengeId(userId,challengeId).isPresent())
-            throw new RuntimeException("이미 참여하고 있는 챌린지 입니다.");
+            throw new IllegalStateException("이미 참여하고 있는 챌린지 입니다.");
 
         if (!ChallengeJoinManager.canJoin(challenge))
-            throw new RuntimeException(
+            throw new IllegalStateException(
                     "다음주 월요일까지 남은 일 수 보다 일주일에 인증해야 하는 횟수가 많기때문에 다음 주에 참여해야 합니다.");
 
         updateChallengeAchievement(user);

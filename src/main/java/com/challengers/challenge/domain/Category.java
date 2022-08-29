@@ -1,5 +1,7 @@
 package com.challengers.challenge.domain;
 
+import com.challengers.common.exception.TypeCastingException;
+
 import java.util.Arrays;
 
 public enum Category {
@@ -9,6 +11,6 @@ public enum Category {
         return Arrays.stream(Category.values())
                 .filter(category -> category.name().equals(categoryStr))
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException());
+                .orElseThrow(() -> new TypeCastingException("Category", values()));
     }
 }
