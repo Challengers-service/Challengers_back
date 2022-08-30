@@ -51,6 +51,8 @@ operation::photo_check/addPhotoCheck/errors/notInProgress[snippets='response-bod
 
 operation::photo_check/addPhotoCheck/errors/full[snippets='response-body']
 
+---
+
 [[resources-photo_check-pass]]
 ===  인증 사진 통과시키기
 
@@ -58,9 +60,23 @@ operation::photo_check/addPhotoCheck/errors/full[snippets='response-body']
 
 operation::photo_check/pass[snippets='http-request,request-headers,request-fields,http-response']
 
+==== 인증 사진 통과시키키 실패(400)
+
+- 인증 사진이 종료된 챌린지의 인증 사진인 경우
+
+operation::photo_check/pass/errors/finished[snippets='response-body']
+
+---
+
 [[resources-photo_check-fail]]
 ===  인증 사진 탈락시키기
 
 챌린지의 호스트가 참여자의 인증 사진을 탈락시킨다.
 
 operation::photo_check/fail[snippets='http-request,request-headers,request-fields,http-response']
+
+==== 인증 사진 탈락시키키 실패(400)
+
+- 인증 사진이 종료된 챌린지의 인증 사진인 경우
+
+operation::photo_check/fail/errors/finished[snippets='response-body']

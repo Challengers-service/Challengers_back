@@ -85,6 +85,8 @@ public class PhotoCheckService {
                 .orElseThrow(NoSuchElementException::new)
                 .getUserChallenge().getChallenge();
 
+        if (challenge.getStatus().equals(ChallengeStatus.FINISH))
+            throw new IllegalStateException("종료된 챌린지 입니다.");
         if (!challenge.getHost().getId().equals(userId))
             throw new UnAuthorizedException("인증샷을 처리할 권한이 없습니다.");
 

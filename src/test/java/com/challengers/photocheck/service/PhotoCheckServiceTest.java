@@ -148,6 +148,25 @@ class PhotoCheckServiceTest {
     }
 
     @Test
+    @DisplayName("인증샷 상태 변경 실패 - 종료된 챌린지인 경우")
+    void passPhotoCheck_fail_finished() {
+        CheckRequest checkRequest = new CheckRequest(new ArrayList<>(Arrays.asList(1L)));
+        Challenge challenge1 = Challenge.builder()
+                .status(ChallengeStatus.FINISH)
+                .build();
+        UserChallenge userChallenge1 = UserChallenge.builder()
+                .challenge(challenge1)
+                .build();
+        PhotoCheck photoCheck1 = PhotoCheck.builder()
+                .userChallenge(userChallenge1)
+                .build();
+        when(photoCheckRepository.findById(any())).thenReturn(Optional.of(photoCheck1));
+
+        Assertions.assertThatThrownBy(()->photoCheckService.updatePhotoCheckStatus(checkRequest, 2L, PhotoCheckStatus.PASS))
+                .isInstanceOf(IllegalStateException.class);
+    }
+
+    @Test
     @DisplayName("인증샷 상태 변경 실패 - 인증샷을 처리할 권한이 없는 경우")
     void passPhotoCheck_fail_unauthorized() {
         CheckRequest checkRequest = new CheckRequest(new ArrayList<>(Arrays.asList(1L)));
