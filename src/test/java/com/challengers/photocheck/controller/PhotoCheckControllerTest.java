@@ -182,6 +182,23 @@ class PhotoCheckControllerTest extends DocumentationWithSecurity {
 
     @Test
     @WithMockCustomUser
+    @DisplayName("인증 사진들 상태를 Pass로 변경 실패 - 종료된 챌린지인 경우")
+    void pass_fail_finished() throws Exception {
+        CheckRequest checkRequest = new CheckRequest(new ArrayList<>(Arrays.asList(1L,2L,3L)));
+        doThrow(new IllegalStateException("종료된 챌린지 입니다."))
+                .when(photoCheckService).updatePhotoCheckStatus(any(),any(),any());
+
+        mockMvc.perform(post("/api/photo_check/pass")
+                        .header("Authorization", StringToken.getToken())
+                        .content(mapper.writeValueAsString(checkRequest))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andDo(document("photo_check/pass/errors/finished",
+                        preprocessResponse(prettyPrint())));
+    }
+
+    @Test
+    @WithMockCustomUser
     void fail() throws Exception {
         CheckRequest checkRequest = new CheckRequest(new ArrayList<>(Arrays.asList(1L)));
 
@@ -191,5 +208,22 @@ class PhotoCheckControllerTest extends DocumentationWithSecurity {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(PhotoCheckDocumentation.fail());
+    }
+
+    @Test
+    @WithMockCustomUser
+    @DisplayName("인증 사진들 상태를 fail로 변경 실패 - 종료된 챌린지인 경우")
+    void fail_fail_finished() throws Exception {
+        CheckRequest checkRequest = new CheckRequest(new ArrayList<>(Arrays.asList(1L,2L,3L)));
+        doThrow(new IllegalStateException("종료된 챌린지 입니다."))
+                .when(photoCheckService).updatePhotoCheckStatus(any(),any(),any());
+
+        mockMvc.perform(post("/api/photo_check/fail")
+                        .header("Authorization", StringToken.getToken())
+                        .content(mapper.writeValueAsString(checkRequest))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andDo(document("photo_check/fail/errors/finished",
+                        preprocessResponse(prettyPrint())));
     }
 }
