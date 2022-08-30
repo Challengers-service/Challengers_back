@@ -5,6 +5,7 @@ import com.challengers.challenge.domain.ChallengeStatus;
 import com.challengers.challenge.repository.ChallengeRepository;
 import com.challengers.challengephoto.repository.ChallengePhotoRepository;
 import com.challengers.common.AwsS3Uploader;
+import com.challengers.common.exception.UnAuthorizedException;
 import com.challengers.photocheck.domain.PhotoCheck;
 import com.challengers.photocheck.domain.PhotoCheckStatus;
 import com.challengers.photocheck.dto.CheckRequest;
@@ -22,8 +23,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockMultipartFile;
 
+import javax.persistence.EntityManager;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -134,74 +137,37 @@ class PhotoCheckServiceTest {
     }
 
     @Test
-    @DisplayName("인증샷 통과")
+    @DisplayName("인증샷 상태 변경 성공")
     void passPhotoCheck() {
         CheckRequest checkRequest = new CheckRequest(new ArrayList<>(Arrays.asList(1L)));
-        when(userRepository.findById(any())).thenReturn(Optional.of(user));
         when(photoCheckRepository.findById(any())).thenReturn(Optional.of(photoCheck));
 
-        photoCheckService.passPhotoCheck(checkRequest, 1L);
+        photoCheckService.updatePhotoCheckStatus(checkRequest, 1L,PhotoCheckStatus.PASS);
 
-        Assertions.assertThat(photoCheck.getStatus()).isEqualTo(PhotoCheckStatus.PASS);
+        verify(photoCheckRepository).updateStatusByIds(any(),any());
     }
 
     @Test
-    @DisplayName("인증샷 통과 실패 - 인증샷을 처리할 권한이 없습니다.")
+    @DisplayName("인증샷 상태 변경 실패 - 인증샷을 처리할 권한이 없는 경우")
     void passPhotoCheck_fail_unauthorized() {
         CheckRequest checkRequest = new CheckRequest(new ArrayList<>(Arrays.asList(1L)));
-        when(userRepository.findById(any())).thenReturn(Optional.of(user));
-        when(photoCheckRepository.findById(any())).thenReturn(Optional.of(photoCheck));
+        User user1 = User.builder()
+                .id(1L)
+                .build();
+        Challenge challenge1 = Challenge.builder()
+                .host(user1)
+                .status(ChallengeStatus.IN_PROGRESS)
+                .build();
+        UserChallenge userChallenge1 = UserChallenge.builder()
+                .challenge(challenge1)
+                .build();
+        PhotoCheck photoCheck1 = PhotoCheck.builder()
+                .userChallenge(userChallenge1)
+                .build();
+        when(photoCheckRepository.findById(any())).thenReturn(Optional.of(photoCheck1));
 
-        Assertions.assertThatThrownBy(()->photoCheckService.passPhotoCheck(checkRequest, 2L))
-                .isInstanceOf(RuntimeException.class);
-    }
-
-    @Test
-    @DisplayName("인증샷 통과 실패 - 이미 인증 통과된 사진이 있습니다.")
-    void passPhotoCheck_fail() {
-        CheckRequest checkRequest = new CheckRequest(new ArrayList<>(Arrays.asList(1L,2L)));
-        PhotoCheck photoCheck = PhotoCheck.builder().status(PhotoCheckStatus.PASS).build();
-        when(userRepository.findById(any())).thenReturn(Optional.of(user));
-        when(photoCheckRepository.findById(any())).thenReturn(Optional.of(photoCheck));
-
-
-        Assertions.assertThatThrownBy(()->photoCheckService.passPhotoCheck(checkRequest, 1L))
-                .isInstanceOf(RuntimeException.class);
-    }
-
-    @Test
-    @DisplayName("인증샷 실패 처리")
-    void failPhotoCheck() {
-        CheckRequest checkRequest = new CheckRequest(new ArrayList<>(Arrays.asList(1L)));
-        when(userRepository.findById(any())).thenReturn(Optional.of(user));
-        when(photoCheckRepository.findById(any())).thenReturn(Optional.of(photoCheck));
-
-        photoCheckService.failPhotoCheck(checkRequest, 1L);
-
-        Assertions.assertThat(photoCheck.getStatus()).isEqualTo(PhotoCheckStatus.FAIL);
-    }
-
-    @Test
-    @DisplayName("인증샷 통과 실패 - 인증샷을 처리할 권한이 없습니다.")
-    void failPhotoCheck_fail_unauthorized() {
-        CheckRequest checkRequest = new CheckRequest(new ArrayList<>(Arrays.asList(1L)));
-        when(userRepository.findById(any())).thenReturn(Optional.of(user));
-        when(photoCheckRepository.findById(any())).thenReturn(Optional.of(photoCheck));
-
-        Assertions.assertThatThrownBy(()->photoCheckService.failPhotoCheck(checkRequest, 2L))
-                .isInstanceOf(RuntimeException.class);
-    }
-
-    @Test
-    @DisplayName("인증샷 통과 실패 - 이미 인증 실패 처리된 사진이 있습니다.")
-    void failPhotoCheck_fail() {
-        CheckRequest checkRequest = new CheckRequest(new ArrayList<>(Arrays.asList(1L,2L)));
-        PhotoCheck photoCheck = PhotoCheck.builder().status(PhotoCheckStatus.FAIL).build();
-        when(userRepository.findById(any())).thenReturn(Optional.of(user));
-        when(photoCheckRepository.findById(any())).thenReturn(Optional.of(photoCheck));
-
-
-        Assertions.assertThatThrownBy(()->photoCheckService.failPhotoCheck(checkRequest, 1L))
-                .isInstanceOf(RuntimeException.class);
+        Assertions.assertThatThrownBy(()->photoCheckService
+                        .updatePhotoCheckStatus(checkRequest, user.getId()+1L, PhotoCheckStatus.PASS))
+                .isInstanceOf(UnAuthorizedException.class);
     }
 }

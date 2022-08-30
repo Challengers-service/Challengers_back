@@ -43,7 +43,9 @@ public class PhotoCheckService {
 
     @Transactional
     public Long addPhotoCheck(PhotoCheckRequest photoCheckRequest, Long userId) {
-        Challenge challenge = challengeRepository.findById(photoCheckRequest.getChallengeId()).orElseThrow(NoSuchElementException::new);
+        Challenge challenge = challengeRepository.findById(photoCheckRequest.getChallengeId())
+                .orElseThrow(NoSuchElementException::new);
+
         if (!challenge.getStatus().equals(ChallengeStatus.IN_PROGRESS))
             throw new IllegalStateException("진행중인 챌린지가 아닙니다.");
         User user = userRepository.findById(userId).orElseThrow(NoSuchElementException::new);
@@ -77,36 +79,16 @@ public class PhotoCheckService {
         return photoCheck.getId();
     }
 
-    // TODO : Bulk Update 적용하기
     @Transactional
-    public void passPhotoCheck(CheckRequest checkRequest, Long userId) {
-        User user = userRepository.findById(userId).orElseThrow(NoSuchElementException::new);
-        User host = photoCheckRepository.findById(checkRequest.getPhotoCheckIds().get(0))
+    public void updatePhotoCheckStatus(CheckRequest checkRequest, Long userId, PhotoCheckStatus photoCheckStatus) {
+        Challenge challenge = photoCheckRepository.findById(checkRequest.getPhotoCheckIds().get(0))
                 .orElseThrow(NoSuchElementException::new)
-                .getUserChallenge().getChallenge().getHost();
-        if (!host.getId().equals(userId))
+                .getUserChallenge().getChallenge();
+
+        if (!challenge.getHost().getId().equals(userId))
             throw new UnAuthorizedException("인증샷을 처리할 권한이 없습니다.");
 
-        for (Long photoCheckId : checkRequest.getPhotoCheckIds()) {
-            photoCheckRepository.findById(photoCheckId)
-                    .orElseThrow(NoSuchElementException::new).pass();
-        }
-    }
-
-    // TODO : Bulk Update 적용하기
-    @Transactional
-    public void failPhotoCheck(CheckRequest checkRequest, Long userId) {
-        User user = userRepository.findById(userId).orElseThrow(NoSuchElementException::new);
-        User host = photoCheckRepository.findById(checkRequest.getPhotoCheckIds().get(0))
-                .orElseThrow(NoSuchElementException::new)
-                .getUserChallenge().getChallenge().getHost();
-        if (!host.getId().equals(userId))
-            throw new UnAuthorizedException("인증샷을 처리할 권한이 없습니다.");
-
-        for (Long photoCheckId : checkRequest.getPhotoCheckIds()) {
-            photoCheckRepository.findById(photoCheckId)
-                    .orElseThrow(NoSuchElementException::new).fail();
-        }
+        photoCheckRepository.updateStatusByIds(checkRequest.getPhotoCheckIds(), photoCheckStatus);
     }
 
 }
