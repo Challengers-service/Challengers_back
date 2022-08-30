@@ -1,5 +1,6 @@
 package com.challengers.photocheck.controller;
 
+import com.challengers.photocheck.domain.PhotoCheckStatus;
 import com.challengers.photocheck.dto.CheckRequest;
 import com.challengers.photocheck.dto.PhotoCheckRequest;
 import com.challengers.photocheck.dto.PhotoCheckResponse;
@@ -33,14 +34,18 @@ public class PhotoCheckController {
     @PostMapping("/pass")
     public ResponseEntity<Void> pass(@RequestBody CheckRequest checkRequest,
                                  @CurrentUser UserPrincipal user) {
-        photoCheckService.passPhotoCheck(checkRequest, user.getId());
+
+        photoCheckService.updatePhotoCheckStatus(checkRequest, user.getId(), PhotoCheckStatus.PASS);
+
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/fail")
     public ResponseEntity<Void> fail(@RequestBody CheckRequest checkRequest,
                                      @CurrentUser UserPrincipal user) {
-        photoCheckService.failPhotoCheck(checkRequest, user.getId());
+
+        photoCheckService.updatePhotoCheckStatus(checkRequest, user.getId(), PhotoCheckStatus.FAIL);
+
         return ResponseEntity.ok().build();
     }
 

@@ -8,7 +8,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-public interface PhotoCheckRepository extends JpaRepository<PhotoCheck,Long> {
+public interface PhotoCheckRepository extends JpaRepository<PhotoCheck,Long>, PhotoCheckRepositoryCustom {
     Long countByUserChallengeIdAndRound(Long challengeId, Integer round);
 
     List<PhotoCheck> findByUserChallengeId(Long userChallengeId);
