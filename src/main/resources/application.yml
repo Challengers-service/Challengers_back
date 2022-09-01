@@ -17,5 +17,5 @@ spring:
         show_sql: true
         format_sql : true
   profiles:
-    active: prod
+    active: real1
     include: oauth,jwt,aws

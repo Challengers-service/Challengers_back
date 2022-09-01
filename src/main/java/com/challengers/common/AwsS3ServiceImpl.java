@@ -21,7 +21,7 @@ import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
-@Profile({"dev","prod"})
+@Profile({"dev","real1","real2"})
 public class AwsS3ServiceImpl implements AwsS3Service {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
