@@ -126,12 +126,11 @@ public class ChallengeService {
         List<UserChallenge> userChallenges = userChallengeRepository
                 .findByChallengeIdAndStatus(challengeId, UserChallengeStatus.IN_PROGRESS);
 
-        long progress = 0L;
+        long currentTotalProgress = 0L;
 
         for (UserChallenge userChallenge : userChallenges) {
-            progress += userChallenge.getMaxProgress();
+            currentTotalProgress += userChallenge.getMaxProgress();
         }
-        int maxProgress = ChallengeJoinManager.getMaxProgress(challenge);
 
         return ChallengeDetailResponse.of(challenge,
                 userChallengeRepository.countByChallengeId(challengeId),
@@ -139,7 +138,7 @@ public class ChallengeService {
                 reviewRepository.countByChallengeId(challengeId),
                 cartRepository.findByChallengeIdAndUserId(challengeId, userId).isPresent(),
                 userChallengeRepository.findByUserIdAndChallengeId(userId,challengeId).isPresent(),
-                challenge.getFailedPoint()/(progress+maxProgress)*maxProgress);
+                challenge.getExpectedReward(currentTotalProgress, ChallengeJoinManager.getMaxProgress(challenge)));
     }
 
     @Transactional

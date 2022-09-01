@@ -1,11 +1,13 @@
 package com.challengers.challenge.repository;
 
+import com.challengers.cart.domain.QCart;
 import com.challengers.challenge.domain.Category;
 import com.challengers.challenge.domain.Challenge;
 import com.challengers.challenge.domain.ChallengeStatus;
 import com.challengers.challenge.domain.CheckFrequencyType;
 import com.challengers.challenge.dto.ChallengeSearchCondition;
 import com.challengers.common.Querydsl4RepositorySupport;
+import com.challengers.userchallenge.ChallengeJoinManager;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.*;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -17,6 +19,7 @@ import org.springframework.data.domain.Sort;
 
 import java.time.LocalDate;
 
+import static com.challengers.cart.domain.QCart.*;
 import static com.challengers.challenge.domain.QChallenge.*;
 import static com.challengers.challengetag.domain.QChallengeTag.challengeTag;
 import static com.challengers.tag.domain.QTag.*;
@@ -31,7 +34,7 @@ public class ChallengeRepositoryImpl extends Querydsl4RepositorySupport implemen
 
     @Override
     public Page<Challenge> search(ChallengeSearchCondition condition, Pageable pageable) {
-        return applyPagination(PageRequest.of(pageable.getPageNumber(),pageable.getPageSize()),
+        return applyPagination(PageRequest.of(pageable.getPageNumber(), pageable.getPageSize()),
                 contentQuery -> {
                     JPAQuery<Challenge> preQuery = contentQuery.selectFrom(challenge)
                             .leftJoin(challenge.challengeTags.challengeTags, challengeTag)
@@ -39,14 +42,15 @@ public class ChallengeRepositoryImpl extends Querydsl4RepositorySupport implemen
                             .groupBy(challenge.id)
                             .where(searchCond(condition),
                                     challenge.status.in(ChallengeStatus.READY, ChallengeStatus.IN_PROGRESS));
-                    return preQuery.orderBy(challengeSort(pageable,preQuery));},
+                    return preQuery.orderBy(challengeSort(pageable, preQuery));
+                },
                 countQuery -> countQuery
                         .select(challenge).distinct()
                         .from(challenge)
                         .join(challenge.challengeTags.challengeTags, challengeTag)
                         .join(challengeTag.tag, tag)
                         .where(searchCond(condition)
-                                ,challenge.status.in(ChallengeStatus.READY, ChallengeStatus.IN_PROGRESS)));
+                                , challenge.status.in(ChallengeStatus.READY, ChallengeStatus.IN_PROGRESS)));
     }
 
     @Override
@@ -145,6 +149,9 @@ public class ChallengeRepositoryImpl extends Querydsl4RepositorySupport implemen
                         return new OrderSpecifier(direction, userChallenge.id.count());
                     case "id":
                         return new OrderSpecifier(direction, challenge.id);
+                    case "cart":
+                        contentQuery.leftJoin(cart).on(cart.challenge.id.eq(challenge.id));
+                        return new OrderSpecifier<>(direction, cart.id);
                 }
             }
         }
