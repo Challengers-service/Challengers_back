@@ -4,7 +4,7 @@ import com.challengers.challenge.domain.Challenge;
 import com.challengers.challenge.domain.ChallengeStatus;
 import com.challengers.challenge.repository.ChallengeRepository;
 import com.challengers.challengephoto.repository.ChallengePhotoRepository;
-import com.challengers.common.AwsS3Uploader;
+import com.challengers.common.AwsS3Service;
 import com.challengers.common.exception.UnAuthorizedException;
 import com.challengers.photocheck.domain.PhotoCheck;
 import com.challengers.photocheck.domain.PhotoCheckStatus;
@@ -23,10 +23,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockMultipartFile;
 
-import javax.persistence.EntityManager;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,7 +36,8 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class PhotoCheckServiceTest {
-    @Mock AwsS3Uploader awsS3Uploader;
+    @Mock
+    AwsS3Service awsS3Service;
     @Mock UserRepository userRepository;
     @Mock ChallengeRepository challengeRepository;
     @Mock ChallengePhotoRepository challengePhotoRepository;
@@ -54,7 +53,7 @@ class PhotoCheckServiceTest {
 
     @BeforeEach
     void setUp() {
-        photoCheckService = new PhotoCheckService(awsS3Uploader,
+        photoCheckService = new PhotoCheckService(awsS3Service,
                 userRepository,
                 challengeRepository,
                 challengePhotoRepository,
@@ -94,7 +93,7 @@ class PhotoCheckServiceTest {
         when(userRepository.findById(any())).thenReturn(Optional.of(user));
         when(userChallengeRepository.findByUserIdAndChallengeId(any(),any())).thenReturn(Optional.of(userChallenge));
         when(photoCheckRepository.countByUserChallengeIdAndRound(any(),any())).thenReturn(0L);
-        when(awsS3Uploader.uploadImage(any())).thenReturn("https://tempPhotoUrl.png");
+        when(awsS3Service.uploadImage(any())).thenReturn("https://tempPhotoUrl.png");
 
         photoCheckService.addPhotoCheck(photoCheckRequest, 1L);
 

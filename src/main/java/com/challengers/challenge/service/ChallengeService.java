@@ -6,7 +6,7 @@ import com.challengers.challenge.dto.*;
 import com.challengers.challenge.repository.ChallengeRepository;
 import com.challengers.challengephoto.repository.ChallengePhotoRepository;
 import com.challengers.challengetag.domain.ChallengeTag;
-import com.challengers.common.AwsS3Uploader;
+import com.challengers.common.AwsS3Service;
 import com.challengers.common.exception.NotFoundException;
 import com.challengers.common.exception.UnAuthorizedException;
 import com.challengers.photocheck.repository.PhotoCheckRepository;
@@ -32,7 +32,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -42,7 +41,7 @@ public class ChallengeService {
     private final TagRepository tagRepository;
     private final UserRepository userRepository;
     private final UserChallengeRepository userChallengeRepository;
-    private final AwsS3Uploader awsS3Uploader;
+    private final AwsS3Service awsS3Service;
     private final CartRepository cartRepository;
     private final PhotoCheckRepository photoCheckRepository;
     private final ChallengePhotoRepository challengePhotoRepository;
@@ -59,7 +58,7 @@ public class ChallengeService {
 
         // challenge 시작일, 종료일이 올바르지 않을 경우 에러 반환시켜야함
 
-        List<String> examplePhotoUrls = awsS3Uploader.uploadImages(challengeRequest.getExamplePhotos());
+        List<String> examplePhotoUrls = awsS3Service.uploadImages(challengeRequest.getExamplePhotos());
 
         Challenge challenge = Challenge.create(challengeRequest, host, examplePhotoUrls);
         challengeRepository.save(challenge);
@@ -96,7 +95,7 @@ public class ChallengeService {
         if (userChallengeRepository.countByChallengeId(challengeId) != 1)
             throw new IllegalStateException("챌린지 참여자가 1명 이하일 경우에만 챌린지를 삭제할 수 있습니다.");
 
-        awsS3Uploader.deleteImages(challenge.getExamplePhotoUrls());
+        awsS3Service.deleteImages(challenge.getExamplePhotoUrls());
 
         UserChallenge userChallenge = userChallengeRepository
                 .findByUserIdAndChallengeId(challenge.getHost().getId(), challengeId)

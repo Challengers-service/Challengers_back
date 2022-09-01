@@ -5,7 +5,7 @@ import com.challengers.challenge.domain.ChallengeStatus;
 import com.challengers.challenge.repository.ChallengeRepository;
 import com.challengers.challengephoto.domain.ChallengePhoto;
 import com.challengers.challengephoto.repository.ChallengePhotoRepository;
-import com.challengers.common.AwsS3Uploader;
+import com.challengers.common.AwsS3Service;
 import com.challengers.common.exception.NotFoundException;
 import com.challengers.common.exception.UnAuthorizedException;
 import com.challengers.photocheck.domain.PhotoCheck;
@@ -28,7 +28,7 @@ import java.util.NoSuchElementException;
 @Service
 @RequiredArgsConstructor
 public class PhotoCheckService {
-    private final AwsS3Uploader awsS3Uploader;
+    private final AwsS3Service awsS3Service;
     private final UserRepository userRepository;
     private final ChallengeRepository challengeRepository;
     private final ChallengePhotoRepository challengePhotoRepository;
@@ -60,7 +60,7 @@ public class PhotoCheckService {
                 >= challenge.getCheckTimesPerRound())
             throw new RuntimeException("이미 해당 회차에 인증 사진을 전부 올렸습니다.");
 
-        java.lang.String photoUrl = awsS3Uploader.uploadImage(photoCheckRequest.getPhoto());
+        java.lang.String photoUrl = awsS3Service.uploadImage(photoCheckRequest.getPhoto());
         ChallengePhoto challengePhoto = ChallengePhoto.builder()
                 .challenge(challenge)
                 .user(user)
