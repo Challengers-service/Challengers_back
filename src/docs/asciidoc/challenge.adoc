@@ -144,6 +144,8 @@ operation::challenge/searchCategory[snippets='http-request,request-parameters,re
 
 인기 순으로 정렬 : &sort=userCount,desc
 
+찜 한 사람수 순으로 정렬 : &sort=cart,desc
+
 아래는 챌린지 이름에 "매일"이 들어가는 챌린지 검색 결과를 최신 순으로 조회한 예제입니다.
 
 태그 검색에도 동일하게 적용됩니다.

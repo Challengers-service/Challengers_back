@@ -123,4 +123,8 @@ public class Challenge extends BaseTimeEntity {
     public void addFailedPoint(long point) {
         failedPoint += point;
     }
+
+    public long getExpectedReward(long currentTotalProgress, long maxProgress) {
+        return failedPoint/(currentTotalProgress+maxProgress)*maxProgress;
+    }
 }
