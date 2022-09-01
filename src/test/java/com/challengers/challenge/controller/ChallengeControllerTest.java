@@ -65,7 +65,7 @@ class ChallengeControllerTest extends DocumentationWithSecurity {
                 .endDate(LocalDate.now())
                 .depositPoint(1000)
                 .introduction("매일 아침 7시에 일어나면 하루가 개운합니다.")
-                .userCountLimit(2000)
+                .userCountLimit(1000)
                 .examplePhotos(new ArrayList<>(Arrays.asList(
                         new MockMultipartFile("예시사진1.png","예시사진1.png","image/png","photo file1".getBytes()),
                         new MockMultipartFile("예시사진2.png","예시사진2.png","image/png","photo file2".getBytes())
@@ -87,7 +87,7 @@ class ChallengeControllerTest extends DocumentationWithSecurity {
                     return requestPostProcessor;
                 })
                 .contentType(MediaType.MULTIPART_FORM_DATA))
-                .andExpect(status().isBadRequest())
+                .andExpect(status().isCreated())
                 .andDo(ChallengeDocumentation.createChallenge());
     }
 
