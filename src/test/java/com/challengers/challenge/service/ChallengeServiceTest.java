@@ -8,7 +8,7 @@ import com.challengers.challenge.domain.CheckFrequencyType;
 import com.challengers.challenge.dto.*;
 import com.challengers.challenge.repository.ChallengeRepository;
 import com.challengers.challengephoto.repository.ChallengePhotoRepository;
-import com.challengers.common.AwsS3Uploader;
+import com.challengers.common.AwsS3Service;
 import com.challengers.photocheck.repository.PhotoCheckRepository;
 import com.challengers.point.service.PointService;
 import com.challengers.review.repository.ReviewRepository;
@@ -50,7 +50,8 @@ public class ChallengeServiceTest {
     @Mock TagRepository tagRepository;
     @Mock UserChallengeRepository userChallengeRepository;
     @Mock AchievementRepository achievementRepository;
-    @Mock AwsS3Uploader awsS3Uploader;
+    @Mock
+    AwsS3Service awsS3Service;
     @Mock CartRepository cartRepository;
     @Mock PointService pointService;
     @Mock PhotoCheckRepository photoCheckRepository;
@@ -66,7 +67,7 @@ public class ChallengeServiceTest {
     @BeforeEach
     void setUp() {
         challengeService = new ChallengeService(challengeRepository,achievementRepository,tagRepository,
-                userRepository,userChallengeRepository,awsS3Uploader,cartRepository, photoCheckRepository,
+                userRepository,userChallengeRepository, awsS3Service,cartRepository, photoCheckRepository,
                 challengePhotoRepository, reviewRepository, pointService);
 
         user = User.builder()

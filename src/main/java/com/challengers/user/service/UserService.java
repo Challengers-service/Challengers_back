@@ -1,7 +1,6 @@
 package com.challengers.user.service;
 
-import com.challengers.common.AwsS3Uploader;
-import com.challengers.common.exception.ResourceNotFoundException;
+import com.challengers.common.AwsS3Service;
 import com.challengers.common.exception.UserException;
 import com.challengers.follow.FollowRepository;
 import com.challengers.user.domain.Award;
@@ -24,7 +23,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final FollowRepository followRepository;
     private final AchievementRepository achievementRepository;
-    private final AwsS3Uploader awsS3Uploader;
+    private final AwsS3Service awsS3Service;
 
     @Transactional
     public UserMeResponse getCurrentUser(Long userId){
@@ -50,13 +49,13 @@ public class UserService {
 
         if(image == null){
             if(userUpdateRequest.getIsImageChanged()){
-                awsS3Uploader.deleteImage(user.getImage());
+                awsS3Service.deleteImage(user.getImage());
                 user.update(changeName, changeBio, User.DEFAULT_IMAGE_URL);
             }else{
                 user.update(changeName, changeBio, user.getImage());
             }
         }else{
-            String imageUrl = awsS3Uploader.uploadImage(image);
+            String imageUrl = awsS3Service.uploadImage(image);
             user.update(changeName, changeBio, imageUrl);
         }
     }

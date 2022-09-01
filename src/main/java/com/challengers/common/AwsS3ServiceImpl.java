@@ -7,6 +7,7 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,7 +21,8 @@ import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
-public class AwsS3Uploader {
+@Profile({"dev","prod"})
+public class AwsS3ServiceImpl implements AwsS3Service {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
@@ -60,7 +62,7 @@ public class AwsS3Uploader {
         }
     }
 
-    public String extractStoreFileName(String storeFileUrl) {
+    private String extractStoreFileName(String storeFileUrl) {
         int pos = storeFileUrl.lastIndexOf("/");
         return storeFileUrl.substring(pos + 1);
     }
