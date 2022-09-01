@@ -7,19 +7,20 @@ import com.challengers.challenge.domain.CheckFrequencyType;
 import com.challengers.challenge.dto.ChallengeSearchCondition;
 import com.challengers.common.Querydsl4RepositorySupport;
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.*;
 import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.querydsl.jpa.impl.JPAQuery;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Repository;
-
-import javax.persistence.EntityManager;
+import org.springframework.data.domain.Sort;
 
 import java.time.LocalDate;
 
 import static com.challengers.challenge.domain.QChallenge.*;
 import static com.challengers.challengetag.domain.QChallengeTag.challengeTag;
 import static com.challengers.tag.domain.QTag.*;
+import static com.challengers.userchallenge.domain.QUserChallenge.*;
 import static org.springframework.util.StringUtils.hasText;
 
 public class ChallengeRepositoryImpl extends Querydsl4RepositorySupport implements ChallengeRepositoryCustom {
@@ -30,22 +31,22 @@ public class ChallengeRepositoryImpl extends Querydsl4RepositorySupport implemen
 
     @Override
     public Page<Challenge> search(ChallengeSearchCondition condition, Pageable pageable) {
-        return applyPagination(pageable, contentQuery -> contentQuery
-                        .select(challenge).distinct()
-                        .from(challenge)
-                        .leftJoin(challenge.challengeTags.challengeTags, challengeTag)
-                        .leftJoin(challengeTag.tag, tag)
-                        .where(searchCond(condition),
-                                challenge.status.in(ChallengeStatus.READY, ChallengeStatus.IN_PROGRESS)),
-
+        return applyPagination(PageRequest.of(pageable.getPageNumber(),pageable.getPageSize()),
+                contentQuery -> {
+                    JPAQuery<Challenge> preQuery = contentQuery.selectFrom(challenge)
+                            .leftJoin(challenge.challengeTags.challengeTags, challengeTag)
+                            .leftJoin(challengeTag.tag, tag)
+                            .groupBy(challenge.id)
+                            .where(searchCond(condition),
+                                    challenge.status.in(ChallengeStatus.READY, ChallengeStatus.IN_PROGRESS));
+                    return preQuery.orderBy(challengeSort(pageable,preQuery));},
                 countQuery -> countQuery
                         .select(challenge).distinct()
                         .from(challenge)
                         .join(challenge.challengeTags.challengeTags, challengeTag)
                         .join(challengeTag.tag, tag)
                         .where(searchCond(condition)
-                                ,challenge.status.in(ChallengeStatus.READY, ChallengeStatus.IN_PROGRESS))
-        );
+                                ,challenge.status.in(ChallengeStatus.READY, ChallengeStatus.IN_PROGRESS)));
     }
 
     @Override
@@ -133,4 +134,21 @@ public class ChallengeRepositoryImpl extends Querydsl4RepositorySupport implemen
     private BooleanExpression challengeCheckFrequencyCondition(boolean isMonday) {
         return isMonday ? null : challenge.checkFrequencyType.eq(CheckFrequencyType.EVERY_DAY);
     }
+
+    private OrderSpecifier<?> challengeSort(Pageable page, JPAQuery<Challenge> contentQuery) {
+        if (!page.getSort().isEmpty()) {
+            for (Sort.Order order : page.getSort()) {
+                Order direction = order.getDirection().isAscending() ? Order.ASC : Order.DESC;
+                switch (order.getProperty()){
+                    case "userCount":
+                        contentQuery.join(userChallenge).on(challenge.id.eq(userChallenge.challenge.id));
+                        return new OrderSpecifier(direction, userChallenge.id.count());
+                    case "id":
+                        return new OrderSpecifier(direction, challenge.id);
+                }
+            }
+        }
+        return new OrderSpecifier(Order.ASC, NullExpression.DEFAULT);
+    }
+
 }
