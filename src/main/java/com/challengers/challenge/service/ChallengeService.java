@@ -131,13 +131,16 @@ public class ChallengeService {
             currentTotalProgress += userChallenge.getMaxProgress();
         }
 
+        UserChallenge userChallenge = userChallengeRepository.findByUserIdAndChallengeId(userId, challengeId).orElse(null);
+        boolean hasJoined = userChallenge != null;
+
         return ChallengeDetailResponse.of(challenge,
                 userChallengeRepository.countByChallengeId(challengeId),
                 reviewRepository.getStarRatingAverageByChallengeId(challengeId),
                 reviewRepository.countByChallengeId(challengeId),
                 cartRepository.findByChallengeIdAndUserId(challengeId, userId).isPresent(),
-                userChallengeRepository.findByUserIdAndChallengeId(userId,challengeId).isPresent(),
-                challenge.getExpectedReward(currentTotalProgress, ChallengeJoinManager.getMaxProgress(challenge)));
+                hasJoined,
+                challenge.getExpectedReward(currentTotalProgress, hasJoined ? userChallenge.getMaxProgress() : ChallengeJoinManager.getMaxProgress(challenge)));
     }
 
     @Transactional
