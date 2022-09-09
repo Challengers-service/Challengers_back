@@ -125,6 +125,7 @@ public class Challenge extends BaseTimeEntity {
     }
 
     public long getExpectedReward(long currentTotalProgress, long maxProgress) {
+        if (maxProgress == 0L) return 0L;
         return failedPoint/(currentTotalProgress+maxProgress)*maxProgress;
     }
 }
