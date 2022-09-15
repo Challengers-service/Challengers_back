@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -27,7 +28,7 @@ public class ChallengeController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<ChallengeResponse>> findCanJoinChallenges(ChallengeSearchCondition condition,
+    public ResponseEntity<List<ChallengeResponse>> findCanJoinChallenges(ChallengeSearchCondition condition,
                                                                          Pageable pageable,
                                                                          @CurrentUser UserPrincipal user) {
         Long userId = user == null ? null : user.getId();

@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor(access = AccessLevel.PUBLIC)
 @Embeddable
 public class ChallengeTags {
-	@OneToMany(mappedBy = "challenge", cascade = CascadeType.PERSIST, orphanRemoval = true, fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "challenge", cascade = CascadeType.PERSIST, orphanRemoval = true, fetch = FetchType.LAZY)
 	private List<ChallengeTag> challengeTags = new ArrayList<>();
 
 	public static ChallengeTags empty() {

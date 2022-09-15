@@ -36,6 +36,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
@@ -238,15 +239,14 @@ public class ChallengeServiceTest {
     @Test
     @DisplayName("챌린지 검색")
     void search() {
-        PageImpl<Challenge> page = new PageImpl<>(Arrays.asList(challenge
-        ), PageRequest.of(0,6),2);
+        List<Challenge> page = new ArrayList<>(Arrays.asList(challenge));
 
         when(challengeRepository.search(any(),any())).thenReturn(page);
         when(userChallengeRepository.getProfileImagesLimit2(any())).thenReturn(new ArrayList<>());
         when(cartRepository.findByChallengeIdAndUserId(any(),any())).thenReturn(Optional.empty());
         when(userChallengeRepository.findByUserIdAndChallengeId(any(),any())).thenReturn(Optional.empty());
 
-        Page<ChallengeResponse> response = challengeService.search(
+        List<ChallengeResponse> response = challengeService.search(
                 new ChallengeSearchCondition(null, null, null),
                 PageRequest.of(0, 6),
                 1L);

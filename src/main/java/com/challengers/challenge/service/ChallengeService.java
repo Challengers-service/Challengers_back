@@ -26,12 +26,16 @@ import com.challengers.userchallenge.domain.UserChallengeStatus;
 import com.challengers.userchallenge.repository.UserChallengeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -164,14 +168,14 @@ public class ChallengeService {
     }
 
     @Transactional(readOnly = true)
-    public Page<ChallengeResponse> search(ChallengeSearchCondition condition, Pageable pageable, Long userId) {
-        return challengeRepository.search(condition, pageable).map(
+    public List<ChallengeResponse> search(ChallengeSearchCondition condition, Pageable pageable, Long userId) {
+        return challengeRepository.search(condition, pageable).stream().map(
                 challenge -> new ChallengeResponse(
                         challenge,
                     userId != null && cartRepository.findByChallengeIdAndUserId(challenge.getId(), userId).isPresent(),
                         userChallengeRepository.findByUserIdAndChallengeId(userId,challenge.getId()).isPresent(),
                         userChallengeRepository.getProfileImagesLimit2(challenge.getId())
-                ));
+                )).collect(Collectors.toList());
     }
 
     private void updateChallengeAchievement(User user){
