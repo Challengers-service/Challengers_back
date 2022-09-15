@@ -30,6 +30,7 @@ import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 
 import static com.challengers.testtool.UploadSupporter.uploadMockSupport;
@@ -302,14 +303,14 @@ class ChallengeControllerTest extends DocumentationWithSecurity {
     @WithMockCustomUser
     @DisplayName("인기 챌린지 조회")
     void search_hot() throws Exception{
-        PageImpl<ChallengeResponse> page = new PageImpl<>(Arrays.asList(new ChallengeResponse(1L, "매일 2시간 운동하기!", "LIFE",
+        List<ChallengeResponse> page = new ArrayList<>(Arrays.asList(new ChallengeResponse(1L, "매일 2시간 운동하기!", "LIFE",
                         new ArrayList<>(Arrays.asList("건강", "운동")), "2022.07.02", 10, false,false,
                         new ArrayList<>(Arrays.asList("https://challengers-bucket.s3.ap-northeast-2.amazonaws.com/defaultProfile1.png",
                                 "https://challengers-bucket.s3.ap-northeast-2.amazonaws.com/profile2.png"))),
                 new ChallengeResponse(2L, "매일 2시간 뛰기!", "LIFE",
                         new ArrayList<>(Arrays.asList("운동", "유산소")), "2022.07.03", 14, false, true,
                         new ArrayList<>(Arrays.asList("https://challengers-bucket.s3.ap-northeast-2.amazonaws.com/defaultProfile1.png",
-                                "https://challengers-bucket.s3.ap-northeast-2.amazonaws.com/profile3.png")))),PageRequest.of(0,6),2);
+                                "https://challengers-bucket.s3.ap-northeast-2.amazonaws.com/profile3.png")))));
 
         when(challengeService.search(any(),any(),any())).thenReturn(page);
         mockMvc.perform(get("/api/challenge?sort=userCount,desc")
@@ -322,13 +323,13 @@ class ChallengeControllerTest extends DocumentationWithSecurity {
     @WithMockCustomUser
     @DisplayName("신규 챌린지 조회")
     void search_new() throws Exception{
-        PageImpl<ChallengeResponse> page = new PageImpl<>(Arrays.asList(new ChallengeResponse(2L, "매일 2시간 뛰기!", "LIFE",
+        List<ChallengeResponse> page = new ArrayList<>(Arrays.asList(new ChallengeResponse(2L, "매일 2시간 뛰기!", "LIFE",
                         new ArrayList<>(Arrays.asList("운동", "유산소")), "2022.07.03", 14, false, false,
                         new ArrayList<>(Arrays.asList("https://challengers-bucket.s3.ap-northeast-2.amazonaws.com/defaultProfile1.png"))),
                 new ChallengeResponse(1L, "매일 2시간 운동하기!", "LIFE",
                         new ArrayList<>(Arrays.asList("건강", "운동")), "2022.07.02", 10, false, true,
                         new ArrayList<>(Arrays.asList("https://challengers-bucket.s3.ap-northeast-2.amazonaws.com/defaultProfile1.png")))
-        ),PageRequest.of(0,6),2);
+        ));
 
         when(challengeService.search(any(),any(),any())).thenReturn(page);
         mockMvc.perform(get("/api/challenge?sort=id,desc")
@@ -341,13 +342,13 @@ class ChallengeControllerTest extends DocumentationWithSecurity {
     @WithMockCustomUser
     @DisplayName("카테고리별 챌린지 조회")
     void search_category() throws Exception{
-        PageImpl<ChallengeResponse> page = new PageImpl<>(Arrays.asList(new ChallengeResponse(1L, "매일 2시간 운동하기!", "LIFE",
+        List<ChallengeResponse> page = new ArrayList<>(Arrays.asList(new ChallengeResponse(1L, "매일 2시간 운동하기!", "LIFE",
                         new ArrayList<>(Arrays.asList("건강", "운동")), "2022.07.02", 10, false, false,
                         new ArrayList<>(Arrays.asList("https://challengers-bucket.s3.ap-northeast-2.amazonaws.com/defaultProfile1.png"))),
                 new ChallengeResponse(2L, "매일 2시간 뛰기!", "LIFE",
                         new ArrayList<>(Arrays.asList("운동", "유산소")), "2022.07.03", 14, false, true,
                         new ArrayList<>(Arrays.asList("https://challengers-bucket.s3.ap-northeast-2.amazonaws.com/defaultProfile1.png",
-                                "https://challengers-bucket.s3.ap-northeast-2.amazonaws.com/defaultProfile2.png")))),PageRequest.of(0,6),2);
+                                "https://challengers-bucket.s3.ap-northeast-2.amazonaws.com/defaultProfile2.png")))));
 
         when(challengeService.search(any(),any(),any())).thenReturn(page);
         mockMvc.perform(get("/api/challenge?category=LIFE")
@@ -360,14 +361,14 @@ class ChallengeControllerTest extends DocumentationWithSecurity {
     @WithMockCustomUser
     @DisplayName("챌린지 이름으로 챌린지 검색")
     void search_name() throws Exception{
-        PageImpl<ChallengeResponse> page = new PageImpl<>(Arrays.asList(new ChallengeResponse(1L, "매일 2시간 운동하기!", "LIFE",
+        List<ChallengeResponse> page = new ArrayList<>(Arrays.asList(new ChallengeResponse(1L, "매일 2시간 운동하기!", "LIFE",
                         new ArrayList<>(Arrays.asList("건강", "운동")), "2022.07.02", 10, false, false,
                         new ArrayList<>(Arrays.asList("https://challengers-bucket.s3.ap-northeast-2.amazonaws.com/defaultProfile1.png",
                                 "https://challengers-bucket.s3.ap-northeast-2.amazonaws.com/defaultProfile2.png"))),
                 new ChallengeResponse(2L, "매일 2시간 뛰기!", "LIFE",
                         new ArrayList<>(Arrays.asList("운동", "유산소")), "2022.07.03", 14, false, true,
                         new ArrayList<>(Arrays.asList("https://challengers-bucket.s3.ap-northeast-2.amazonaws.com/defaultProfile1.png",
-                                "https://challengers-bucket.s3.ap-northeast-2.amazonaws.com/defaultProfile2.png")))),PageRequest.of(0,6),2);
+                                "https://challengers-bucket.s3.ap-northeast-2.amazonaws.com/defaultProfile2.png")))));
 
         when(challengeService.search(any(),any(),any())).thenReturn(page);
 
@@ -381,14 +382,13 @@ class ChallengeControllerTest extends DocumentationWithSecurity {
     @WithMockCustomUser
     @DisplayName("태그로 챌린지 검색")
     void search_tag() throws Exception{
-        PageImpl<ChallengeResponse> page = new PageImpl<>(Arrays.asList(new ChallengeResponse(1L, "매일 2시간 운동하기!", "LIFE",
+        List<ChallengeResponse> page = new ArrayList<>(Arrays.asList(new ChallengeResponse(1L, "매일 2시간 운동하기!", "LIFE",
                         new ArrayList<>(Arrays.asList("건강", "운동")), "2022.07.02", 10, false, false,
                         new ArrayList<>(Arrays.asList("https://challengers-bucket.s3.ap-northeast-2.amazonaws.com/defaultProfile1.png",
                                 "https://challengers-bucket.s3.ap-northeast-2.amazonaws.com/defaultProfile2.png"))),
                 new ChallengeResponse(2L, "매일 2시간 뛰기!", "LIFE",
                         new ArrayList<>(Arrays.asList("운동", "유산소")), "2022.07.03", 14, false, true,
-                        new ArrayList<>(Arrays.asList("https://challengers-bucket.s3.ap-northeast-2.amazonaws.com/defaultProfile1.png")))),
-                PageRequest.of(0,6),2);
+                        new ArrayList<>(Arrays.asList("https://challengers-bucket.s3.ap-northeast-2.amazonaws.com/defaultProfile1.png")))));
 
         when(challengeService.search(any(),any(),any())).thenReturn(page);
 
@@ -402,14 +402,14 @@ class ChallengeControllerTest extends DocumentationWithSecurity {
     @WithMockCustomUser
     @DisplayName("챌린지 검색 결과에 필터 적용")
     void search_filter() throws Exception{
-        PageImpl<ChallengeResponse> page = new PageImpl<>(Arrays.asList(new ChallengeResponse(1L, "매일 2시간 운동하기!", "LIFE",
+        List<ChallengeResponse> page = new ArrayList<>(Arrays.asList(new ChallengeResponse(1L, "매일 2시간 운동하기!", "LIFE",
                         new ArrayList<>(Arrays.asList("건강", "운동")), "2022.07.02", 10, false, false,
                         new ArrayList<>(Arrays.asList("https://challengers-bucket.s3.ap-northeast-2.amazonaws.com/defaultProfile1.png",
                                 "https://challengers-bucket.s3.ap-northeast-2.amazonaws.com/defaultProfile2.png"))),
                 new ChallengeResponse(2L, "매일 2시간 뛰기!", "LIFE",
                         new ArrayList<>(Arrays.asList("운동", "유산소")), "2022.07.03", 14, false, true,
                         new ArrayList<>(Arrays.asList("https://challengers-bucket.s3.ap-northeast-2.amazonaws.com/defaultProfile1.png",
-                                "https://challengers-bucket.s3.ap-northeast-2.amazonaws.com/defaultProfile2.png")))),PageRequest.of(0,6),2);
+                                "https://challengers-bucket.s3.ap-northeast-2.amazonaws.com/defaultProfile2.png")))));
 
         when(challengeService.search(any(),any(),any())).thenReturn(page);
         mockMvc.perform(get("/api/challenge?challengeName=매일 2시간&sort=userCount,desc")

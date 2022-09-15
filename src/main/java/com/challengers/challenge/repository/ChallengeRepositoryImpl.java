@@ -18,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import static com.challengers.cart.domain.QCart.*;
 import static com.challengers.challenge.domain.QChallenge.*;
@@ -33,24 +34,14 @@ public class ChallengeRepositoryImpl extends Querydsl4RepositorySupport implemen
     }
 
     @Override
-    public Page<Challenge> search(ChallengeSearchCondition condition, Pageable pageable) {
-        return applyPagination(PageRequest.of(pageable.getPageNumber(), pageable.getPageSize()),
-                contentQuery -> {
-                    JPAQuery<Challenge> preQuery = contentQuery.selectFrom(challenge)
-                            .leftJoin(challenge.challengeTags.challengeTags, challengeTag)
-                            .leftJoin(challengeTag.tag, tag)
-                            .groupBy(challenge.id)
-                            .where(searchCond(condition),
-                                    challenge.status.in(ChallengeStatus.READY, ChallengeStatus.IN_PROGRESS));
-                    return preQuery.orderBy(challengeSort(pageable, preQuery));
-                },
-                countQuery -> countQuery
-                        .select(challenge).distinct()
-                        .from(challenge)
-                        .join(challenge.challengeTags.challengeTags, challengeTag)
-                        .join(challengeTag.tag, tag)
-                        .where(searchCond(condition)
-                                , challenge.status.in(ChallengeStatus.READY, ChallengeStatus.IN_PROGRESS)));
+    public List<Challenge> search(ChallengeSearchCondition condition, Pageable pageable) {
+        JPAQuery<Challenge> preQuery = getQueryFactory().selectFrom(challenge)
+                .where(challenge.status.in(ChallengeStatus.READY, ChallengeStatus.IN_PROGRESS));
+        return preQuery.where(searchCond(condition, preQuery))
+                .orderBy(challengeSort(pageable, preQuery))
+                .limit(pageable.getPageSize())
+                .offset(pageable.getOffset())
+                .fetch();
     }
 
     @Override
@@ -109,12 +100,12 @@ public class ChallengeRepositoryImpl extends Querydsl4RepositorySupport implemen
         return updatedCount;
     }
 
-    private BooleanBuilder searchCond(ChallengeSearchCondition condition) {
+    private BooleanBuilder searchCond(ChallengeSearchCondition condition, JPAQuery<Challenge> query) {
         BooleanBuilder booleanBuilder = new BooleanBuilder();
         return booleanBuilder
                 .and(categoryEq(condition.getCategory()))
                 .and(challengeNameContains(condition.getChallengeName()))
-                .and(tagNameEq(condition.getTagName()));
+                .and(tagNameEq(condition.getTagName(), query));
     }
 
     private BooleanExpression challengeNameContains(String challengeName) {
@@ -125,7 +116,9 @@ public class ChallengeRepositoryImpl extends Querydsl4RepositorySupport implemen
         return hasText(category) ? challenge.category.eq(Category.of(category)) : null;
     }
 
-    public BooleanExpression tagNameEq(String tagName) {
+    public BooleanExpression tagNameEq(String tagName, JPAQuery<Challenge> query) {
+        query.leftJoin(challenge.challengeTags.challengeTags, challengeTag)
+                .leftJoin(challengeTag.tag, tag);
         return hasText(tagName) ? tag.name.eq(tagName) : null;
     }
 
@@ -155,7 +148,7 @@ public class ChallengeRepositoryImpl extends Querydsl4RepositorySupport implemen
                 }
             }
         }
-        return new OrderSpecifier(Order.ASC, NullExpression.DEFAULT);
+        return new OrderSpecifier(Order.DESC, challenge.id);
     }
 
 }

@@ -37,9 +37,11 @@ out/
 .vscode/
 
 ### yml ###
+application.yml
 application-jwt.yml
 application-oauth.yml
 application-aws.yml
+application-db.yml
 
 ##html
 static/docs/
