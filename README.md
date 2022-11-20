@@ -4,7 +4,7 @@ Challengers는 같은 목표를 가진 사람들을 모아주고 목표를 이�
 
 ## 🛠  Tech Stacks
 
-![](https://user-images.githubusercontent.com/50768514/202887258-92cef82a-0469-4c46-b707-6e4d911be421.png)
+![](https://user-images.githubusercontent.com/50768514/202888570-1b7e6c51-410e-4086-b5c9-0f800dee382a.png)
 
 ## ⚙️Infrastructure
 
