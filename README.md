@@ -9,7 +9,7 @@ Challengers는 같은 목표를 가진 사람들을 모아주고 목표를 이�
 ## ⚙️Infrastructure
 
 
-![](https://user-images.githubusercontent.com/50768514/202887344-542b0cd9-5bf6-4530-b06c-c65b9836f7e9.png)
+![Monolithic Infrastructure](https://user-images.githubusercontent.com/50768514/202976810-296b0453-96b2-4c7c-b994-4c3083579bbb.png)
 
 ## 🔀 CI/CD
 
